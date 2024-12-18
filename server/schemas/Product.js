@@ -1,71 +1,48 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     price: {
-        type: Number, // Using Number instead of BigInt for compatibility
-        required: true,
-    },
-    description: {
-        type: String,
-        required: false,
+      type: Number, // Using Number instead of BigInt for compatibility
+      required: true,
     },
     brand: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-    model: {
-        type: String,
-        required: true,
+    madeIn: {
+      type: String,
+      required: true,
     },
-    year: {
-        type: Number,
-        required: true,
+    material: {
+      type: String,
+      required: true,
     },
-    power: {
-        type: String,
-        required: true,
-    },
-    torque: {
-        type: String,
-        required: true,
-    },
-    acceleration: {
-        type: Number,
-        required: true,
-    },
-    maxSpeed: {
-        type: Number,
-        required: true,
-    },
-    combinedConsumption: {
-        type: Number,
-        required: false,
-    },
-    CO2Emissions: {
-        type: Number,
-        required: false,
+    diameter: {
+      type: String,
+      required: true,
     },
     image: {
-        type: String,
-        required: true,
+      type: String,
     },
     updateDate: {
-        type: Date,
-        default: Date.now,
+      type: Date,
+      default: Date.now,
     },
-
     createDate: {
-        type: Date,
-        default: Date.now,
-    }
-}, {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
     timestamps: true, // Automatically handles createdAt and updatedAt
-});
+  }
+);
 
-const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.model("Product", productSchema);
 
 module.exports = Product;
