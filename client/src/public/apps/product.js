@@ -54,22 +54,22 @@ function updateCartCount(increment = 1) {
     
 }
 
-// Prefetch next page data
-function prefetchPage(page) {
-    if (cache.has(page) || page > totalPages || page < 1) return;
+// // Prefetch next page data
+// function prefetchPage(page) {
+//     if (cache.has(page) || page > totalPages || page < 1) return;
 
-    fetch(`http://localhost:3000/product/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ page, limit })
+//     fetch(`http://localhost:3000/product/`, {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ page, limit })
 
-    })
-        .then(response => response.json())
-        .then(data => {
-            cache.set(page, data.item);
-        })
-        .catch(error => console.error(`Error prefetching page ${page}:`, error));
-}
+//     })
+//         .then(response => response.json())
+//         .then(data => {
+//             cache.set(page, data.item);
+//         })
+//         .catch(error => console.error(`Error prefetching page ${page}:`, error));
+// }
 
 // Load products for the current page
 function loadProducts() {
@@ -79,6 +79,7 @@ function loadProducts() {
     }
     showSpinner(); // Hiển thị spinner
     fetch(`http://localhost:3000/product/`, {
+        credentials: 'include',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ page: currentPage, limit })
@@ -144,6 +145,157 @@ function createProductElement(product) {
     return card;
 }
 
+// function handleSearch() {
+//   const query = document.querySelector("#search__bar__product").value;
+//   console.log("Search query: ", query); // Check if query is being captured correctly
+
+//   if (!query) {
+//     notify({
+//       type: "warning",
+//       msg: "Please enter a search query",
+//     });
+//     return;
+//   }
+//   console.log("Search query: ", query);
+
+//   fetch("http://localhost:3000/product/search?keysearch=" + query)
+//     .then((res) => res.json())
+//     .then((data) => {
+//       console.log(data);
+//       if (data.length === 0) {
+//         notify({
+//           type: "warning",
+//           msg: "No results found",
+//         });
+//       }
+//       else {
+//         // Render the search results
+//         renderProducts(data.data);
+//           // handle pagination
+//           document.getElementById('page-info').textContent = `Page 1 of 1`;
+//           document.getElementById('prev-btn').disabled = true;
+//           document.getElementById('next-btn').disabled = true;
+
+//       }
+//     })
+//     .catch((error) => {
+//       notify({
+//         type: "error",
+//         msg: error.message,
+//       });
+//     });
+
+// }
+
+function handleSearch() {
+  const query = document.querySelector("#search__bar__product").value;
+
+  if (!query) {
+    notify({
+      type: "warning",
+      msg: "Please enter a search query",
+    });
+    return;
+  }
+
+  showSpinner();
+    fetch(`http://localhost:3000/product/search`, {
+    credentials: 'include',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      keysearch: query,
+      page: currentPage,
+      limit: limit
+    })
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      hideSpinner();
+      if (data.item.length === 0) {
+        notify({
+          type: "warning",
+          msg: "No results found",
+        });
+        // Reset pagination when no results found
+        document.getElementById('page-info').textContent = `Page 0 of 0`;
+        document.getElementById('prev-btn').disabled = true;
+        document.getElementById('next-btn').disabled = true;
+        const itemsContainer = document.getElementById('items-container');
+        itemsContainer.innerHTML = ''; // Clear current items
+      } else {
+        // Update total pages from search results
+        totalPages = data.totalPages;
+        // Cache the search results
+        cache.clear(); // Clear existing cache
+        cache.set(currentPage, data.item);
+        // Render the search results
+        renderProducts(data.item);
+        // Prefetch next page of search results
+        prefetchPage(currentPage + 1);
+      }
+    })
+    .catch((error) => {
+      hideSpinner();
+      notify({
+        type: "error",
+        msg: error.message,
+      });
+    });
+}
+
+// Update prefetchPage to handle search queries
+function prefetchPage(page) {
+    if (cache.has(page) || page > totalPages || page < 1) return;
+
+    const searchQuery = document.querySelector("#search__bar__product").value;
+    const url = searchQuery 
+      ? 'http://localhost:3000/product/search'
+      : 'http://localhost:3000/product/';
+    
+    const payload = searchQuery 
+      ? { keysearch: searchQuery, page, limit }
+      : { page, limit };
+
+    fetch(url, {
+        credentials: 'include',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+        .then(response => response.json())
+        .then(data => {
+            cache.set(page, data.item);
+        })
+        .catch(error => console.error(`Error prefetching page ${page}:`, error));
+}
+
+// Add event listener for search input
+document.querySelector("#search__bar__product").addEventListener("keyup", function(event) {
+    if (event.key === "Enter") {
+        currentPage = 1; // Reset to first page when searching
+        cache.clear(); // Clear the cache for new search
+        handleSearch();
+    }
+});
+
+function loadSearchProducts(productList) {
+    const itemsContainer = document.getElementById('items-container');
+    itemsContainer.innerHTML = ''; // Clear current items
+
+    const fragment = document.createDocumentFragment();
+    productList.forEach(product => {
+        const productElement = createProductElement(product);
+        fragment.appendChild(productElement);
+    });
+    itemsContainer.appendChild(fragment); // Append all at once
+
+    document.getElementById('page-info').textContent = `Page 1 of 1`;
+    document.getElementById('prev-btn').disabled = true;
+    document.getElementById('next-btn').disabled = true;
+    
+    
+}
 // Event listeners for pagination buttons
 document.getElementById('prev-btn').addEventListener('click', () => {
     if (currentPage > 1) {
@@ -192,6 +344,7 @@ function filterProducts() {
     showSpinner();
     // Fetch filtered products
     fetch('http://localhost:3000/product/filter', {
+        credentials: 'include',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(filterPayload)
@@ -226,6 +379,7 @@ function showBrand() {
     ).map(input => input.id.replace('checkbox_', ''));
     
     fetch('http://localhost:3000/product/brands', {
+        credentials: 'include',
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     })
@@ -252,6 +406,7 @@ function showModel() {
     ).map(input => input.id.replace('checkbox_', ''));
     
     fetch('http://localhost:3000/product/models', {
+        credentials: 'include',
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     })

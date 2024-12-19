@@ -5,7 +5,7 @@ const ProductController = require('../components/product/controllers/ProductCont
 
 productRouter.get('/brands', ProductController.getAllBrands);
 productRouter.get('/models', ProductController.getAllModels);
-// productRouter.get('/search', ProductController.searchProduct);
+productRouter.post('/search', ProductController.searchProduct);
 productRouter.get('/filter', ProductController.filterProduct);
 // productRouter.get('/someproduct', ProductController.getSomeProduct);
 productRouter.post('/filter', ProductController.filterProduct);

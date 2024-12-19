@@ -4,3 +4,4 @@
 .env
 /client/.env
 /server/.env
+.vercel

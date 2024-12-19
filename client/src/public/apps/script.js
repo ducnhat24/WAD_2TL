@@ -160,6 +160,7 @@ function handleSubmitSignup() {
 
   // Send data to server
   fetch(url + "/user/signup", {
+    credentials: 'include',
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -202,6 +203,7 @@ function handleSubmitLogin() {
 
   // Send data to server
   fetch(url + "/user/login", {
+    credentials: 'include',
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -237,6 +239,7 @@ function handleSubmitLogin() {
 function handleLogout() {
   console.log("Logout form submitted");
   fetch(url + "/user/logout", {
+    credentials: 'include',
     method: "POST",
     credentials: 'include',
     headers: {
@@ -413,7 +416,8 @@ if (storedNotify) {
   localStorage.removeItem("notify");
 }
 function updateCartCount(increment = 1) {
-    fetch("http://localhost:3000/cart/", {
+  fetch("http://localhost:3000/cart/", {
+        credentials: 'include',
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'

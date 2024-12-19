@@ -96,43 +96,55 @@ class ProductService {
         }
     }
 
-    async searchProduct(query) {
-        // try {
-        //     const products = await prisma.product.findMany({
-        //         where: {
-        //             OR: [
-        //                 { name: { contains: query } },
-        //                 { description: { contains: query } }
-        //             ]
-        //         },
-        //         select: {
-        //             id: true,
-        //             name: true,
-        //             price: true,
-        //             description: true,
-        //             image: true,
-        //         }
-        //     });
-        //     return products || [];
-        // } catch (error) {
-        //     console.error(error);
-        //     throw new Error("An error occurred while searching for products");
-        // }
+    async searchProducts(keysearch, page, limit) {
         try {
-            const products = await Product.find({
+            // Calculate skip value for pagination
+            const skip = (page - 1) * limit;
+
+            // Get total count
+            const totalProducts = await Product.countDocuments({
                 $or: [
-                    { name: { $regex: query, $options: 'i' } },
-                    { description: { $regex: query, $options: 'i' } },
-                    { brand: { $regex: query, $options: 'i' } },
-                    { model: { $regex: query, $options: 'i' } }
+                    { name: { $regex: keysearch, $options: 'i' } },
+                    { description: { $regex: keysearch, $options: 'i' } }
                 ]
             });
-            return products;
+
+            // Get paginated results
+            const products = await Product.find({
+                $or: [
+                    { name: { $regex: keysearch, $options: 'i' } },
+                    { description: { $regex: keysearch, $options: 'i' } }
+                ]
+            })
+            .skip(skip)
+            .limit(limit);
+
+            return {
+                totalProducts,
+                products
+            };
         } catch (error) {
-            console.error(error);
-            throw new Error("An error occurred while searching for products");
+            throw error;
         }
     }
+
+    // async searchProduct(query) {
+
+    //     try {
+    //         const products = await Product.find({
+    //             $or: [
+    //                 { name: { $regex: query, $options: 'i' } },
+    //                 { description: { $regex: query, $options: 'i' } },
+    //                 { brand: { $regex: query, $options: 'i' } },
+    //                 { model: { $regex: query, $options: 'i' } }
+    //             ]
+    //         });
+    //         return products;
+    //     } catch (error) {
+    //         console.error(error);
+    //         throw new Error("An error occurred while searching for products");
+    //     }
+    // }
 
     async getSameProduct(product) {
         try {

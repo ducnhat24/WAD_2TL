@@ -69,150 +69,59 @@ class ProductController {
         }
     }
 
-    // async searchProduct(req, res) {
-    //     const { keysearch, brands, models, price, sort } = req.query;
+        async searchProduct(req, res) {
+        console.log("Request body:", req.body);
+        
+        const { keysearch, page = 1, limit = 5 } = req.body;
+        
+        if (!keysearch) {
+            return res.status(400).json({ 
+                status: "error", 
+                msg: "Search query is required" 
+            });
+        }
+        
+        try {
+            // Get total count and products from service
+            const { totalProducts, products } = await productService.searchProducts(keysearch, page, limit);
+            
+            // Calculate total pages
+            const totalPages = Math.ceil(totalProducts / limit);
+            
+            res.json({
+                status: "success",
+                totalPages,
+                item: products,
+                currentPage: page,
+                totalItems: totalProducts
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                status: "error",
+                msg: "An error occurred while searching for products"
+            });
+        }
+    }
 
+
+    // async searchProduct(req, res) {
+    //     console.log("Request query:", req.query);
+
+    //     const { keysearch } = req.query;
     //     if (!keysearch) {
     //         return res.redirect('/product');
     //     }
 
     //     try {
     //         const products = await productService.searchProduct(keysearch);
-
-    //         const allBrands = await productService.getAllBrands();
-    //         const allModels = await productService.getAllModels();
-
-    //         // Trả lại các tham số để giữ lại trạng thái tìm kiếm và bộ lọc
-    //         res.render('product', {
-    //             isAuthenticated: req.isAuthenticated,
-    //             products: multipleMongooseToObject(products),
-    //             // searchValue: keysearch,
-    //             // selectedBrands: brands ? brands.split(',') : [],
-    //             // selectedModels: models ? models.split(',') : [],
-    //             selectedPrice: price || 1000,
-    //             selectedSort: sort || '',
-    //             brands: allBrands,
-    //             models: allModels
-    //         });
+    //         res.json(products);
     //     } catch (error) {
     //         console.error(error);
     //         res.status(500).send("An error occurred while fetching products");
     //     }
     // }
 
-
-    // async filterProduct(req, res) {
-    //     const brand = req.query.brand;
-    //     const model = req.query.model;
-    //     const feature = req.query.feature;
-    //     const type = req.query.type;
-
-    //     try {
-    //         const products = await productService.filterProduct(brand, model, feature, type);
-    //         res.render('product', { isAuthenticated: req.isAuthenticated, products: multipleMongooseToObject(products) });
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).send("An error occurred while fetching products");
-    //     }
-    // }
-    // async filterProduct(req, res) {
-    //     const query = req.query;  // Lấy các tham số từ query
-    //     // const brands = await productService.getAllBrands();
-    //     // const models = await productService.getAllModels();
-
-    //     try {
-    //         const products = await productService.filterProduct(query);
-    //         const sort = query.sortby + "_" + query.sorttype;
-    //         // Trả lại các tham số để giữ lại trạng thái bộ lọc
-    //         // res.render('product', {
-    //         //     products: multipleMongooseToObject(products),
-    //         //     searchValue: '',  // Có thể để rỗng nếu không có tìm kiếm
-    //         //     selectedBrands: query.brands ? query.brands.split(',') : [],
-    //         //     selectedModels: query.models ? query.models.split(',') : [],
-    //         //     selectedSort: sort || '',
-    //         // });
-    //         res.json(products)
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).send("An error occurred while fetching products");
-    //     }
-    // }
-
-    // async filterProduct(req, res) {
-    //     console.log("Filter products");
-    //     try {
-    //         console.log(req.body);
-    //         const { page, limit, brands, models, sorttype, sortby } = req.body;
-    //         const query = {
-    //             brands: brands ? brands.split(',') : [],
-    //             models: models ? models.split(',') : [],
-    //             sortType: sorttype,
-    //             sortBy: sortby
-    //         };
-
-    //         const products = await productService.filterProduct(query);
-    //         const totalPages = Math.ceil(products.data.length / limit);
-    //         const startIndex = (page - 1) * limit;
-    //         const endIndex = page * limit;
-    //         const productToDisplay = products.data.slice(startIndex, endIndex);
-
-    //         res.json({
-    //             currentPage: page,
-    //             totalPages: totalPages,
-    //             item: productToDisplay,
-    //         });
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).send("An error occurred while fetching products");
-    //     }
-    // }
-
-    // async filterProduct(req, res) {
-    //     console.log("Filter products");
-    //     try {
-    //         console.log("Request body:", req.body);
-
-    //         // Destructure and validate request parameters
-    //         const { page = 1, limit = 10, brands = [], models = [], sortType = "asc", sortBy = "price" } = req.body;
-
-    //         // Validate pagination
-    //         const validPage = Math.max(1, parseInt(page, 10));
-    //         const validLimit = Math.max(1, parseInt(limit, 10));
-
-    //         // Construct query
-    //         const query = {};
-    //         if (brands.length > 0) query.brand = { $in: brands };
-    //         if (models.length > 0) query.model = { $in: models };
-
-    //         // Construct sorting object
-    //         const sort = {};
-    //         if (sortBy && (sortType === "asc" || sortType === "desc")) {
-    //             sort[sortBy] = sortType === "asc" ? 1 : -1;
-    //         }
-
-    //         // Fetch products from service
-    //         const products = await productService.filterProduct(query, sort);
-
-    //         // Pagination logic
-    //         // const totalItems = products.data.length;
-    //         const totalItems = Array.isArray(products.data) ? products.data.length : 0;
-    //         const totalPages = Math.ceil(totalItems / validLimit);
-    //         const startIndex = (validPage - 1) * validLimit;
-    //         const endIndex = startIndex + validLimit;
-
-    //         const productToDisplay = products.data.slice(startIndex, endIndex);
-
-    //         // Send response
-    //         res.json({
-    //             currentPage: validPage,
-    //             totalPages: totalPages,
-    //             item: productToDisplay,
-    //         });
-    //     } catch (error) {
-    //         console.error("Error filtering products:", error.message);
-    //         res.status(500).send("An error occurred while fetching products");
-    //     }
-    // }
 
     async filterProduct(req, res) {
         console.log("Products controller");
