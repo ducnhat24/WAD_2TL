@@ -56,7 +56,7 @@ function notify(obj) {
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
+  if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
 // Check token on load
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + accessToken,
+      Authorization: "Bearer " + accessToken,
     },
     body: JSON.stringify({ refreshToken: refreshToken }),
   })
@@ -82,7 +82,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return response.json();
     })
     .then((data) => {
-
       user = data.user;
       console.log("User: ", user);
       if (data.status === "success") {
@@ -98,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
         logoutDiv.classList.add("header__item");
         logoutDiv.innerHTML = `
           <button onclick="handleLogout()">Logout</button>
-        `
+        `;
         const headerFeature = document.querySelector(".header__feature");
         headerFeature.appendChild(logoutDiv);
       } else {
@@ -123,7 +122,6 @@ document.addEventListener("DOMContentLoaded", function () {
           <a href="/signup">Signup</a>
         `;
 
-
         const headerFeature = document.querySelector(".header__feature");
         headerFeature.appendChild(signupDiv);
         headerFeature.appendChild(loginDiv);
@@ -143,8 +141,18 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+function validatePassword() {
+  const password = document.getElementById("signup__password").value;
+  const errorSpan = document.getElementById("password-error");
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-
+  if (!passwordRegex.test(password)) {
+    errorSpan.style.display = "block";
+  } else {
+    errorSpan.style.display = "none";
+  }
+}
 function handleSubmitSignup() {
   console.log("Signup form submitted");
   const username = document.querySelector("#signup__username").value;
@@ -175,10 +183,13 @@ function handleSubmitSignup() {
     })
     .then((data) => {
       if (data.status === "success") {
-        localStorage.setItem("notify", JSON.stringify({
-          type: data.status,
-          msg: data.msg,
-        }));
+        localStorage.setItem(
+          "notify",
+          JSON.stringify({
+            type: data.status,
+            msg: data.msg,
+          })
+        );
         location.href = "/login";
       }
     })
@@ -207,9 +218,8 @@ function handleSubmitLogin() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-
     },
-    credentials: 'include',
+    credentials: "include",
     body: JSON.stringify({ useraccount, password }),
   })
     .then((res) => {
@@ -221,14 +231,16 @@ function handleSubmitLogin() {
     .then((data) => {
       console.log(data);
       if (data.status === "success") {
-        localStorage.setItem("notify", JSON.stringify({
-          type: data.status,
-          msg: data.msg,
-        }));
+        localStorage.setItem(
+          "notify",
+          JSON.stringify({
+            type: data.status,
+            msg: data.msg,
+          })
+        );
         location.href = "/";
-      }
-      else {
-        notify({type: data.status, msg: data.msg})
+      } else {
+        notify({ type: data.status, msg: data.msg });
       }
     })
     .catch((error) => {
@@ -244,7 +256,6 @@ function handleLogout() {
     credentials: 'include',
     headers: {
       "Content-Type": "application/json",
-
     },
   })
     .then((res) => {
@@ -256,20 +267,22 @@ function handleLogout() {
     .then((data) => {
       console.log(document.cookie);
       if (data.status === "success") {
-        localStorage.setItem("notify", JSON.stringify({
-          type: data.status,
-          msg: data.msg,
-        }));
+        localStorage.setItem(
+          "notify",
+          JSON.stringify({
+            type: data.status,
+            msg: data.msg,
+          })
+        );
 
         location.href = "/";
-
       }
     })
     .catch((error) => {
       notify({
         type: "error",
         msg: error.message,
-      })
+      });
     });
 }
 
@@ -303,9 +316,11 @@ $(document).ready(function () {
 
 function handleSearch() {
   const query = document.querySelector("#search__bar__product").value;
-  const selectedBrands = Array.from(document.querySelectorAll("input[type=checkbox]:checked"))
-    .map(checkbox => checkbox.id.replace('checkbox_', ''));
-  const selectedSort = document.querySelector("input[name=sort]:checked")?.id || '';
+  const selectedBrands = Array.from(
+    document.querySelectorAll("input[type=checkbox]:checked")
+  ).map((checkbox) => checkbox.id.replace("checkbox_", ""));
+  const selectedSort =
+    document.querySelector("input[name=sort]:checked")?.id || "";
   const priceRange = document.querySelector("input[type=range]").value;
 
   // Kiểm tra nếu không có từ khóa tìm kiếm
@@ -320,9 +335,9 @@ function handleSearch() {
   // Tạo query string từ các giá trị đã thu thập
   const queryParams = {
     keysearch: query,
-    brands: selectedBrands.join(','),  // Chuyển mảng thành chuỗi
+    brands: selectedBrands.join(","), // Chuyển mảng thành chuỗi
     sort: selectedSort,
-    price: priceRange
+    price: priceRange,
   };
 
   // Chuyển các giá trị vào URL query string
@@ -330,51 +345,54 @@ function handleSearch() {
 
   // Điều hướng đến trang tìm kiếm với các tham số đã chọn
   location.href = "/product/search?" + queryString;
-
-
 }
 
 function handleFilter() {
   // Select all checkboxesBrand in the container
-  const checkboxesBrand = document.querySelectorAll('#brand-filter input[type="checkbox"]');
+  const checkboxesBrand = document.querySelectorAll(
+    '#brand-filter input[type="checkbox"]'
+  );
   console.log(checkboxesBrand);
   // Filter checked checkboxesBrand and retrieve their associated label text
   const selectedBrands = Array.from(checkboxesBrand)
-    .filter(checkbox => checkbox.checked) // Only checked checkboxesBrand
-    .map(checkbox => {
+    .filter((checkbox) => checkbox.checked) // Only checked checkboxesBrand
+    .map((checkbox) => {
       // Find the associated label using the 'for' attribute
       const label = document.querySelector(`label[for="${checkbox.id}"]`);
       return label ? label.textContent.trim() : null; // Get the label text
     })
-    .filter(brand => brand !== null); // Remove null values in case of missing labels
+    .filter((brand) => brand !== null); // Remove null values in case of missing labels
 
   // Output the selected brands
-  console.log('Selected Brands:', selectedBrands);
+  console.log("Selected Brands:", selectedBrands);
 
-  const checkboxesModel = document.querySelectorAll('#model-filter input[type="checkbox"]');
+  const checkboxesModel = document.querySelectorAll(
+    '#model-filter input[type="checkbox"]'
+  );
   const selectedModels = Array.from(checkboxesModel)
-    .filter(checkbox => checkbox.checked)
-    .map(checkbox => {
+    .filter((checkbox) => checkbox.checked)
+    .map((checkbox) => {
       const label = document.querySelector(`label[for="${checkbox.id}"]`);
       return label ? label.textContent.trim() : null;
     })
-    .filter(model => model !== null);
+    .filter((model) => model !== null);
 
   // Use the `selectedBrands` array for filtering logic
 
-  const radiosSort = document.querySelectorAll('#sort-filter input[type="radio"]');
+  const radiosSort = document.querySelectorAll(
+    '#sort-filter input[type="radio"]'
+  );
 
-  const selectedSort = Array.from(radiosSort)
-    .find(radio => radio.checked)
+  const selectedSort = Array.from(radiosSort).find((radio) => radio.checked);
 
   if (selectedSort) {
     const sortID = selectedSort.id;
-    const sortTypeQuery = sortID.split('_')[1];
-    const sortByQuery = sortID.split('_')[2];
-    console.log('Selected Sort:', sortTypeQuery, sortByQuery);
+    const sortTypeQuery = sortID.split("_")[1];
+    const sortByQuery = sortID.split("_")[2];
+    console.log("Selected Sort:", sortTypeQuery, sortByQuery);
   }
 
-  let endpoint = "/product"
+  let endpoint = "/product";
   console.log(endpoint);
   if (selectedBrands.length > 0 || selectedModels.length > 0 || selectedSort) {
     endpoint += "/filter?";
@@ -400,13 +418,16 @@ function handleFilter() {
   }
 
   if (selectedSort) {
-    endpoint += ("sortby=" + selectedSort.id.split('_')[1] + "&sorttype=" + selectedSort.id.split('_')[2]);
+    endpoint +=
+      "sortby=" +
+      selectedSort.id.split("_")[1] +
+      "&sorttype=" +
+      selectedSort.id.split("_")[2];
   }
 
   console.log(endpoint);
   location.href = endpoint;
 }
-
 
 const storedNotify = localStorage.getItem("notify");
 if (storedNotify) {
