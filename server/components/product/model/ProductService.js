@@ -1,4 +1,4 @@
-const Product = require("../../../schemas/Product");
+const Product = require("../schema/Product");
 
 class ProductService {
 
@@ -29,7 +29,7 @@ class ProductService {
 
     async getProductById(id) {
         try {
-            const product = await Product.findById(id);
+            const product = await Product.find({ _id: id });
             if (product) {
                 return {
                     status: "success",
@@ -50,29 +50,29 @@ class ProductService {
         }
     }
 
-    async getAllBrands() {
-        try {
-            const brands = await Product.find().distinct('brand');
-            if (brands) {
-                return {
-                    status: "success",
-                    msg: "Brands fetched successfully",
-                    data: brands
-                }
-            }
+    // async getAllBrands() {
+    //     try {
+    //         const brands = await Product.find().distinct('brand');
+    //         if (brands) {
+    //             return {
+    //                 status: "success",
+    //                 msg: "Brands fetched successfully",
+    //                 data: brands
+    //             }
+    //         }
 
-            return {
-                status: "error",
-                msg: "No brand",
-            }
-        } catch (error) {
-            console.error(error);
-            return {
-                status: "error",
-                msg: error.message,
-            }
-        }
-    }
+    //         return {
+    //             status: "error",
+    //             msg: "No brand",
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //         return {
+    //             status: "error",
+    //             msg: error.message,
+    //         }
+    //     }
+    // }
 
     async getAllModels() {
         try {
@@ -116,8 +116,8 @@ class ProductService {
                     { description: { $regex: keysearch, $options: 'i' } }
                 ]
             })
-            .skip(skip)
-            .limit(limit);
+                .skip(skip)
+                .limit(limit);
 
             return {
                 totalProducts,
@@ -223,16 +223,16 @@ class ProductService {
             const sortType = query.sortType;
 
             let products = await Product.find();
-    
+
             if (products) {
                 if (brandArray.length > 0) {
                     products = products.filter((product) => brandArray.includes(product.brand));
                 }
-    
+
                 if (modelArray.length > 0) {
                     products = products.filter((product) => modelArray.includes(product.model));
                 }
-    
+
                 if (sortBy && sortType) {
                     if (sortType === "asc") {
                         products.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : -1);

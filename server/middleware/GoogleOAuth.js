@@ -1,10 +1,9 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('../schemas/Customer');
+const User = require('../components/customer/schema/Customer');
 const jwt = require('jsonwebtoken');
 const { generateAccessToken, generateRefreshToken } = require('./JWTAction');
-const UserService = require('../components/user/model/UserService'); // Import UserService
-const userService = new UserService();
+const UserService = require('../components/customer/model/CustomerService'); // Import UserService
 // Khởi tạo Passport với Google Strategy
 // passport.use(new GoogleStrategy({
 //     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -85,7 +84,7 @@ function handleGoogleCallback(req, res, next) {
         }
         console.log('Google Profile:', googleProfile);
         // Sử dụng UserService để xử lý login bằng Google
-        const result = await userService.loginWithGoogle(googleProfile);
+        const result = await UserService.loginWithGoogle(googleProfile);
 
         if (result.status === "error") {
             return res.status(500).json({ message: result.message });

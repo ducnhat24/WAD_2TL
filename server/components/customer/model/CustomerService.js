@@ -1,7 +1,7 @@
 
 const { generateAccessToken, generateRefreshToken } = require('../../../middleware/JWTAction.js');
 
-const User = require('../../../schemas/Customer.js');
+const Customer = require('../schema/Customer.js');
 const bcrypt = require('bcrypt');
 
 async function hashPassword(password) {
@@ -15,21 +15,21 @@ async function hashPassword(password) {
     }
 }
 
-class UserService {
+class CustomerService {
 
     async addUser(user) {
         try {
             const { username, email, password } = user;
-            const existingUser = await User.findOne({ $or: [{ email: email }, { name: username }] });
+            const existingUser = await Customer.findOne({ $or: [{ email: email }, { name: username }] });
             if (existingUser) {
                 return {
                     status: "error",
-                    message: "User already exists"
+                    message: "Customer already exists"
                 };
             }
             const passwordHash = await hashPassword(password);
 
-            const newUser = new User({
+            const newUser = new Customer({
                 name: username,
                 email: email,
                 password: passwordHash,
@@ -37,7 +37,7 @@ class UserService {
             await newUser.save();
             return {
                 status: "success",
-                message: "User added successfully"
+                message: "Customer added successfully"
             };
         }
         catch (error) {
@@ -50,7 +50,7 @@ class UserService {
 
     async login({ useraccount, password }) {
         try {
-            const existingUser = await User.findOne({ $or: [{ email: useraccount }, { name: useraccount }] });
+            const existingUser = await Customer.findOne({ $or: [{ email: useraccount }, { name: useraccount }] });
             if (!existingUser) {
                 return {
                     status: "error",
@@ -68,7 +68,7 @@ class UserService {
                 id: existingUser._id,
             };
             const refreshToken = generateRefreshToken(payload);
-            await User.updateOne({ _id: existingUser._id }, { refreshToken: refreshToken });
+            await Customer.updateOne({ _id: existingUser._id }, { refreshToken: refreshToken });
             return {
                 status: "success",
                 accessToken: generateAccessToken(payload),
@@ -95,12 +95,12 @@ class UserService {
             }
             console.log("before find user");
             // Kiểm tra xem user đã tồn tại chưa bằng email
-            let user = await User.findOne({ email: email });
+            let user = await Customer.findOne({ email: email });
             console.log("after find user");
             console.log(user);
             if (!user) {
                 // Nếu chưa tồn tại, tạo mới user
-                user = new User({
+                user = new Customer({
                     googleId: id,
                     email: email,
                     name: name,
@@ -144,7 +144,7 @@ class UserService {
 
     async logout(refreshToken) {
         try {
-            const user = await User.findOne({ refreshToken: refreshToken });
+            const user = await Customer.findOne({ refreshToken: refreshToken });
             if (!user) {
                 return {
                     status: "error",
@@ -164,4 +164,4 @@ class UserService {
     }
 }
 
-module.exports = UserService;
+module.exports = new CustomerService;

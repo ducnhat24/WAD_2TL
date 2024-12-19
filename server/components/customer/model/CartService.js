@@ -1,13 +1,13 @@
-const User = require("../../../schemas/Customer"); // Import model User
-const Product = require("../../../schemas/Product"); // Import model Product
+const Customer = require("../schema/Customer"); // Import model Customer
+const Product = require("../../product/schema/Product"); // Import model Product
 
 class CartService {
     async addProductToCart({ userID, productID, quantity }) {
         try {
             // Tìm người dùng
-            const user = await User.findOne({ _id: userID });
+            const user = await Customer.findOne({ _id: userID });
             if (!user) {
-                return { status: 'error', message: "User not found" };
+                return { status: 'error', message: "Customer not found" };
             }
 
             // const newCartList = user.cart;
@@ -39,9 +39,9 @@ class CartService {
             // Tìm người dùng
             console.log(userID);
             console.log(productID);
-            const user = await User.findOne({ _id: userID });
+            const user = await Customer.findOne({ _id: userID });
             if (!user) {
-                return { status: 'error', message: "User not found" };
+                return { status: 'error', message: "Customer not found" };
             }
 
             // Lọc bỏ sản phẩm có `productID` ra khỏi giỏ hàng
@@ -68,9 +68,9 @@ class CartService {
             console.log(productID);
             console.log(quantity);
             // Tìm người dùng
-            const user = await User.findOne({ _id: userID });
+            const user = await Customer.findOne({ _id: userID });
             if (!user) {
-                return { status: 'error', message: "User not found" };
+                return { status: 'error', message: "Customer not found" };
             }
 
             const newCart = user.cart.map((item) => {
@@ -95,9 +95,9 @@ class CartService {
     async getCart(userID) {
         try {
             // Tìm người dùng
-            const user = await User.findOne({ _id: userID });
+            const user = await Customer.findOne({ _id: userID });
             if (!user) {
-                return { status: 'error', message: "User not found" };
+                return { status: 'error', message: "Customer not found" };
             }
             // Trả về danh sách sản phẩm ứng với giỏ hàng của người dùng
             // console.log(user);
@@ -124,4 +124,4 @@ class CartService {
     }
 }
 
-module.exports = CartService;
+module.exports = new CartService;

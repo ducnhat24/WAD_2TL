@@ -1,9 +1,7 @@
-const userRoute = require("./user");
-const productRoute = require("./product");
-const cartRoute = require("./cart");
+const customerRoute = require("../components/customer/route/customer");
+const productRoute = require("../components/product/route/product");
 const { verifyToken } = require("../middleware/JWTAction");
 const { authenticateGoogle, handleGoogleCallback } = require('../middleware/GoogleOAuth');
-
 
 function route(app) {
   app.get('/auth/google', authenticateGoogle);
@@ -11,9 +9,8 @@ function route(app) {
   app.get("/", (req, res) => {
     res.send("Hello from Express!");
   });
-  app.use("/user", userRoute);
+  app.use("/customer", customerRoute);
   app.use("/product", productRoute);
-  app.use("/cart", cartRoute);
 
   // Secret route
   app.get("/protectiveroute", verifyToken, (req, res) => {

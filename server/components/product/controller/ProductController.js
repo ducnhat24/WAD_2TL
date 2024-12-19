@@ -4,18 +4,9 @@ const productService = new ProductService();
 class ProductController {
 
     async getProduct(req, res) {
-        // const { keysearch, brands, models, price, sort } = req.query;  // Lấy các tham số từ query
-
-        // Fetch sản phẩm từ productService
-        // const value = await productService.getAllProducts();
-        // const brands = await productService.getAllBrands();
-        // const models = await productService.getAllModels();
-        console.log("Access")
         try {
             const value = await productService.getAllProducts();
             res.json(value);
-            // const brands = await productService.getAllBrands();
-            // const models = await productService.getAllModels();
         }
         catch (error) {
             console.error(error);
@@ -28,12 +19,9 @@ class ProductController {
 
     async getProductDetails(req, res) {
         const productId = req.params.id;
-
         try {
             const product = await productService.getProductById(productId);
             res.json(product);
-            //     const sameProducts = await productService.getSameProduct(product);
-            //     res.render('product_details', { isAuthenticated: req.isAuthenticated, product: mongooseToObject(product), sameProducts: multipleMongooseToObject(sameProducts) });
         } catch (error) {
             return {
                 status: 'error',
@@ -42,52 +30,51 @@ class ProductController {
         }
     }
 
-    async getAllBrands(req, res) {
-        console.log("Access")
-        try {
-            const value = await productService.getAllBrands();
-            res.json(value);
-        }
-        catch (error) {
-            return {
-                status: 'error',
-                message: error.message,
-            }
-        }
-    }
+    // async getAllBrands(req, res) {
+    //     try {
+    //         const value = await productService.getAllBrands();
+    //         res.json(value);
+    //     }
+    //     catch (error) {
+    //         return {
+    //             status: 'error',
+    //             message: error.message,
+    //         }
+    //     }
+    // }
 
-    async getAllModels(req, res) {
-        try {
-            const value = await productService.getAllModels();
-            res.json(value);
-        }
-        catch (error) {
-            return {
-                status: 'error',
-                message: error.message,
-            }
-        }
-    }
+    // async getAllModels(req, res) {
+    //     try {
+    //         const value = await productService.getAllModels();
+    //         res.json(value);
+    //     }
+    //     catch (error) {
+    //         return {
+    //             status: 'error',
+    //             message: error.message,
+    //         }
+    //     }
+    // }
 
-        async searchProduct(req, res) {
+    async searchProduct(req, res) {
         console.log("Request body:", req.body);
-        
+
         const { keysearch, page = 1, limit = 5 } = req.body;
-        
+
         if (!keysearch) {
-            return res.status(400).json({ 
-                status: "error", 
-                msg: "Search query is required" 
+            return res.status(400).json({
+                status: "error",
+                msg: "Search query is required"
             });
         }
-        
+
         try {
             // Get total count and products from service
             const { totalProducts, products } = await productService.searchProducts(keysearch, page, limit);
-            
+
             // Calculate total pages
             const totalPages = Math.ceil(totalProducts / limit);
-            
+
             res.json({
                 status: "success",
                 totalPages,
@@ -124,10 +111,7 @@ class ProductController {
 
 
     async filterProduct(req, res) {
-        console.log("Products controller");
         try {
-            console.log(req.body);
-
             const { page, limit, brands, models, sortType, sortBy } = req.body;
             const query = {
                 brands: brands,
@@ -153,16 +137,11 @@ class ProductController {
         }
     }
 
-
-
-
-
     async getSomeProduct(req, res) {
-        console.log("new try");
         try {
             console.log(req.body);
-            const page = parseInt(req.body.page) || 1;
-            const limit = parseInt(req.body.limit) || 1;
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 1;
 
             const startIndex = (page - 1) * limit;
             const endIndex = page * limit;

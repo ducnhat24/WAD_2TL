@@ -14,9 +14,13 @@ app.use(cors({
 }));
 
 const db = require('./config/index');
-db.connect();
-const { seed } = require('./config/seeds/seed');
-seed();
+// const { seed } = require('./config/seeds/seed');
+const seedData = async () => {
+    await db.connect();
+    // await seed();
+}
+// db.connect();
+seedData();
 // Cấu hình Handlebars với extension mặc định
 app.use(cookieParser());
 
