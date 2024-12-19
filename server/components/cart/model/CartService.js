@@ -1,4 +1,4 @@
-const User = require("../../../schemas/User"); // Import model User
+const User = require("../../../schemas/Customer"); // Import model User
 const Product = require("../../../schemas/Product"); // Import model Product
 
 class CartService {

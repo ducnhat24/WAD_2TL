@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const dotenv = require('dotenv');
-const User = require('../schemas/User');
+const User = require('../schemas/Customer');
 dotenv.config();
 
 function generateAccessToken(payload) {

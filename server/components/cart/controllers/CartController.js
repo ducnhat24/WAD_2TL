@@ -3,18 +3,18 @@
 const CartService = require('../model/CartService.js');
 const cartService = new CartService();
 const jwt = require('jsonwebtoken');
-const User = require("../../../schemas/User.js"); // Import model User
+const User = require("../../../schemas/Customer.js"); // Import model User
 // const { multipleMongooseToObject, mongooseToObject } = require('../utils/mongoose');
 class CartController {
     async addProductToCart(req, res) {
         try {
             const { productID, quantity } = req.body;
             const accessToken = req.cookies.accessToken;
-            
+
             if (!accessToken) {
-                return res.json({status: "warning", msg: "Please login first!"});
+                return res.json({ status: "warning", msg: "Please login first!" });
             }
-            
+
             const token = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET)
             const result = await cartService.addProductToCart({ userID: token.id, productID, quantity });
             if (result.status === 'success') {

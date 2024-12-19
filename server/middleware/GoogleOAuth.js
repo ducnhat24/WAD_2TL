@@ -1,6 +1,6 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('../schemas/User');
+const User = require('../schemas/Customer');
 const jwt = require('jsonwebtoken');
 const { generateAccessToken, generateRefreshToken } = require('./JWTAction');
 const UserService = require('../components/user/model/UserService'); // Import UserService
@@ -51,7 +51,7 @@ passport.use(new GoogleStrategy({
                 password: null, // Không có password cho OAuth
             });
         }
-        console.log('The code before cannot reach'); 
+        console.log('The code before cannot reach');
         done(null, user);
     } catch (err) {
         console.error('Error in GoogleStrategy:', err);

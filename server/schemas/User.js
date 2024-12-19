@@ -1,51 +1,50 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  name: {
-    type: String,
-    required: false,
-  },
-  password: {
-    type: String,
-    required: false, //để false vì khi đăng nhập bằng google sẽ không cần password
-  },
-  createdAt: {
-    type: Date,
-    default: new Date(),
-  },
-  updatedAt: {
-    type: Date,
-    default: new Date(),
-  },
-  refreshToken: {
-    type: String,
-    default: null,
-  },
-  cart: [
-    {
-      productId: {
-        type: mongoose.Schema.Types.ObjectId, // Tham chiếu đến `Product`
-        ref: "Product", // Model tham chiếu
-      },
-      quantity: {
-        type: Number,
-        default: 0, // Số lượng mặc định
-      },
+const UserSchema = new Schema({
+    userAvatar: {
+        type: String,
+        default: '',
+        required: false,
     },
-  ],
-  googleId: {
-    type: String,
-    required: false, // Chỉ cần cho OAuth
-    unique: true, // Đảm bảo mỗi Google ID là duy nhất
-    sparse: true, // Để không bắt buộc trường này khi user đăng ký bằng cách khác
-  },
+
+    userName: {
+        type: String,
+        required: true
+    },
+
+    userPhone: {
+        type: String,
+        required: true
+    },
+
+    userDateOfBirth: {
+        type: String,
+    },
+
+    userEmail: {
+        type: String,
+    },
+
+    userAddress: {
+        type: String,
+    },
+
+    userPassword: {
+        type: String,
+        required: true
+    },
+
+    userRole: {
+        type: String,
+        required: true
+    },
+
+    userCreatedDateTime: {
+        type: Date,
+        default: new Date()
+    }
 });
 
-const User = mongoose.model("User", userSchema);
-
+const User = mongoose.model('User', UserSchema);
 module.exports = User;

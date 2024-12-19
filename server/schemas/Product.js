@@ -1,69 +1,64 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-    name: {
+    productName: {
         type: String,
         required: true,
     },
-    price: {
+    productPrice: {
         type: Number, // Using Number instead of BigInt for compatibility
         required: true,
     },
-    description: {
+    productDescription: {
         type: String,
         required: false,
     },
-    brand: {
+    productBrand: {
         type: String,
         required: true,
     },
-    model: {
+    productDescription: {
         type: String,
         required: true,
     },
-    year: {
+    productYear: {
         type: Number,
         required: true,
     },
-    power: {
+    productMainImage: {
         type: String,
         required: true,
     },
-    torque: {
-        type: String,
-        required: true,
-    },
-    acceleration: {
-        type: Number,
-        required: true,
-    },
-    maxSpeed: {
-        type: Number,
-        required: true,
-    },
-    combinedConsumption: {
-        type: Number,
-        required: false,
-    },
-    CO2Emissions: {
-        type: Number,
-        required: false,
-    },
-    image: {
-        type: String,
-        required: true,
-    },
-    updateDate: {
+    productUpdatedDateTime: {
         type: Date,
-        default: Date.now,
+        default: new Date(),
     },
-
-    createDate: {
-        type: Date,
-        default: Date.now,
+    productRelatedImages: {
+        type: Array,
+        required: false,
+    },
+    productQuantity: {
+        type: Number,
+        required: true,
+    },
+    productMadeIn: {
+        type: String,
+        required: false,
+    },
+    productDetailInformation: {
+        productMaterial: {
+            type: String,
+            required: false,
+        },
+        productSize: {
+            type: String,
+            required: false,
+        },
+    },
+    productStatus: {
+        type: String,
+        required: true,
     }
-}, {
-    timestamps: true, // Automatically handles createdAt and updatedAt
 });
 
 const Product = mongoose.model('Product', productSchema);

@@ -1,7 +1,7 @@
 
 const { generateAccessToken, generateRefreshToken } = require('../../../middleware/JWTAction.js');
 
-const User = require('../../../schemas/User.js');
+const User = require('../../../schemas/Customer.js');
 const bcrypt = require('bcrypt');
 
 async function hashPassword(password) {
