@@ -16,8 +16,15 @@
             </div>
             <div class="method__form__input">
               <i class="fa-solid fa-envelope"></i>
-              <input type="text" id="signup__email" placeholder="Email" />
+              <input
+                type="text"
+                id="signup__email"
+                placeholder="Email"
+                oninput="javascript:validateEmail()"
+              />
             </div>
+            <span id="email-error">Email must be in a valid format, e.g.,
+              example@domain.com</span>
             <div class="method__form__input">
               <i class="fa-solid fa-lock"></i>
               <input
@@ -28,11 +35,8 @@
               />
 
             </div>
-            <span
-              id="password-error"
-              style="color: red; font-size: 0.8em; display: none;"
-            >Password must be at least 8 characters, include uppercase,
-              lowercase, number, and special character.</span>
+            <span id="password-error">Password must be at least 8 characters,
+              include uppercase, lowercase, number, and special character.</span>
             <div class="method__form__button">
               <button onclick="javascript:handleSubmitSignup()">Sign up</button>
             </div>

@@ -146,8 +146,17 @@ function validatePassword() {
   const errorSpan = document.getElementById("password-error");
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
   if (!passwordRegex.test(password)) {
+    errorSpan.style.display = "block";
+  } else {
+    errorSpan.style.display = "none";
+  }
+}
+function validateEmail() {
+  const email = document.getElementById("signup__email").value;
+  const errorSpan = document.getElementById("email-error");
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
     errorSpan.style.display = "block";
   } else {
     errorSpan.style.display = "none";
@@ -168,7 +177,7 @@ function handleSubmitSignup() {
 
   // Send data to server
   fetch(url + "/user/signup", {
-    credentials: 'include',
+    credentials: "include",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -214,7 +223,7 @@ function handleSubmitLogin() {
 
   // Send data to server
   fetch(url + "/user/login", {
-    credentials: 'include',
+    credentials: "include",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -251,9 +260,9 @@ function handleSubmitLogin() {
 function handleLogout() {
   console.log("Logout form submitted");
   fetch(url + "/user/logout", {
-    credentials: 'include',
+    credentials: "include",
     method: "POST",
-    credentials: 'include',
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -438,21 +447,20 @@ if (storedNotify) {
 }
 function updateCartCount(increment = 1) {
   fetch("http://localhost:3000/cart/", {
-        credentials: 'include',
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
-    })
-        .then(response => response.json())
-        .then(data => {
-            const cartCount = document.getElementById('cart-count');
-            var __cart_count = 0;
-            for (const item of data.cart) {
-                __cart_count += item.quantity;
-            }
-            cartCount.innerText = __cart_count;
-        });
-    
+    credentials: "include",
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const cartCount = document.getElementById("cart-count");
+      var __cart_count = 0;
+      for (const item of data.cart) {
+        __cart_count += item.quantity;
+      }
+      cartCount.innerText = __cart_count;
+    });
 }
 
 updateCartCount(0);
