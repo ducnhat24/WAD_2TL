@@ -1,7 +1,7 @@
 class OrderController {
-    async showUserOrder(req, res) {
-        res.render('order');
-    }
+  async showUserOrder(req, res) {
+    res.render("order");
+  }
 }
 
-module.exports = new OrderController;
+module.exports = new OrderController();
