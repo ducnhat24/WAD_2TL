@@ -3,56 +3,56 @@ let limit = 5;       // Items per page
 let totalPages = 0;  // Total number of pages
 const cache = new Map(); // Cache to store prefetched pages
 
-// function addCart() {
-//     // Add item to cart
-//     const idContainer = document.getElementById("hehe");
-//     let quantity = 1;
-//     const quantityContainer = document.getElementById("each-production-quanity");
-//     if (quantityContainer.value === "") {
-//         notify({type: "warning", msg: "Please fill in a number of product"})
-//         return;
-//     }
-//     if (!isNaN(quantityContainer.value) && Number(quantityContainer.value) > 0) {
-//         quantity = Number(quantityContainer.value);
-//     }
-//     console.log(quantity);
-//     fetch("http://localhost:3000/cart", {
-//         method: 'POST',
-//         credentials: 'include',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({
-//             productID: idContainer.innerText,
-//             quantity: quantity,
-//         })
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             notify({ type: data.status, msg: data.msg });
-//         })
-//         .then(() => {
-//             updateCartCount();
-//         })
-//         .catch(error => console.error('Error adding to cart:', error));
+function addCart() {
+    // Add item to cart
+    const idContainer = document.getElementById("hehe");
+    let quantity = 1;
+    const quantityContainer = document.getElementById("each-production-quanity");
+    if (quantityContainer.value === "") {
+        notify({type: "warning", msg: "Please fill in a number of product"})
+        return;
+    }
+    if (!isNaN(quantityContainer.value) && Number(quantityContainer.value) > 0) {
+        quantity = Number(quantityContainer.value);
+    }
+    fetch("http://localhost:3000/customer/cart", {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            productID: idContainer.innerText,
+            quantity: quantity,
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            notify({ type: data.status, msg: data.msg });
+        })
+        .then(() => {
+            updateCartCount();
+        })
+        .catch(error => console.error('Error adding to cart:', error));
     
-// }
+}
 
-// function updateCartCount(increment = 1) {
-//     fetch("http://localhost:3000/cart/", {
-//         method: 'GET',
-//         headers: { 'Content-Type': 'application/json' },
-//         credentials: 'include'
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             const cartCount = document.getElementById('cart-count');
-//             var __cart_count = 0;
-//             for (const item of data.cart) {
-//                 __cart_count += item.quantity;
-//             }
-//             cartCount.innerText = __cart_count;
-//         });
-    
-// }
+function updateCartCount(increment = 1) {
+    fetch("http://localhost:3000/customer/cart", {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+    })
+        .then(response => response.json())
+        .then(data => {
+            const cartCount = document.getElementById('cart-count');
+            var __cart_count = 0;
+            for (const item of data.cart) {
+                __cart_count += item.quantity;
+            }
+            cartCount.innerText = __cart_count;
+        });
+    console.log(cartCount);
+}
 
 // Prefetch next page data
 function prefetchPage(page) {
@@ -410,4 +410,3 @@ function loadSideBar() {
 // Initial load
 loadSideBar();
 loadProducts();
-// updateCartCount(0);

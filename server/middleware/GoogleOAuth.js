@@ -1,6 +1,6 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('../components/customer/schema/Customer');
+const Customer = require('../components/customer/schema/Customer');
 const jwt = require('jsonwebtoken');
 const { generateAccessToken, generateRefreshToken } = require('./JWTAction');
 const UserService = require('../components/customer/model/CustomerService'); // Import UserService
@@ -14,19 +14,19 @@ passport.use(new GoogleStrategy({
         // console.log('Google Profile:', profile);
         console.log('Google Profile Email:', profile.emails[0].value);
 
-        let user = await User.findOne({ customerEmail: profile.emails[0].value });
+        let user = await Customer.findOne({ customerEmail: profile.emails[0].value });
         console.log('After find user');
         console.log('User:', user);
         if (!user) {
             console.log('Creating new user...');
-            user = await User.create({
+            user = await Customer.create({
                 googleId: profile.id,
                 customerEmail: profile.emails[0].value,
-                name: profile.displayName,
-                password: null, // Không có password cho OAuth
+                customerName: profile.displayName,
+                customerPassword: null, // Không có password cho OAuth
             });
+            console.log('User được tạo thành công');
         }
-        console.log('The code before cannot reach');
         done(null, user);
     } catch (err) {
         console.error('Error in GoogleStrategy:', err);

@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
   console.log("Access token: ", accessToken);
   console.log("Refresh token: ", refreshToken);
   // Fetch authentication status
-  fetch(url + "/user/authentication", {
+  fetch(url + "/customer/authentication", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -454,5 +454,14 @@ function updateCartCount(increment = 1) {
         });
     
 }
+
+function handleGoogleLogin() {
+    // Xử lý logic đăng nhập qua Google
+    console.log("Google login clicked");
+    // Redirect hoặc mở popup tương ứng
+    window.location.href = 'http://localhost:3000/auth/google'; // Điều hướng đến endpoint xử lý Google OAuth
+
+}
+
 
 updateCartCount(0);

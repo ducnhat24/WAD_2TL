@@ -12,21 +12,22 @@ class CartService {
 
             // const newCartList = user.cart;
             // Kiểm tra xem sản phẩm đã tồn tại trong giỏ chưa
-            const cartItem = user.cart.find(
+            const cartItem = user.customerCart.find(
                 (item) => item.productId.toString() === productID
             );
+            console.log(cartItem);
 
             if (cartItem) {
                 // Nếu đã tồn tại, cập nhật số lượng
                 cartItem.quantity += quantity;
             } else {
                 // Nếu chưa tồn tại, thêm sản phẩm mới
-                user.cart.push({ productId: productID, quantity });
+                user.customerCart.push({ productId: productID, quantity });
             }
 
             // Lưu thay đổi
             await user.save();
-            return { status: 'success', message: "Product added to cart", cart: user.cart }
+            return { status: 'success', message: "Product added to cart", cart: user.customerCart }
         } catch (error) {
             return { status: 'error', message: error.message }
         }
@@ -101,8 +102,10 @@ class CartService {
             }
             // Trả về danh sách sản phẩm ứng với giỏ hàng của người dùng
             // console.log(user);
+            if (!user.customerCart) return [];
             const productsInCart = await Promise.all(
-                user.cart.map(async (item) => {
+                user.customerCart.map(async (item) => {
+                    console.log(item);
                     const product = await Product.findOne({ _id: item.productId });
                     return {
                         ...product["_doc"],
