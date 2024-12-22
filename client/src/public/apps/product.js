@@ -294,10 +294,10 @@ function filterProducts() {
         page: currentPage,
         limit: limit,
         brands: selectedBrands, // Array
-        models: selectedModels, // Array
+        origins: selectedModels, // Array
         // price: selectedPrice, // Số hoặc chuỗi nếu backend cần
         sortType: selectedSort.includes('asc') ? 'asc' : 'desc', // Phân tích từ id
-        sortBy: 'price', // Hoặc một trường cụ thể
+        sortBy: 'productPrice', // Hoặc một trường cụ thể
 
     };
 

@@ -202,19 +202,20 @@ class ProductService {
             console.log("Product Service:");
             console.log(query);
             const brandArray = query.brands;
-            const modelArray = query.models;
+            const originArray = query.origins;
             const sortBy = query.sortBy;
             const sortType = query.sortType;
 
             let products = await Product.find();
 
+
             if (products) {
                 if (brandArray.length > 0) {
-                    products = products.filter((product) => brandArray.includes(product.brand));
+                    products = products.filter((product) => brandArray.includes(product.productBrand));
                 }
 
-                if (modelArray.length > 0) {
-                    products = products.filter((product) => modelArray.includes(product.model));
+                if (originArray.length > 0) {
+                    products = products.filter((product) => originArray.includes(product.productMadeIn));
                 }
 
                 if (sortBy && sortType) {
