@@ -146,47 +146,7 @@ function createProductElement(product) {
     return card;
 }
 
-// function handleSearch() {
-//   const query = document.querySelector("#search__bar__product").value;
-//   console.log("Search query: ", query); // Check if query is being captured correctly
 
-//   if (!query) {
-//     notify({
-//       type: "warning",
-//       msg: "Please enter a search query",
-//     });
-//     return;
-//   }
-//   console.log("Search query: ", query);
-
-//   fetch("http://localhost:3000/product/search?keysearch=" + query)
-//     .then((res) => res.json())
-//     .then((data) => {
-//       console.log(data);
-//       if (data.length === 0) {
-//         notify({
-//           type: "warning",
-//           msg: "No results found",
-//         });
-//       }
-//       else {
-//         // Render the search results
-//         renderProducts(data.data);
-//           // handle pagination
-//           document.getElementById('page-info').textContent = `Page 1 of 1`;
-//           document.getElementById('prev-btn').disabled = true;
-//           document.getElementById('next-btn').disabled = true;
-
-//       }
-//     })
-//     .catch((error) => {
-//       notify({
-//         type: "error",
-//         msg: error.message,
-//       });
-//     });
-
-// }
 
 function handleSearch() {
   const query = document.querySelector("#search__bar__product").value;

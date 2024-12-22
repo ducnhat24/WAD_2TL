@@ -112,8 +112,10 @@ class ProductService {
             // Get paginated results
             const products = await Product.find({
                 $or: [
-                    { name: { $regex: keysearch, $options: 'i' } },
-                    { description: { $regex: keysearch, $options: 'i' } }
+                    { productName: { $regex: keysearch, $options: 'i' } },
+                    { productDescription: { $regex: keysearch, $options: 'i' } },
+                    { productBrand: { $regex: keysearch, $options: 'i' } },
+                    { productMaterial: { $regex: keysearch, $options: 'i' } }
                 ]
             })
                 .skip(skip)
@@ -127,24 +129,6 @@ class ProductService {
             throw error;
         }
     }
-
-    // async searchProduct(query) {
-
-    //     try {
-    //         const products = await Product.find({
-    //             $or: [
-    //                 { name: { $regex: query, $options: 'i' } },
-    //                 { description: { $regex: query, $options: 'i' } },
-    //                 { brand: { $regex: query, $options: 'i' } },
-    //                 { model: { $regex: query, $options: 'i' } }
-    //             ]
-    //         });
-    //         return products;
-    //     } catch (error) {
-    //         console.error(error);
-    //         throw new Error("An error occurred while searching for products");
-    //     }
-    // }
 
     async getSameProduct(product) {
         try {

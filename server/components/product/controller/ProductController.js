@@ -91,25 +91,6 @@ class ProductController {
         }
     }
 
-
-    // async searchProduct(req, res) {
-    //     console.log("Request query:", req.query);
-
-    //     const { keysearch } = req.query;
-    //     if (!keysearch) {
-    //         return res.redirect('/product');
-    //     }
-
-    //     try {
-    //         const products = await productService.searchProduct(keysearch);
-    //         res.json(products);
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).send("An error occurred while fetching products");
-    //     }
-    // }
-
-
     async filterProduct(req, res) {
         try {
             const { page, limit, brands, models, sortType, sortBy } = req.body;
