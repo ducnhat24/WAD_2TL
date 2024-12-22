@@ -31,7 +31,7 @@ function decreaseQuantity(quantity) {
 function handleUpdateQuantity(id, quantity) {
     const productId = id;
 
-    fetch("http://localhost:3000/cart", {
+    fetch("http://localhost:3000/customer/cart", {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -53,22 +53,22 @@ function createCartItem(item) {
 
     cartItemDiv.innerHTML = `
             <div class="cart__left" >
-                <img src="data:image/png;base64,${item.image}" class="card-img-top" alt="${item.name}">
+                <img src="data:image/png;base64,${item.productMainImage}" class="card-img-top" alt="${item.productName}">
             </div>
 
             <div class="card__right">
                 <div class="cart__item__title">
                     <div class="cart__product__name">
-                        <span>${item.name}</span>
+                        <span>${item.productName}</span>
                     </div>
                     <div class="cart__product__description">
-                        <span>${item.description}</span>
+                        <span>${item.productDescription}</span>
                     </div>
                 </div>
 
                 <div class="card__item__footer">
                     <div class="card__product__price">
-                        <span>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.price,)}</span>
+                        <span>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.productPrice,)}</span>
                     </div>
 
                     <div class="cart__item__btn">
@@ -122,7 +122,7 @@ function renderDetailUser(user) {
 function renderProductsDetail(productList) {
     let totalPrice = 0;
     productList.forEach((product) => {
-        totalPrice += Number(product.price) * Number(product.quantity);
+        totalPrice += Number(product.productPrice) * Number(product.productQuantity);
     });
     const productDetailContainer = document.querySelector(".cart__products__detail"); // Replace with your container selector
     productDetailContainer.innerHTML = `
@@ -136,7 +136,7 @@ function renderProductsDetail(productList) {
                 </div>
                 <div class="cart__products__detail__item">
                     <span>Total:</span>
-                    <span>${totalPrice}</span>
+                    <span>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(totalPrice)}</span>
                 </div>
             </div>
     `; // Clear existing content
@@ -157,7 +157,7 @@ function renderProductsInCart(productList) {
 // }
 function showCart() {
     // Show cart
-    fetch("http://localhost:3000/cart", {
+    fetch("http://localhost:3000/customer/cart", {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'

@@ -65,9 +65,6 @@ class CartService {
 
     async updateProductInCart({ userID, productID, quantity }) {
         try {
-            console.log(userID);
-            console.log(productID);
-            console.log(quantity);
             // Tìm người dùng
             const user = await Customer.findOne({ _id: userID });
             if (!user) {
@@ -105,7 +102,6 @@ class CartService {
             if (!user.customerCart) return [];
             const productsInCart = await Promise.all(
                 user.customerCart.map(async (item) => {
-                    console.log(item);
                     const product = await Product.findOne({ _id: item.productId });
                     return {
                         ...product["_doc"],
@@ -115,10 +111,10 @@ class CartService {
             );
             const userDisplay = {
                 _id: user._id,
-                username: user.name,
-                useremail: user.email,
+                username: user.customerName,
+                useremail: user.customerEmail,
             }
-
+            console.log(productsInCart.productMainImage);
             return { status: 'success', user: userDisplay, cart: productsInCart };
 
         } catch (error) {

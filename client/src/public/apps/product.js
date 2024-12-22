@@ -51,7 +51,6 @@ function updateCartCount(increment = 1) {
             }
             cartCount.innerText = __cart_count;
         });
-    console.log(cartCount);
 }
 
 // Prefetch next page data

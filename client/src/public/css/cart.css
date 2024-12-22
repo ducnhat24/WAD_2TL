@@ -9,7 +9,7 @@
     height: 100vh;
 }
 
-.cart__left {
+/* .cart__left {
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3);
     padding: 10px;
     width: 180px;
@@ -20,9 +20,27 @@
     justify-content: center;
     align-items: center;
     margin: 0 10px;
+} */
+
+.cart__left {
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    width: 180px;
+    height: 150px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 10px;
+    background-color: #f9f9f9; /* Optional: Thêm màu nền */
 }
 
-
+.cart__left img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: inherit; /* Làm tròn giống container */
+}
 .card__right {
     margin-left: 20px;
     flex: 1;
@@ -75,12 +93,21 @@
     font-weight: 700;
 }
 
-.cart__item__title .cart__product__description span {
+/* .cart__item__title .cart__product__description span {
     font-size: 0.9rem;
     border-radius: 10px;
     font-weight: 700;
     white-space: nowrap;
     overflow: ellipsis;
+} */
+.cart__item__title .cart__product__description span {
+    font-size: 0.9rem;
+    border-radius: 10px;
+    font-weight: 700;
+    overflow: hidden;    /* Ẩn văn bản vượt quá kích thước */
+    text-overflow: ellipsis; /* Thêm dấu ba chấm khi văn bản bị cắt */
+    display: inline-block; /* Đảm bảo span có thể thay đổi kích thước */
+    max-width: 400px; /* Thiết lập chiều rộng tối đa cho span */
 }
 
 .card__item__footer {

@@ -28,23 +28,23 @@ function createCartItem(item) {
 
     cartItemDiv.innerHTML = `
             <div class="cart__left" >
-                <img src="data:image/png;base64,${item.image}" class="card-img-top" alt="${item.name}">
+                <img src="data:image/png;base64,${item.productMainImage}" class="card-img-top" alt="${item.productName}">
             </div>
 
             <div class="card__right">
                 <div class="cart__item__title">
                     <div class="cart__product__name">
-                        <span>${item.name}</span>
+                        <span>${item.productName}</span>
                     </div>
                     <div class="cart__product__description">
-                        <span>${item.description}</span>
+                        <span>${item.productDescription}</span>
                     </div>
                 </div>
 
 
                 <div class="card__item__footer">
                     <div class="card__product__price">
-                        <span>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.price,)}</span>
+                        <span>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.productPrice,)}</span>
                     </div>
 
                     <div class="cart__item__btn">
@@ -95,7 +95,7 @@ function renderOrderSummary(cart) {
 }
 
 function showOrder() {
-    fetch("http://localhost:3000/cart", {
+    fetch("http://localhost:3000/customer/cart", {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'
