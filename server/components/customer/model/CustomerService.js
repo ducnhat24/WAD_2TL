@@ -87,22 +87,18 @@ class CustomerService {
 
     async loginWithGoogle(googleProfile) {
         try {
-            const { id, email, name } = googleProfile;
-            console.log(id, email, name);
-
-            if (!email) {
+            const { id, customerEmail, name } = googleProfile;
+            console.log('Google Profile:', googleProfile);
+            if (!customerEmail) {
                 throw new Error('Email is required');
             }
-            console.log("before find user");
             // Kiểm tra xem user đã tồn tại chưa bằng email
-            let user = await Customer.findOne({ email: email });
-            console.log("after find user");
-            console.log(user);
+            let user = await Customer.findOne({ customerEmail: customerEmail });
             if (!user) {
                 // Nếu chưa tồn tại, tạo mới user
                 user = new Customer({
                     googleId: id,
-                    email: email,
+                    customerEmail: customerEmail,
                     name: name,
                 });
                 await user.save(); // Save the user if new

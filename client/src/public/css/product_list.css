@@ -307,7 +307,7 @@ input[type="radio"] {
 
 input[type="checkbox"]:checked+label,
 input[type="radio"]:checked+label {
-    background-color: var(--navy-color);
+    background-color: var(--navy-color-hover);
     color: white;
 }
 
@@ -500,7 +500,7 @@ input[type="range"]:hover {
 
 /* Checked state */
 .custom-radio:checked + .custom-label {
-    background-color: var(--navy-color);
+    background-color: var(--navy-color-hover);
     color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }

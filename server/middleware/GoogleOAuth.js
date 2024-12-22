@@ -4,48 +4,24 @@ const User = require('../components/customer/schema/Customer');
 const jwt = require('jsonwebtoken');
 const { generateAccessToken, generateRefreshToken } = require('./JWTAction');
 const UserService = require('../components/customer/model/CustomerService'); // Import UserService
-// Khởi tạo Passport với Google Strategy
-// passport.use(new GoogleStrategy({
-//     clientID: process.env.GOOGLE_CLIENT_ID,
-//     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-//     callbackURL: `${process.env.BASE_URL}/auth/google/callback`,
-// }, async (accessToken, refreshToken, profile, done) => {
-//     console.log('Profile:', profile);
-//     console.log('AccessToken:', accessToken);
-//     try {
-//         // Kiểm tra nếu user đã tồn tại
-//         let user = await User.findOne({ googleId: profile.id });
-//         if (!user) {
-//             // Nếu chưa có, tạo mới
-//             user = await User.create({
-//                 googleId: profile.id,
-//                 email: profile.emails[0].value,
-//                 name: profile.displayName,
-//             });
-//         }
-//         done(null, user);
-//     } catch (err) {
-//         done(err, null);
-//     }
-// }));
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: `${process.env.BASE_URL}/auth/google/callback`,
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        console.log('Google Profile:', profile);
-        console.log('Google Profile ID:', profile.id);
+        // console.log('Google Profile:', profile);
         console.log('Google Profile Email:', profile.emails[0].value);
-        console.log('Before find user');
-        let user = await User.findOne({ email: profile.emails[0].value });
+
+        let user = await User.findOne({ customerEmail: profile.emails[0].value });
         console.log('After find user');
         console.log('User:', user);
         if (!user) {
             console.log('Creating new user...');
             user = await User.create({
                 googleId: profile.id,
-                email: profile.emails[0].value,
+                customerEmail: profile.emails[0].value,
                 name: profile.displayName,
                 password: null, // Không có password cho OAuth
             });
@@ -82,7 +58,6 @@ function handleGoogleCallback(req, res, next) {
         if (err || !googleProfile) {
             return res.status(401).json({ message: 'Google authentication failed' });
         }
-        console.log('Google Profile:', googleProfile);
         // Sử dụng UserService để xử lý login bằng Google
         const result = await UserService.loginWithGoogle(googleProfile);
 
