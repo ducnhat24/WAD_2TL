@@ -20,7 +20,8 @@ class CustomerService {
     async addUser(user) {
         try {
             const { username, email, password } = user;
-            const existingUser = await Customer.findOne({ $or: [{ email: email }, { name: username }] });
+            console.log('User:', user);
+            const existingUser = await Customer.findOne({ $or: [{ customerEmail: email }, { customerName: username }] });
             if (existingUser) {
                 return {
                     status: "error",
@@ -30,9 +31,9 @@ class CustomerService {
             const passwordHash = await hashPassword(password);
 
             const newUser = new Customer({
-                name: username,
-                email: email,
-                password: passwordHash,
+                customerName: username,
+                customerEmail: email,
+                customerPassword: passwordHash,
             });
             await newUser.save();
             return {
@@ -50,14 +51,14 @@ class CustomerService {
 
     async login({ useraccount, password }) {
         try {
-            const existingUser = await Customer.findOne({ $or: [{ email: useraccount }, { name: useraccount }] });
+            const existingUser = await Customer.findOne({ $or: [{ customerEmail: useraccount }, { customerName: useraccount }] });
             if (!existingUser) {
                 return {
                     status: "error",
                     msg: "Invalid credentials"
                 };
             }
-            const checkPassword = await bcrypt.compare(password, existingUser.password);
+            const checkPassword = await bcrypt.compare(password, existingUser.customerPassword);
             if (checkPassword === false) {
                 return {
                     status: "error",

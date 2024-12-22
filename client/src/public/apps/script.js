@@ -41,7 +41,7 @@ function notify(obj) {
                     ${obj.msg}
                 </div>
             </div>
-            <div class="notify__close">
+            <div class="notify__close" onClick="closeNotify()">
                 <i class="fa-solid fa-x"></i>
             </div>
         `;
@@ -51,6 +51,11 @@ function notify(obj) {
       main.removeChild(main.firstElementChild);
     }, 3500);
   }
+}
+
+function closeNotify() {
+  const main = document.getElementById("notify");
+  main.removeChild(main.firstElementChild);
 }
 
 function getCookie(name) {
@@ -167,7 +172,7 @@ function handleSubmitSignup() {
   }
 
   // Send data to server
-  fetch(url + "/user/signup", {
+  fetch(url + "/customer/signup", {
     credentials: 'include',
     method: "POST",
     headers: {
@@ -213,7 +218,7 @@ function handleSubmitLogin() {
   }
 
   // Send data to server
-  fetch(url + "/user/login", {
+  fetch(url + "/customer/login", {
     credentials: 'include',
     method: "POST",
     headers: {
@@ -250,7 +255,7 @@ function handleSubmitLogin() {
 
 function handleLogout() {
   console.log("Logout form submitted");
-  fetch(url + "/user/logout", {
+  fetch(url + "/customer/logout", {
     credentials: 'include',
     method: "POST",
     credentials: 'include',
