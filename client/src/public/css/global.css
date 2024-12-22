@@ -40,5 +40,6 @@ a {
     --item-color: #f2f2f2;
     --text-color: #000;
     --text-in-background-color: #fff;
-
+    --navy-color: #2E5077; /* Mã màu navy */
+    --navy-color-hover: #1d1a2c; /* Mã màu navy khi hover */
 }

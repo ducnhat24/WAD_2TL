@@ -3,56 +3,56 @@ let limit = 5;       // Items per page
 let totalPages = 0;  // Total number of pages
 const cache = new Map(); // Cache to store prefetched pages
 
-function addCart() {
-    // Add item to cart
-    const idContainer = document.getElementById("hehe");
-    let quantity = 1;
-    const quantityContainer = document.getElementById("each-production-quanity");
-    if (quantityContainer.value === "") {
-        notify({type: "warning", msg: "Please fill in a number of product"})
-        return;
-    }
-    if (!isNaN(quantityContainer.value) && Number(quantityContainer.value) > 0) {
-        quantity = Number(quantityContainer.value);
-    }
-    console.log(quantity);
-    fetch("http://localhost:3000/cart", {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            productID: idContainer.innerText,
-            quantity: quantity,
-        })
-    })
-        .then(response => response.json())
-        .then(data => {
-            notify({ type: data.status, msg: data.msg });
-        })
-        .then(() => {
-            updateCartCount();
-        })
-        .catch(error => console.error('Error adding to cart:', error));
+// function addCart() {
+//     // Add item to cart
+//     const idContainer = document.getElementById("hehe");
+//     let quantity = 1;
+//     const quantityContainer = document.getElementById("each-production-quanity");
+//     if (quantityContainer.value === "") {
+//         notify({type: "warning", msg: "Please fill in a number of product"})
+//         return;
+//     }
+//     if (!isNaN(quantityContainer.value) && Number(quantityContainer.value) > 0) {
+//         quantity = Number(quantityContainer.value);
+//     }
+//     console.log(quantity);
+//     fetch("http://localhost:3000/cart", {
+//         method: 'POST',
+//         credentials: 'include',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({
+//             productID: idContainer.innerText,
+//             quantity: quantity,
+//         })
+//     })
+//         .then(response => response.json())
+//         .then(data => {
+//             notify({ type: data.status, msg: data.msg });
+//         })
+//         .then(() => {
+//             updateCartCount();
+//         })
+//         .catch(error => console.error('Error adding to cart:', error));
     
-}
+// }
 
-function updateCartCount(increment = 1) {
-    fetch("http://localhost:3000/cart/", {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
-    })
-        .then(response => response.json())
-        .then(data => {
-            const cartCount = document.getElementById('cart-count');
-            var __cart_count = 0;
-            for (const item of data.cart) {
-                __cart_count += item.quantity;
-            }
-            cartCount.innerText = __cart_count;
-        });
+// function updateCartCount(increment = 1) {
+//     fetch("http://localhost:3000/cart/", {
+//         method: 'GET',
+//         headers: { 'Content-Type': 'application/json' },
+//         credentials: 'include'
+//     })
+//         .then(response => response.json())
+//         .then(data => {
+//             const cartCount = document.getElementById('cart-count');
+//             var __cart_count = 0;
+//             for (const item of data.cart) {
+//                 __cart_count += item.quantity;
+//             }
+//             cartCount.innerText = __cart_count;
+//         });
     
-}
+// }
 
 // // Prefetch next page data
 // function prefetchPage(page) {
@@ -72,30 +72,31 @@ function updateCartCount(increment = 1) {
 // }
 
 // Load products for the current page
-function loadProducts() {
-    if (cache.has(currentPage)) {
-        renderProducts(cache.get(currentPage));
-        return;
-    }
-    showSpinner(); // Hiển thị spinner
-    fetch(`http://localhost:3000/product/`, {
-        credentials: 'include',
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ page: currentPage, limit })
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            hideSpinner(); // Ẩn spinner
-            const { totalPages: total, item } = data;
-            totalPages = total; // Update total pages
-            cache.set(currentPage, item); // Cache the current page
-            renderProducts(item); // Render products
-            prefetchPage(currentPage + 1); // Prefetch the next page
-        })
-        .catch(error => console.error('Error loading products:', error));
-}
+// function loadProducts() {
+//     if (cache.has(currentPage)) {
+//         renderProducts(cache.get(currentPage));
+//         return;
+//     }
+//     showSpinner(); // Hiển thị spinner
+//     fetch(`http://localhost:3000/product/`, {
+//         credentials: 'include',
+//         method: 'GET',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ page: currentPage, limit })
+//     })
+//         .then(response => response.json())
+//         .then(data => {
+//             console.log("Data: ");
+//             console.log(data);
+//             hideSpinner(); // Ẩn spinner
+//             const { totalPages: total, item } = data;
+//             totalPages = total; // Update total pages
+//             cache.set(currentPage, item); // Cache the current page
+//             renderProducts(item); // Render products
+//             prefetchPage(currentPage + 1); // Prefetch the next page
+//         })
+//         .catch(error => console.error('Error loading products:', error));
+// }
 
 
 // Render products on the page
@@ -122,23 +123,23 @@ function createProductElement(product) {
     card.innerHTML = `
         <div class="card_img">
             <a href="/product/${product._id}">
-                <img src="data:image/png;base64,${product.image}" alt="${product.name}" class="card-img-top">
+                <img src="data:image/png;base64,${product.productMainImage}" alt="${product.productName}" class="card-img-top">
             </a>
         </div>
         <div class="card_content">
             <div class="card_price">
                 <div class="card_price_fake">
-                    <div class="card_price_value">${product.price}</div>
+                    <div class="card_price_value">${product.productPrice}</div>
                 </div>
             </div>
             <div class="card_detail">
                 <div class="card_title">
                     <a href="/product/${product._id}">
-                        <h5 class="card-title">${product.name}</h5>
+                        <h5 class="card-title">${product.productName}</h5>
                     </a>
                 </div>
                 <div class="card_description">
-                    <p>${product.description}</p>
+                    <p>${product.productDescription}</p>
                 </div>
             </div>
         </div>`;
@@ -433,5 +434,5 @@ function loadSideBar() {
 
 // Initial load
 loadSideBar();
-loadProducts();
-updateCartCount(0);
+// loadProducts();
+// updateCartCount(0);

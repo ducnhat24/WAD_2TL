@@ -3,6 +3,7 @@ const path = require('path');
 const app = express();
 const port = 5000;
 const { engine } = require('express-handlebars');
+require('./helpers/currencyHelper');
 const { route } = require('./routes/index');
 const cookieParser = require('cookie-parser');
 app.use(express.json());

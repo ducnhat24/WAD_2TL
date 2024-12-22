@@ -5,6 +5,8 @@
     box-sizing: border-box;
 }
 
+
+
 body {
     font-family: Arial, sans-serif;
 }
@@ -51,10 +53,11 @@ body {
     padding: 0 10px;
 }
 
-/* Featured Cars Section */
-.featured-cars h2 span {
-    color: #c8c800;
+
+.text-navy {
+    color: var(--navy-color); /* Đổi màu chữ thành navy */
 }
+
 
 .card {
     margin: 10px 10px;
@@ -63,15 +66,32 @@ body {
     height: 350px;
     position: relative;
     border: none;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+
 }
 
+.card:hover {
+    background-color: #fff;
+    color: black;
+    transform: scale(1.05);
+}
+
+.card_img img {
+    position: relative; /* Đảm bảo z-index có hiệu lực */
+    z-index: 20; /* Cao hơn các phần tử khác */
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Điều chỉnh để ảnh vừa khung */
+}
 .card_img {
     position: absolute;
     top: 0;
     width: 100%;
     height: 220px;
-    background: #ffa500;
+    background: var(--navy-color);
     border-radius: 10px;
+    z-index: 0; /* Đặt giá trị cao */
+
 }
 
 .card_img .card_img_fake1 {
@@ -93,7 +113,7 @@ body {
     width: 100%;
     height: 100%;
     border-bottom-left-radius: 10px;
-    background: #ffa500;
+    background: var(--navy-color);
     z-index: 2;
 }
 
@@ -115,7 +135,7 @@ body {
     height: 60px;
     width: 150px;
     border-top-right-radius: 15px;
-    z-index: 0;
+    z-index: 1;
 }
 
 .card_content .card_price .card_price_fake {
@@ -139,7 +159,7 @@ body {
 .card_content .card_price .card_price_fake .card_price_value {
     font-size: 14px;
     font-weight: 700;
-    padding: 5px 10px;
+    padding: 5px 20px;
     background: #fff;
     border-radius: 5px;
 }
@@ -158,20 +178,23 @@ body {
 }
 
 .card_detail .card_title h5 {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
     color: #fff;
-    padding: 5px;
-    white-space: nowrap;
+    /* padding: 5px; */
+    /* white-space: nowrap !important; */
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 220px;
+    height : 30px;
 }
 
+
 .card_detail .card_description p {
-    font-size: 14px;
+    font-size: 12px;
     color: #fff;
-    padding: 5px 10px;
+    padding: 0px 10px;
     text-align: justify;
     text-overflow: ellipsis;
 }
@@ -244,7 +267,7 @@ input[type="radio"] {
 }
 
 .sidebar {
-    margin: 10px 0px;
+    margin: 10px 10px;
     padding: 20px 10px;
     display: flex;
     flex-direction: column;
@@ -254,18 +277,24 @@ input[type="radio"] {
     background-color: #fff;
     width: 300px;
     height: fit-content;
-}
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
 
+}
+.sidebar:hover {
+    background-color: white;
+    color: black;
+    transform: scale(1.05);
+}
 .sidebar label {
     padding: 10px 20px;
-    border: 2px solid orange;
+    border: 2px solid --primary-color;
     border-radius: 5px;
     cursor: pointer;
     background-color: white;
-    color: orange;
+    color: var(--navy-color);
     font-weight: bold;
     margin: 5px;
-    width: 170px;
+    /* width: 170px; */
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -278,18 +307,18 @@ input[type="radio"] {
 
 input[type="checkbox"]:checked+label,
 input[type="radio"]:checked+label {
-    background-color: orange;
+    background-color: var(--navy-color);
     color: white;
 }
 
 label {
     display: inline-block;
     padding: 10px 20px;
-    border: 2px solid orange;
+    border: 2px solid var(--navy-color);
     border-radius: 5px;
     cursor: pointer;
     background-color: white;
-    color: orange;
+    color: var(--navy-color);
     font-weight: bold;
     transition: background-color 0.3s, color 0.3s;
 }
@@ -300,7 +329,7 @@ input[type="range"] {
     /* Loại bỏ giao diện mặc định */
     width: 100%;
     height: 8px;
-    background: orange;
+    background: var(--navy-color);
     border-radius: 5px;
     outline: none;
     transition: background 0.3s;
@@ -312,14 +341,15 @@ input[type="range"]::-webkit-slider-thumb {
     width: 20px;
     height: 20px;
     background: white;
-    border: 2px solid orange;
+    border: 2px solid var(--navy-color);
     border-radius: 50%;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
 }
 
 input[type="range"]:hover {
-    background: #ffcc66;
+    background: var(--navy-color-hover);
+    transform: scale(1.05);
 }
 
 .fas.fa-search {
@@ -335,15 +365,18 @@ input[type="range"]:hover {
 }
 
 .custom_button {
-    background-color: #ffa500;
+    background-color: var(--navy-color);
     color: white;
     border: none;
     padding: 9px;
     border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+
 }
 
 .custom_button:hover {
-    background-color: #ffcc66;
+    background-color: var(--navy-color-hover);
+    transform: scale(1.05);
 }
 
 .fas fa-filter {
@@ -355,15 +388,19 @@ input[type="range"]:hover {
 }
 
 #button_filter {
-    background-color: #ffa500;
+    background-color: var(--navy-color);
     color: white;
     border: none;
     padding: 9px;
     border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+    
+
 }
 
 #button_filter:hover {
-    background-color: #ffcc66;
+    background-color: var(--navy-color-hover);
+    transform: scale(1.05);
 }
 
 @media (max-width: 768px) {
@@ -411,7 +448,7 @@ input[type="range"]:hover {
 
 .spinner-inner {
     border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top: 4px solid #3498db;
+    border-top: 4px solid var(--navy-color);
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -426,3 +463,53 @@ input[type="range"]:hover {
         transform: rotate(360deg);
     }
 }
+
+
+/* Container styles */
+.custom-radio-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Hide the default radio buttons */
+.custom-radio {
+    display: none;
+}
+
+/* Style for custom labels */
+.custom-label {
+    display: inline-block;
+    padding: 10px 0px;
+    border: 2px solid var(--navy-color);
+    border-radius: 5px;
+    background-color: #fff;
+    color: var(--navy-color);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+/* Hover effect */
+.custom-label:hover {
+    background-color: var(--navy-color-hover);
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* Checked state */
+.custom-radio:checked + .custom-label {
+    background-color: var(--navy-color);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure the group fits well in responsive designs */
+.filter-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
