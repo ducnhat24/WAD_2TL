@@ -74,9 +74,9 @@ class ProductService {
         }
     }
 
-    async getAllModels() {
+    async getAllOrigins() {
         try {
-            const models = await Product.find().distinct('model');
+            const models = await Product.find().distinct('productMadeIn');
             if (models) {
                 return {
                     status: "success",

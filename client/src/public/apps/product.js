@@ -421,14 +421,14 @@ function showBrand() {
         .catch(error => console.error('Error loading brands:', error));
 }
 
-function showModel() {
+function showOrigin() {
     const modelFilterArea = document.getElementById('model-filter');
     var models = [];
     const selectedModels = Array.from(
         document.querySelectorAll('#model-filter input[type="checkbox"]:checked')
     ).map(input => input.id.replace('checkbox_', ''));
     
-    fetch('http://localhost:3000/product/models', {
+    fetch('http://localhost:3000/product/origins', {
         credentials: 'include',
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
@@ -438,10 +438,17 @@ function showModel() {
             models = data.data;
             for (const model of models) {
                 const modelElement = document.createElement('div');
-                modelElement.innerHTML = `
-                    <input type="checkbox" id="checkbox_${model}" ${selectedModels.includes(model) ? 'checked' : ''}>
-                    <label class="btn btn-outline-warning" for="checkbox_${model}">${model}</label>
+                 modelElement.innerHTML = `
+                    <div class="custom-checkbox-group">
+                        <input 
+                            type="checkbox" 
+                            id="checkbox_${model}" 
+                            class="custom-checkbox" 
+                            ${selectedModels.includes(model) ? 'checked' : ''}>
+                        <label class="custom-label" for="checkbox_${model}">${model}</label>
+                    </div>
                 `;
+
                 modelFilterArea.appendChild(modelElement);
             }
         })
@@ -450,7 +457,7 @@ function showModel() {
 
 function loadSideBar() {
     showBrand();
-    showModel();
+    showOrigin();
 }
 
 

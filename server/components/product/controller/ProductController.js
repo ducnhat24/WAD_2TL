@@ -43,18 +43,18 @@ class ProductController {
         }
     }
 
-    // async getAllModels(req, res) {
-    //     try {
-    //         const value = await productService.getAllModels();
-    //         res.json(value);
-    //     }
-    //     catch (error) {
-    //         return {
-    //             status: 'error',
-    //             message: error.message,
-    //         }
-    //     }
-    // }
+    async getAllOrigins(req, res) {
+        try {
+            const value = await productService.getAllOrigins();
+            res.json(value);
+        }
+        catch (error) {
+            return {
+                status: 'error',
+                message: error.message,
+            }
+        }
+    }
 
     async searchProduct(req, res) {
         console.log("Request body:", req.body);
