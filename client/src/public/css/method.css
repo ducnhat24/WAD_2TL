@@ -43,7 +43,7 @@
     text-transform: uppercase;
     font-size: 24px;
     font-weight: 700;
-    color: #C5B12D;
+    color: var(--navy-color);
 }
 
 .method__form .method__form__title p {
@@ -89,13 +89,13 @@
     margin: 10px 0;
     border-radius: 10px;
     border: none;
-    background-color: #C5B12D;
+    background-color: var(--navy-color);
     color: #fff;
     box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.6);
 }
 
 .method__form .method__form__button button:hover {
-    background-color: #000000;
+    background-color: var(--navy-color-hover);
 }
 
 .method__form .method__form__signup {
@@ -107,7 +107,7 @@
 
 
 .method__form .method__form__signup a {
-    color: #C5B12D;
+    color: var(--navy-color);
     font-weight: 700;
 }
 

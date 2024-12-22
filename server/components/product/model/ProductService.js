@@ -50,29 +50,29 @@ class ProductService {
         }
     }
 
-    // async getAllBrands() {
-    //     try {
-    //         const brands = await Product.find().distinct('brand');
-    //         if (brands) {
-    //             return {
-    //                 status: "success",
-    //                 msg: "Brands fetched successfully",
-    //                 data: brands
-    //             }
-    //         }
+    async getAllBrands() {
+        try {
+            const brands = await Product.find().distinct('productBrand');
+            if (brands) {
+                return {
+                    status: "success",
+                    msg: "Brands fetched successfully",
+                    data: brands
+                }
+            }
 
-    //         return {
-    //             status: "error",
-    //             msg: "No brand",
-    //         }
-    //     } catch (error) {
-    //         console.error(error);
-    //         return {
-    //             status: "error",
-    //             msg: error.message,
-    //         }
-    //     }
-    // }
+            return {
+                status: "error",
+                msg: "No brand",
+            }
+        } catch (error) {
+            console.error(error);
+            return {
+                status: "error",
+                msg: error.message,
+            }
+        }
+    }
 
     async getAllModels() {
         try {

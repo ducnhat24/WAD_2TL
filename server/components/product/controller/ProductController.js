@@ -30,18 +30,18 @@ class ProductController {
         }
     }
 
-    // async getAllBrands(req, res) {
-    //     try {
-    //         const value = await productService.getAllBrands();
-    //         res.json(value);
-    //     }
-    //     catch (error) {
-    //         return {
-    //             status: 'error',
-    //             message: error.message,
-    //         }
-    //     }
-    // }
+    async getAllBrands(req, res) {
+        try {
+            const value = await productService.getAllBrands();
+            res.json(value);
+        }
+        catch (error) {
+            return {
+                status: 'error',
+                message: error.message,
+            }
+        }
+    }
 
     // async getAllModels(req, res) {
     //     try {

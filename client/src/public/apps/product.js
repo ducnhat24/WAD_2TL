@@ -389,10 +389,32 @@ function showBrand() {
             brands = data.data;
             for (const brand of brands) {
                 const brandElement = document.createElement('div');
+                // brandElement.innerHTML = `
+                //     <input type="checkbox" id="checkbox_${brand}" ${selectedBrands.includes(brand) ? 'checked' : ''}>
+                //     <label class="btn btn-outline-warning" for="checkbox_${brand}">${brand}</label>
+                // `;
+                // brandElement.innerHTML = `
+                //     <div class="filter-area custom-checkbox-group">
+                //         <input 
+                //             type="checkbox" 
+                //             id="checkbox_${brand}" 
+                //             class="custom-checkbox" 
+                //             ${selectedBrands.includes(brand) ? 'checked' : ''}>
+                //         <label class="custom-label" for="checkbox_${brand}">${brand}</label>
+                //     </div>
+                // `;
                 brandElement.innerHTML = `
-                    <input type="checkbox" id="checkbox_${brand}" ${selectedBrands.includes(brand) ? 'checked' : ''}>
-                    <label class="btn btn-outline-warning" for="checkbox_${brand}">${brand}</label>
+                    <div class="custom-checkbox-group">
+                        <input 
+                            type="checkbox" 
+                            id="checkbox_${brand}" 
+                            class="custom-checkbox" 
+                            ${selectedBrands.includes(brand) ? 'checked' : ''}>
+                        <label class="custom-label" for="checkbox_${brand}">${brand}</label>
+                    </div>
                 `;
+
+
                 brandFilterArea.appendChild(brandElement);
             }
         })

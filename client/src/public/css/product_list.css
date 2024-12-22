@@ -286,15 +286,15 @@ input[type="radio"] {
     transform: scale(1.05);
 }
 .sidebar label {
-    padding: 10px 20px;
     border: 2px solid --primary-color;
+    width: 100px;
     border-radius: 5px;
     cursor: pointer;
     background-color: white;
     color: var(--navy-color);
     font-weight: bold;
     margin: 5px;
-    /* width: 170px; */
+    text-align: center;
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -509,7 +509,27 @@ input[type="range"]:hover {
 .filter-area {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 10px;
+
 }
+
+/* Wrapper cho checkbox group */
+.custom-checkbox-group {
+    display: inline-flex; /* Sắp xếp các checkbox theo hàng ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin: 5px 10px; /* Tạo khoảng cách giữa các checkbox */
+}
+
+/* Checkbox ẩn đi */
+.custom-checkbox {
+    display: none;
+}
+
+
+/* Checkbox được chọn */
+.custom-checkbox:checked + .custom-label {
+    background-color: var(--navy-color-hover);
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
 
