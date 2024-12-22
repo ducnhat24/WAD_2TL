@@ -140,9 +140,9 @@ class ProductController {
     async getSomeProduct(req, res) {
         try {
             console.log(req.body);
-            const page = parseInt(req.query.page) || 1;
-            const limit = parseInt(req.query.limit) || 1;
-
+            const page = parseInt(req.body.page) || 1;
+            const limit = parseInt(req.body.limit) || 1;
+            console.log('Page:', page, 'Limit:', limit);
             const startIndex = (page - 1) * limit;
             const endIndex = page * limit;
             console.log('Start Index:', startIndex, 'End Index:', endIndex);

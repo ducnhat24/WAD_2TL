@@ -54,49 +54,49 @@ const cache = new Map(); // Cache to store prefetched pages
     
 // }
 
-// // Prefetch next page data
-// function prefetchPage(page) {
-//     if (cache.has(page) || page > totalPages || page < 1) return;
+// Prefetch next page data
+function prefetchPage(page) {
+    if (cache.has(page) || page > totalPages || page < 1) return;
 
-//     fetch(`http://localhost:3000/product/`, {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({ page, limit })
+    fetch(`http://localhost:3000/product/limitation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page, limit })
 
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             cache.set(page, data.item);
-//         })
-//         .catch(error => console.error(`Error prefetching page ${page}:`, error));
-// }
+    })
+        .then(response => response.json())
+        .then(data => {
+            cache.set(page, data.item);
+        })
+        .catch(error => console.error(`Error prefetching page ${page}:`, error));
+}
 
 // Load products for the current page
-// function loadProducts() {
-//     if (cache.has(currentPage)) {
-//         renderProducts(cache.get(currentPage));
-//         return;
-//     }
-//     showSpinner(); // Hiển thị spinner
-//     fetch(`http://localhost:3000/product/`, {
-//         credentials: 'include',
-//         method: 'GET',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({ page: currentPage, limit })
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             console.log("Data: ");
-//             console.log(data);
-//             hideSpinner(); // Ẩn spinner
-//             const { totalPages: total, item } = data;
-//             totalPages = total; // Update total pages
-//             cache.set(currentPage, item); // Cache the current page
-//             renderProducts(item); // Render products
-//             prefetchPage(currentPage + 1); // Prefetch the next page
-//         })
-//         .catch(error => console.error('Error loading products:', error));
-// }
+function loadProducts() {
+    if (cache.has(currentPage)) {
+        renderProducts(cache.get(currentPage));
+        return;
+    }
+    showSpinner(); // Hiển thị spinner
+    fetch(`http://localhost:3000/product/limitation`, {
+        credentials: 'include',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: currentPage, limit: limit })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Data: ");
+            console.log(data);
+            hideSpinner(); // Ẩn spinner
+            const { totalPages: total, item } = data;
+            totalPages = total; // Update total pages
+            cache.set(currentPage, item); // Cache the current page
+            renderProducts(item); // Render products
+            prefetchPage(currentPage + 1); // Prefetch the next page
+        })
+        .catch(error => console.error('Error loading products:', error));
+}
 
 
 // Render products on the page
@@ -389,20 +389,6 @@ function showBrand() {
             brands = data.data;
             for (const brand of brands) {
                 const brandElement = document.createElement('div');
-                // brandElement.innerHTML = `
-                //     <input type="checkbox" id="checkbox_${brand}" ${selectedBrands.includes(brand) ? 'checked' : ''}>
-                //     <label class="btn btn-outline-warning" for="checkbox_${brand}">${brand}</label>
-                // `;
-                // brandElement.innerHTML = `
-                //     <div class="filter-area custom-checkbox-group">
-                //         <input 
-                //             type="checkbox" 
-                //             id="checkbox_${brand}" 
-                //             class="custom-checkbox" 
-                //             ${selectedBrands.includes(brand) ? 'checked' : ''}>
-                //         <label class="custom-label" for="checkbox_${brand}">${brand}</label>
-                //     </div>
-                // `;
                 brandElement.innerHTML = `
                     <div class="custom-checkbox-group">
                         <input 
@@ -463,5 +449,5 @@ function loadSideBar() {
 
 // Initial load
 loadSideBar();
-// loadProducts();
+loadProducts();
 // updateCartCount(0);
