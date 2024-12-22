@@ -22,41 +22,49 @@
                 <h2>SPECIFICATIONS</h2>
             </div>
             <div class="col-12 col-md-6">
-                <img src="data:image/png;base64,{{product.image}}" alt="{{product.name}} Exterior"
-                    class="img-fluid exterior-car__image w-100 w-sm-90 w-md-80 w-lg-70 w-xl-60 w-xxl-50">
+                <div class="card custom-card">
+                    <img 
+                        src="data:image/png;base64,{{product.productMainImage}}" 
+                        alt="{{product.productName}} Exterior" 
+                        class="card-img-top custom-img-size">
+                </div>
             </div>
+
+
             <div id="hehe">{{product._id}}</div>
             <div class="col-12 col-md-6 product-detail">
                 <table class="table specifications-table">
                     <tr>
-                        <td class="detail">Power</td>
-                        <td class="info">{{product.power}}</td>
+                        <td class="detail">Product brand</td>
+                        <td class="info">{{product.productBrand}}</td>
                     </tr>
                     <tr>
-                        <td class="detail">Maximum torque</td>
-                        <td class="info">{{product.torque}}</td>
+                        <td class="detail">Name</td>
+                        <td class="info">{{product.productName}}</td>
                     </tr>
                     <tr>
-                        <td class="detail">Acceleration (0 - 100 km/h)</td>
-                        <td class="info">{{product.acceleration}}s</td>
+                        <td class="detail">Product material</td>
+                        <td class="info">{{product.productDetailInformation.productMaterial}}</td>
                     </tr>
                     <tr>
-                        <td class="detail">Maximum speed</td>
-                        <td class="info">{{product.topSpeed}} km/h</td>
+                        <td class="detail">Product size</td>
+                        <td class="info">{{product.productDetailInformation.productSize}}</td>
                     </tr>
                     <tr>
-                        <td class="detail">Combined fuel consumption</td>
-                        <td class="info">{{product.combinedConsumption}}</td>
-                    </tr>
-                    <tr>
-                        <td class="detail">CO2 emissions</td>
-                        <td class="info">{{product.CO2Emissions}}</td>
+                        <td class="detail">Product year</td>
+                        <td class="info">{{product.productYear}}</td>
                     </tr>
                     <tr>
                         <td class="detail">Standard price</td>
-                        <td class="info">{{formatPrice product.price}} VND</td>
+                        <td class="info">{{formatPrice product.productPrice}} VND</td>
                     </tr>
                 </table>
+
+                <div>
+                    <div class="product-detail__description">
+                        {{product.productDescription}}
+                    </div>  
+                </div>
                 <input type="number" id="each-production-quanity">
                 <div>
                     <button onclick="javascript:addCart()" class="custom_button">Add Cart</button>
@@ -74,7 +82,7 @@
     </div>
     <div class="cars-list">
 
-        {{#each sameProducts}}
+        {{!-- {{#each sameProducts}}
 
         <div class="card">
             <div class="card_img">
@@ -106,6 +114,6 @@
             </div>
         </div>
 
-        {{/each}}
+        {{/each}} --}}
     </div>
 </div>

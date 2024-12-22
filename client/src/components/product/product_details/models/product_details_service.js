@@ -13,6 +13,7 @@ class ProductDetailsService {
             }
 
             const data = await response.json();
+            console.log(data.data[0].productName);
             return data;
         } catch (err) {
             console.log(err.message);

@@ -118,6 +118,11 @@
   border-radius: 0.25rem;
 }
 
+.header__logo__wrapper{
+  scale: 0.6;
+
+}
+
 /* Discount */
 .img__sale {
   height: 100% !important;

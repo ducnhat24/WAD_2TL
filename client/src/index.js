@@ -16,7 +16,13 @@ app.engine("handlebars", engine({
     eqString: (a, b) => String(a) === String(b),
     includes: (item, array) => Array.isArray(array) && array.includes(item),
     formatPrice: (price) => {
-      return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      // Kiểm tra giá trị đầu vào là số hợp lệ
+      if (typeof price === "number" && !isNaN(price)) {
+        return price.toLocaleString("vi-VN"); // Định dạng số theo chuẩn Việt Nam
+      } else if (typeof price === "string" && !isNaN(Number(price))) {
+        return Number(price).toLocaleString("vi-VN");
+      }
+      return "N/A"; // Giá trị không hợp lệ trả về 'N/A'
     },
     formatDate: (input) => {
       const date = new Date(input);
