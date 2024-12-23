@@ -14,7 +14,7 @@ app.use(cors({
 }));
 
 const db = require('./config/index');
-// const { seed } = require('./config/seeds/seed');
+const { seed } = require('./config/seeds/seed');
 const seedData = async () => {
     await db.connect();
     // await seed();

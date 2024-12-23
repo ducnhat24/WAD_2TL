@@ -5,10 +5,22 @@ const brandSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    brandDescription: {
+        type: String,
+        required: false,
+    },
+    brandImage: {
+        type: String,
+        required: false,
+    },
     brandCountry: {
         type: String,
-        required: true,
+        required: false,
     },
+    brandWebsite: {
+        type: String,
+        required: false,
+    }
 });
 
 const Brand = mongoose.model("Brand", brandSchema);

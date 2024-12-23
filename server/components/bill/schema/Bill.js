@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const billSchema = new mongoose.Schema({
     orderID: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Order",
         required: true,
     },

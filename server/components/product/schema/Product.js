@@ -14,7 +14,8 @@ const productSchema = new mongoose.Schema({
         required: false,
     },
     productBrand: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Brand',
         required: true,
     },
     productDescription: {
@@ -58,7 +59,12 @@ const productSchema = new mongoose.Schema({
     productStatus: {
         type: String,
         required: true,
-    }
+    },
+    productCategory: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true,
+    },
 });
 
 const Product = mongoose.model('Product', productSchema);

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
     customerID: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Customer",
         required: true,
     },
@@ -13,12 +13,14 @@ const orderSchema = new mongoose.Schema({
     orderListProduct: [
         {
             productId: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: "Product",
+                required: true,
             },
             quantity: {
                 type: Number,
                 default: 0,
+                required: true,
             },
             productPrice: {
                 type: Number,
@@ -31,7 +33,8 @@ const orderSchema = new mongoose.Schema({
         required: true,
     },
     orderShippingMethod: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Shipping',
         required: true,
     },
     orderShippingFee: {
@@ -41,6 +44,10 @@ const orderSchema = new mongoose.Schema({
     orderTotalPrice: {
         type: Number,
         required: true,
+    },
+    orderPayement: {
+        type: Number,
+        default: 0,
     },
     orderStatus: {
         type: String,
