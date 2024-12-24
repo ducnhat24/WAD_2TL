@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 app.use(express.json());
 app.use(cors({
     // origin: 'https://wad-ga-06-a8w4.vercel.app',
-    origin: 'http://localhost:5000',
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true // Required for cookies
 }));

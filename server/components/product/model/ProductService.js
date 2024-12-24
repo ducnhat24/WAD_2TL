@@ -1,7 +1,6 @@
 const Product = require("../schema/Product");
 
 class ProductService {
-
     async getAllProducts() {
         try {
             const products = await Product.find();
@@ -42,52 +41,6 @@ class ProductService {
                 msg: "Not found product",
             }
 
-        } catch (error) {
-            return {
-                status: "error",
-                msg: error.message,
-            }
-        }
-    }
-
-    async getAllBrands() {
-        try {
-            const brands = await Product.find().distinct('productBrand');
-            if (brands) {
-                return {
-                    status: "success",
-                    msg: "Brands fetched successfully",
-                    data: brands
-                }
-            }
-
-            return {
-                status: "error",
-                msg: "No brand",
-            }
-        } catch (error) {
-            console.error(error);
-            return {
-                status: "error",
-                msg: error.message,
-            }
-        }
-    }
-
-    async getAllOrigins() {
-        try {
-            const models = await Product.find().distinct('productMadeIn');
-            if (models) {
-                return {
-                    status: "success",
-                    msg: "Models fetched successfully",
-                    data: models
-                }
-            }
-            return {
-                status: "error",
-                msg: "No model",
-            }
         } catch (error) {
             return {
                 status: "error",
@@ -236,6 +189,47 @@ class ProductService {
                     message: "Unavailable product",
                 }
             }
+        } catch (error) {
+            return {
+                status: "error",
+                message: error.message,
+            }
+        }
+    }
+
+    async addProduct(product) {
+        try {
+            const findProduct = await Product.findOne({ productName: product.productName, productBrand: product.productBrand });
+            if (!findProduct) {
+                const newProduct = new Product({
+                    productName: product.productName,
+                    productBrand: product.productBrand,
+                    productDescription: product.productDescription,
+                    productPrice: product.productPrice,
+                    productDetailInformation: {
+                        productMaterial: product.productMaterial,
+                        productSize: product.productColor,
+                    },
+                    productMainImage: product.productMainImage,
+                    productRelatedImages: product.productRelatedImages,
+                    productQuantity: product.productQuantity,
+                    productCategory: product.productCategory,
+                    productStatus: product.productStatus,
+                });
+                await newProduct.save();
+                return {
+                    status: "success",
+                    message: "Product added successfully",
+                }
+            }
+
+            findProduct.productQuantity = Number(findProduct.productQuantity) + Number(product.productQuantity);
+            await findProduct.save();
+            return {
+                status: "success",
+                message: "Product updated successfully",
+            }
+
         } catch (error) {
             return {
                 status: "error",

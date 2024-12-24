@@ -30,32 +30,6 @@ class ProductController {
         }
     }
 
-    async getAllBrands(req, res) {
-        try {
-            const value = await productService.getAllBrands();
-            res.json(value);
-        }
-        catch (error) {
-            return {
-                status: 'error',
-                message: error.message,
-            }
-        }
-    }
-
-    async getAllOrigins(req, res) {
-        try {
-            const value = await productService.getAllOrigins();
-            res.json(value);
-        }
-        catch (error) {
-            return {
-                status: 'error',
-                message: error.message,
-            }
-        }
-    }
-
     async searchProduct(req, res) {
         console.log("Request body:", req.body);
 
@@ -143,6 +117,21 @@ class ProductController {
         } catch (error) {
             console.error(error);
             res.status(500).send("An error occurred while fetching products");
+        }
+    }
+
+    async addProduct(req, res) {
+        try {
+            const product = req.body;
+            const newProduct = await productService.addProduct(product);
+            if (newProduct.status === 'success') {
+                res.status(201).json(newProduct);
+                return;
+            }
+            res.status(400).json(newProduct);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("An error occurred while adding product");
         }
     }
 }

@@ -18,13 +18,9 @@ const productSchema = new mongoose.Schema({
         ref: 'Brand',
         required: true,
     },
-    productDescription: {
-        type: String,
-        required: true,
-    },
     productYear: {
         type: Number,
-        required: true,
+        default: new Date().getFullYear(),
     },
     productMainImage: {
         type: String,
@@ -41,10 +37,6 @@ const productSchema = new mongoose.Schema({
     productQuantity: {
         type: Number,
         required: true,
-    },
-    productMadeIn: {
-        type: String,
-        required: false,
     },
     productDetailInformation: {
         productMaterial: {
@@ -65,6 +57,24 @@ const productSchema = new mongoose.Schema({
         ref: 'Category',
         required: true,
     },
+    productReviews: {
+        customerID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Customer',
+            required: false,
+            default: null,
+        },
+        productReviewContent: {
+            type: String,
+            required: false,
+            default: "",
+        },
+        productReviewRating: {
+            type: Number,
+            required: false,
+            default: 0,
+        },
+    }
 });
 
 const Product = mongoose.model('Product', productSchema);
