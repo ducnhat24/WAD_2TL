@@ -58,7 +58,6 @@ function renewAccessToken(req, res) {
 
 function verifyToken(req, res, next) {
     try {
-
         const token = req.cookies.accessToken;
         if (token == null) {
             console.log('no token');

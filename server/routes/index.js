@@ -2,6 +2,7 @@ const customerRoute = require("../components/customer/route/customer");
 const productRoute = require("../components/product/route/product");
 const categoryRoute = require("../components/category/route/category");
 const brandRoute = require("../components/brand/route/brand");
+const userRoute = require("../components/user/route/user");
 const { verifyToken } = require("../middleware/JWTAction");
 const { authenticateGoogle, handleGoogleCallback } = require('../middleware/GoogleOAuth');
 
@@ -15,6 +16,7 @@ function route(app) {
   app.use("/product", productRoute);
   app.use("/category", categoryRoute);
   app.use("/brand", brandRoute);
+  app.use("/user", userRoute);
 
   // Secret route
   app.get("/protectiveroute", verifyToken, (req, res) => {

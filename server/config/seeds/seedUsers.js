@@ -1,4 +1,4 @@
-const User = require('./schemas/User');
+const User = require('../../components/user/schema/User');
 const bcrypt = require('bcrypt');
 
 async function hashPassword(password) {
@@ -12,12 +12,8 @@ async function hashPassword(password) {
     }
 }
 
-async function seedUser() {
+async function seedUsers() {
     const password = await hashPassword('1');
-    console.log('\x1b[0;36m-----------------------------------------------------------------\x1b[0;0m')
-    console.log('\x1b[0;31mSeeding user data.....................\x1b[0;0m')
-    await User.deleteMany({});
-
     const users = [
         {
             userName: 'Nguyen Van A',
@@ -67,11 +63,22 @@ async function seedUser() {
 
     ];
 
-    await User.insertMany(users);
-    console.log('\x1b[0;32mSeed user data has been added to the database.\x1b[0;0m');
-    console.log('\x1b[0;36m-----------------------------------------------------------------\x1b[0;0m')
+    try {
+
+        console.log('\x1b[0;36m-----------------------------------------------------------------\x1b[0;0m')
+        console.log('\x1b[0;31mSeeding user data.....................\x1b[0;0m')
+        await User.deleteMany({});
+
+
+        await User.insertMany(users);
+        console.log('\x1b[0;32mSeed user data has been added to the database.\x1b[0;0m');
+        console.log('\x1b[0;36m-----------------------------------------------------------------\x1b[0;0m')
+    } catch (error) {
+        console.error('Error seeding user data:', error);
+        throw error;
+    }
 }
 
 module.exports = {
-    seedUser,
+    seedUsers
 };
