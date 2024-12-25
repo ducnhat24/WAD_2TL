@@ -237,6 +237,41 @@ class ProductService {
             }
         }
     }
+
+    async updateProduct(productId, product) {
+        try {
+            const findProduct = await Product.findOne({ _id: productId });
+            if (findProduct) {
+                findProduct.productName = product.productName;
+                findProduct.productBrand = product.productBrand;
+                findProduct.productDescription = product.productDescription;
+                findProduct.productPrice = product.productPrice;
+                findProduct.productDetailInformation = {
+                    productMaterial: product.productMaterial,
+                    productSize: product.productColor,
+                };
+                findProduct.productMainImage = product.productMainImage;
+                findProduct.productRelatedImages = product.productRelatedImages;
+                findProduct.productQuantity = product.productQuantity;
+                findProduct.productCategory = product.productCategory;
+                findProduct.productStatus = product.productStatus;
+                await findProduct.save();
+                return {
+                    status: "success",
+                    message: "Product updated successfully",
+                }
+            }
+            return {
+                status: "error",
+                message: "Product not found",
+            }
+        } catch (error) {
+            return {
+                status: "error",
+                message: error.message,
+            }
+        }
+    }
 }
 
 module.exports = ProductService;

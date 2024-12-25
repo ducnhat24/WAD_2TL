@@ -134,6 +134,22 @@ class ProductController {
             res.status(500).send("An error occurred while adding product");
         }
     }
+
+    async updateProduct(req, res) {
+        try {
+            const productId = req.params.id;
+            const product = req.body;
+            const updatedProduct = await productService.updateProduct(productId, product);
+            if (updatedProduct.status === 'success') {
+                res.status(201).json(updatedProduct);
+                return;
+            }
+            res.status(400).json(updatedProduct);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("An error occurred while updating product");
+        }
+    }
 }
 
 module.exports = new ProductController;
