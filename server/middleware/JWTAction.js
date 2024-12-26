@@ -27,14 +27,13 @@ function generateRefreshToken(payload) {
 function renewAccessToken(req, res) {
     const isRefreshToken = !req.body.refreshToken;
     if (isRefreshToken) {
-        return res.json({ valid: false, msg: "No refresh token" });
+        return res.json({ status: "error", message: "No refresh token" });
     }
     const refreshToken = req.body.refreshToken;
-    console.log(refreshToken);
     try {
         jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, async (err, user) => {
             if (err) {
-                return res.json({ valid: false, msg: "Invalid refresh token" });
+                return res.json({ status: "error", message: "Invalid refresh token" });
             }
             const userData = await User.findOne({ _id: user.id });
             console.log(userData);
@@ -58,6 +57,7 @@ function renewAccessToken(req, res) {
 
 function verifyToken(req, res, next) {
     try {
+        // console.log(req.cookies);
         const token = req.cookies.accessToken;
         if (token == null) {
             console.log('no token');
@@ -68,7 +68,10 @@ function verifyToken(req, res, next) {
         jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
             if (err) {
                 req.isAuthenticated = false;
-                return next();
+                return {
+                    status: 'error',
+                    message: 'Access token is invalid',
+                }
             }
 
             req.user = user;

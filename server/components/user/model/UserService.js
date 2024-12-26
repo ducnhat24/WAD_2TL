@@ -73,6 +73,34 @@ class UserService {
             };
         }
     }
+
+    async getUserByID(userID) {
+        try {
+            const user = await User.findOne({ _id: userID });
+            if (!user) {
+                return {
+                    status: 'error',
+                    message: 'User not found',
+                };
+            }
+
+            return {
+                status: 'success',
+                message: 'User found',
+                data: {
+                    ...user._doc,
+                    userPassword: undefined,
+                },
+            };
+
+        } catch (error) {
+            console.log(error);
+            return {
+                status: 'error',
+                message: error.message,
+            };
+        }
+    }
 }
 
 module.exports = new UserService;
