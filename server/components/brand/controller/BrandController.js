@@ -14,6 +14,21 @@ class BrandController {
             res.status(500).json({ message: error.message });
         }
     }
+
+    async addBrand(req, res) {
+        try {
+            const brand = req.body;
+            const result = await BrandService.addBrand(brand);
+            if (result.status === 'success') {
+                res.status(200).json(result);
+                return;
+            }
+            res.status(400).json(result);
+            return;
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = new BrandController;

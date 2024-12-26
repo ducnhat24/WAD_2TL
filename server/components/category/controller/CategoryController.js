@@ -14,6 +14,36 @@ class CategoryController {
             res.status(500).json({ message: error.message });
         }
     }
+
+    async addCategory(req, res) {
+        try {
+            const data = req.body;
+            const category = await CategoryService.addCategory(data);
+            if (category.status === 'success') {
+                res.status(200).json(category);
+                return;
+            }
+            res.status(400).json(category);
+            return;
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    async deleteCategory(req, res) {
+        try {
+            const { id } = req.params;
+            const category = await CategoryService.deleteCategory(id);
+            if (category.status === 'success') {
+                res.status(200).json(category);
+                return;
+            }
+            res.status(400).json(category);
+            return;
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = new CategoryController;
