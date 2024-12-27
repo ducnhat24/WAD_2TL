@@ -1,5 +1,5 @@
 const Brand = require('../schema/Brand');
-
+const ProductService = require('../../product/model/ProductService');
 class BrandService {
     async getAllBrands() {
         try {
@@ -44,6 +44,36 @@ class BrandService {
                 status: 'success',
                 message: 'Brand added successfully',
                 data: result,
+            }
+        } catch (error) {
+            return {
+                status: 'error',
+                message: error.message,
+            }
+        }
+    }
+
+    async deleteBrand(id) {
+        try {
+            const result = await Brand.deleteOne({ _id: id });
+
+            if (!result) {
+                return {
+                    status: 'error',
+                    message: 'Failed to delete brand',
+                }
+            }
+
+            const products = await ProductService.discontinuedProduct(id);
+            if (products.status !== 'success') {
+                return {
+                    status: 'error',
+                    message: 'Failed to delete brand',
+                }
+            }
+            return {
+                status: 'success',
+                message: 'Brand deleted successfully',
             }
         } catch (error) {
             return {

@@ -150,6 +150,20 @@ class ProductController {
             res.status(500).send("An error occurred while updating product");
         }
     }
+
+    async getProductsGroupByCategory(req, res) {
+        try {
+            const products = await productService.getProductsGroupByCategory();
+            if (products.status !== 'success') {
+                res.status(400).json(products);
+                return;
+            }
+            res.status(200).json(products);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("An error occurred while fetching products");
+        }
+    }
 }
 
 module.exports = new ProductController;

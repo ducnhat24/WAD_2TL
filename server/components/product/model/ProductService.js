@@ -272,6 +272,61 @@ class ProductService {
             }
         }
     }
+
+    async getProductsGroupByCategory() {
+        try {
+            const products = await Product.aggregate([
+                {
+                    $group: {
+                        _id: "$productCategory",
+                        products: { $push: "$$ROOT" }
+                    }
+                }
+            ]);
+            if (!products) {
+                return {
+                    status: "error",
+                    message: "No product",
+                }
+            }
+            return {
+                status: "success",
+                message: "Products fetched successfully",
+                data: products,
+            };
+        } catch (error) {
+            console.error(error);
+            return {
+                status: "error",
+                message: error.message,
+            }
+        }
+    }
+
+    async discontinuedProduct(brandID) {
+        try {
+            const products = await Product.find({ productBrand: brandID });
+            if (products) {
+                products.forEach(async (product) => {
+                    product.productStatus = "Discontinued";
+                    await product.save();
+                });
+                return {
+                    status: "success",
+                    message: "Discontinued product successfully",
+                }
+            }
+            return {
+                status: "error",
+                message: "No product",
+            }
+        } catch (error) {
+            return {
+                status: "error",
+                message: error.message,
+            }
+        }
+    }
 }
 
 module.exports = ProductService;
