@@ -13,76 +13,78 @@
     </div>
 </section> --}}
 
-
 <!-- Car Specifications -->
 <section class="specifications">
-    <div class="container">
-        <div class="row">
-            <div class="product_header col-md-12">
-                <h2>SPECIFICATIONS</h2>
-            </div>
-            <div class="col-12 col-md-6">
-                <div class="card custom-card">
-                    <img 
-                        src="data:image/png;base64,{{product.productMainImage}}" 
-                        alt="{{product.productName}} Exterior" 
-                        class="card-img-top custom-img-size">
-                </div>
-            </div>
-
-
-            <div id="hehe">{{product._id}}</div>
-            <div class="col-12 col-md-6 product-detail">
-                <table class="table specifications-table">
-                    <tr>
-                        <td class="detail">Product brand</td>
-                        <td class="info">{{product.productBrand}}</td>
-                    </tr>
-                    <tr>
-                        <td class="detail">Name</td>
-                        <td class="info">{{product.productName}}</td>
-                    </tr>
-                    <tr>
-                        <td class="detail">Product material</td>
-                        <td class="info">{{product.productDetailInformation.productMaterial}}</td>
-                    </tr>
-                    <tr>
-                        <td class="detail">Product size</td>
-                        <td class="info">{{product.productDetailInformation.productSize}}</td>
-                    </tr>
-                    <tr>
-                        <td class="detail">Product year</td>
-                        <td class="info">{{product.productYear}}</td>
-                    </tr>
-                    <tr>
-                        <td class="detail">Standard price</td>
-                        <td class="info">{{formatPrice product.productPrice}} VND</td>
-                    </tr>
-                </table>
-
-                <div>
-                    <div class="product-detail__description">
-                        {{product.productDescription}}
-                    </div>  
-                </div>
-                <input type="number" id="each-production-quanity">
-                <div>
-                    <button onclick="javascript:addCart()" class="custom_button">Add Cart</button>
-                </div>
-            </div>
+  <div class="container">
+    <div class="row">
+      <div class="product_header col-md-12">
+        <h2>SPECIFICATIONS</h2>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="card custom-card">
+          <img
+            src="data:image/png;base64,{{product.productMainImage}}"
+            alt="{{product.productName}} Exterior"
+            class="card-img-top custom-img-size"
+          />
         </div>
+      </div>
+
+      <div id="hehe">{{product._id}}</div>
+      <div class="col-12 col-md-6 product-detail">
+        <table class="table specifications-table">
+          <tr>
+            <td class="detail">Product brand</td>
+            <td class="info">{{product.productBrand}}</td>
+          </tr>
+          <tr>
+            <td class="detail">Name</td>
+            <td class="info">{{product.productName}}</td>
+          </tr>
+          <tr>
+            <td class="detail">Product material</td>
+            <td
+              class="info"
+            >{{product.productDetailInformation.productMaterial}}</td>
+          </tr>
+          <tr>
+            <td class="detail">Product size</td>
+            <td
+              class="info"
+            >{{product.productDetailInformation.productSize}}</td>
+          </tr>
+          <tr>
+            <td class="detail">Product year</td>
+            <td class="info">{{product.productYear}}</td>
+          </tr>
+          <tr>
+            <td class="detail">Standard price</td>
+            <td class="info">{{formatPrice product.productPrice}} VND</td>
+          </tr>
+        </table>
+
+        <div>
+          <div class="product-detail__description">
+            {{product.productDescription}}
+          </div>
+        </div>
+        <input type="number" id="each-production-quanity" />
+        <div>
+          <button onclick="javascript:addCart()" class="custom_button">Add Cart</button>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
-
 <div class="sameproduct">
-    <div class="sameproduct__header">
-        <h2 id="relatedCars">SAME PRODUCTS</h2>
-        <hr class="newest-cars-divider">
-    </div>
-    <div class="cars-list">
+  <div class="sameproduct__header">
+    <h2 id="relatedCars">SAME PRODUCTS</h2>
+    <hr class="newest-cars-divider" />
+  </div>
+  <div class="cars-list">
 
-        {{!-- {{#each sameProducts}}
+    {{!-- {{#each sameProducts}}
 
         <div class="card">
             <div class="card_img">
@@ -115,5 +117,32 @@
         </div>
 
         {{/each}} --}}
+  </div>
+</div>
+
+<div class="review">
+  <div class="review__header">
+    <h2 id="reviewCars">WRITE A REVIEW</h2>
+    <hr />
+    <div class="col-md-12 bg-light mt-3 p-5">
+      <form>
+        <div class="form-group">
+          <textarea
+            cols="30"
+            rows="7"
+            class="form-control"
+            placeholder="Mô tả cụ thể đánh giá của bạn"
+          ></textarea>
+        </div>
+        <div class="form-group mt-3">
+          <input
+            type="submit"
+            class="btn btn-primary py-3 px-5"
+            value="submit a review"
+          />
+        </div>
+      </form>
     </div>
+
+  </div>
 </div>
