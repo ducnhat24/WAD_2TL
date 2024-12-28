@@ -1,0 +1,192 @@
+#hehe {
+  display: none;
+}
+
+.product_banner {
+  position: relative;
+  text-align: center;
+  color: white;
+  width: 100%;
+  height: 100vh;
+}
+
+.product_banner .img-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: url("/images/ProductDetailBackground.jpg") no-repeat center
+    center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.banner__temp {
+  position: relative;
+}
+
+.banner__des {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  color: rgb(216, 160, 39);
+  -webkit-text-stroke: 1px #000;
+  /* Màu chữ */
+}
+
+.banner__des h1 {
+  font-size: 3em;
+}
+
+/* Specifications Section */
+.specifications {
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  height: 100vh;
+}
+
+.specifications__content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.specifications__content img {
+  width: 300px;
+  margin-right: 20px;
+}
+
+.table {
+  text-align: left;
+}
+
+/* Footer */
+.footer {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.product_header {
+  margin-top: 100px;
+  text-align: center;
+}
+
+.product_header h2 {
+  font-weight: 800;
+  font-size: 44px;
+  color: var(--navy-color-hover);
+  margin-bottom: 80px;
+}
+
+.product-detail input {
+  background: transparent;
+  border: 2px solid #000;
+  border-radius: 10px;
+  padding: 5px 10px;
+  margin: 8px 0;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.product-detail input::-webkit-inner-spin-button,
+.product-detail input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Specifications Table */
+.specifications-table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.specifications-table td {
+  padding: 8px;
+}
+
+.specifications-table .detail {
+  text-align: left;
+  font-weight: bold;
+  width: 50%;
+  /* Ensures both columns are balanced */
+}
+
+.specifications-table .info {
+  text-align: right;
+  width: 50%;
+}
+
+.sameproduct {
+  width: 100%;
+  height: 100vh;
+}
+
+.sameproduct__header {
+  text-align: center;
+}
+
+.sameproduct__header h2 {
+  font-weight: 800;
+  font-size: 44px;
+  color: var(--navy-color-hover);
+}
+
+/* Card tùy chỉnh */
+.custom-card {
+  border: none; /* Loại bỏ viền card */
+  border-radius: 10px;
+  overflow: hidden; /* Đảm bảo hình ảnh không bị tràn ra ngoài */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin: 10px; /* Tạo khoảng cách giữa các card */
+  width: 100%; /* Chiếm toàn bộ chiều rộng của container */
+  max-width: 500px; /* Tối đa là 400px (hoặc tùy chỉnh kích thước bạn muốn) */
+}
+
+.custom-card:hover {
+  transform: translateY(-5px); /* Hiệu ứng hover nâng card */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Hình ảnh trong card */
+.custom-img-size {
+  height: 250px; /* Chiều cao cố định */
+  width: 100%; /* Chiều rộng đầy đủ của card */
+  object-fit: contain; /* Cắt ảnh để vừa khung và giữ tỷ lệ đẹp */
+}
+
+/* Đảm bảo cột info có không gian rộng hơn */
+.specifications-table .detail {
+  width: 30%; /* Chiếm 30% chiều rộng */
+  white-space: nowrap; /* Không xuống dòng nội dung trong cột */
+}
+
+.specifications-table .info {
+  width: 70%; /* Chiếm 70% chiều rộng */
+  word-wrap: break-word; /* Chia nhỏ từ nếu quá dài */
+  word-break: break-word; /* Đảm bảo từ quá dài không tràn */
+}
+
+#each-production-quanity {
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+#each-production-quanity:hover {
+  color: black;
+  transform: scale(1.05);
+}
+
+.review__header {
+  text-align: center;
+}
+.review__header h2 {
+  font-weight: 800;
+  font-size: 44px;
+  color: var(--navy-color-hover);
+}
