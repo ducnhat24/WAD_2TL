@@ -102,7 +102,16 @@ class CartService {
             if (!user.customerCart) return [];
             const productsInCart = await Promise.all(
                 user.customerCart.map(async (item) => {
+                    // const product = await Product.findOne({ _id: item.productId });
+                    // return {
+                    //     ...product["_doc"],
+                    //     quantity: item.quantity,
+                    // };
                     const product = await Product.findOne({ _id: item.productId });
+                    if (!product) {
+                        console.warn(`Product with ID ${item.productId} not found.`);
+                        return null; // Bỏ qua sản phẩm không tồn tại
+                    }
                     return {
                         ...product["_doc"],
                         quantity: item.quantity,

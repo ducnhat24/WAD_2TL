@@ -28,7 +28,7 @@ function createCartItem(item) {
 
     cartItemDiv.innerHTML = `
             <div class="cart__left" >
-                <img src="data:image/png;base64,${item.productMainImage}" class="card-img-top" alt="${item.productName}">
+                <img src="${item.productMainImage}" class="card-img-top" alt="${item.productName}">
             </div>
 
             <div class="card__right">
@@ -63,14 +63,17 @@ function renderProductsInCart(productList) {
     const cartContainer = document.querySelector(".order__product_list"); // Replace with your container selector
     // cartContainer.innerHTML = ""; // Clear existing content
     productList.forEach((product) => {
-        const cartElement = createCartItem(product);
-        cartContainer.appendChild(cartElement);
+        if (product !== null) {
+            const cartElement = createCartItem(product);
+            cartContainer.appendChild(cartElement);
+        }
     });
 }
 
 function renderOrderSummary(cart) {
+    cart = cart.filter(item => item !== null);
     const orderSummary = document.querySelector('.order__count');
-    const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const subtotal = cart.reduce((acc, item) => acc + item.productPrice * item.quantity, 0);
     const shipping = 10;
     const total = subtotal + shipping;
     orderSummary.innerHTML = `
@@ -95,7 +98,7 @@ function renderOrderSummary(cart) {
 }
 
 function showOrder() {
-    fetch("http://localhost:3000/customer/cart", {
+    fetch("http://localhost:5000/api/customer/cart", {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'

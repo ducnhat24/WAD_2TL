@@ -4,7 +4,7 @@ class ProductService {
     async getAllProducts() {
         try {
             const products = await Product.find();
-            console.log(products);
+            // console.log(products);
             if (products) {
                 return {
                     status: "success",
@@ -134,7 +134,7 @@ class ProductService {
         const sortBy = query.sortBy;
         const sortType = query.sortType;
 
-        console.log(query);
+        // console.log(query);
 
         const allProducts = await Product.find();
 
@@ -170,7 +170,7 @@ class ProductService {
                 });
             }
 
-            console.log(sortedProducts);
+            // console.log(sortedProducts);
             return {
                 status: "success",
                 message: "Filter successfully",

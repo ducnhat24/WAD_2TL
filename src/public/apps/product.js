@@ -26,7 +26,7 @@ function addCart() {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            // console.log(data);
             notify({ type: data.status, msg: data.msg });
         })
         .then(() => {
@@ -47,7 +47,9 @@ function updateCartCount(increment = 1) {
             const cartCount = document.getElementById('cart-count');
             var __cart_count = 0;
             for (const item of data.cart) {
+              if (item !== null) {
                 __cart_count += item.quantity;
+                }
             }
             cartCount.innerText = __cart_count;
         });
@@ -55,7 +57,7 @@ function updateCartCount(increment = 1) {
 
 // Prefetch next page data
 function prefetchPage(page) {
-    if (cache.has(page) || page > totalPages || page < 1) return;
+    // if (cache.has(page) || page > totalPages || page < 1) return;
 
     fetch(`http://localhost:5000/api/product/limitation`, {
         method: 'POST',
@@ -85,11 +87,10 @@ function loadProducts() {
     })
         .then(response => response.json())
         .then(data => {
-            console.log("Data: ");
-            console.log(data);
             hideSpinner(); // Ẩn spinner
             const { totalPages: total, item } = data;
             totalPages = total; // Update total pages
+            console.log("Current page: " + currentPage);
             cache.set(currentPage, item); // Cache the current page
             renderProducts(item); // Render products
             prefetchPage(currentPage + 1); // Prefetch the next page
@@ -206,7 +207,7 @@ function handleSearch() {
 
 // Update prefetchPage to handle search queries
 function prefetchPage(page) {
-    if (cache.has(page) || page > totalPages || page < 1) return;
+    // if (cache.has(page) || page > totalPages || page < 1) return;
 
     const searchQuery = document.querySelector("#search__bar__product").value;
     const url = searchQuery 
@@ -259,7 +260,7 @@ function loadSearchProducts(productList) {
 // Event listeners for pagination buttons
 document.getElementById('prev-btn').addEventListener('click', () => {
     if (currentPage > 1) {
-        currentPage--;
+        currentPage-=1;
         loadProducts();
         prefetchPage(currentPage - 1); // Prefetch previous page
     }
@@ -300,7 +301,7 @@ function filterProducts() {
 
     };
 
-    console.log(filterPayload);
+    // console.log(filterPayload);
     showSpinner();
     // Fetch filtered products
     fetch('http://localhost:5000/api/product/filter', {

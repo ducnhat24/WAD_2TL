@@ -68,6 +68,7 @@ class CartController {
             const token = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET)
 
             const result = await CartService.getCart(token.id);
+            console.log(result);
             if (result.status === 'success') {
                 return res.status(200).json({ cart: result.cart, user: result.user });
             }

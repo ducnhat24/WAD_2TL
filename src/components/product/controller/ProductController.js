@@ -20,7 +20,7 @@ class ProductController {
                 _id: value.data[0]._id, // Pass the original product's ID to exclude it
             });
             if (value.status === 'success') {
-                console.log(sameProducts);
+                // console.log(sameProducts);
                 // res.render('product_details', { product: value.data[0] });
                 res.render('product_details', { product: value.data[0], sameProducts: sameProducts });   
             } else {
@@ -59,7 +59,7 @@ class ProductController {
     }
 
     async searchProduct(req, res) {
-        console.log("Request body:", req.body);
+        // console.log("Request body:", req.body);
 
         const { keysearch, page = 1, limit = 5 } = req.body;
 
@@ -122,13 +122,10 @@ class ProductController {
 
     async getSomeProduct(req, res) {
         try {
-            console.log(req.body);
             const page = parseInt(req.body.page) || 1;
             const limit = parseInt(req.body.limit) || 1;
-            console.log('Page:', page, 'Limit:', limit);
             const startIndex = (page - 1) * limit;
             const endIndex = page * limit;
-            console.log('Start Index:', startIndex, 'End Index:', endIndex);
 
             const allProducts = await ProductService.getAllProducts();
 

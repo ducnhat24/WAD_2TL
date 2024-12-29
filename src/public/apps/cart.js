@@ -1,7 +1,7 @@
 function handleDeleteCard(id) {
     const productId = id;
     console.log(productId);
-    fetch("http://localhost:3000/cart", {
+    fetch("http://localhost:5000/api/customer/cart", {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -31,7 +31,7 @@ function decreaseQuantity(quantity) {
 function handleUpdateQuantity(id, quantity) {
     const productId = id;
 
-    fetch("http://localhost:3000/customer/cart", {
+    fetch("http://localhost:5000/api/customer/cart", {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -53,7 +53,7 @@ function createCartItem(item) {
 
     cartItemDiv.innerHTML = `
             <div class="cart__left" >
-                <img src="data:image/png;base64,${item.productMainImage}" class="card-img-top" alt="${item.productName}">
+                <img src="${item.productMainImage}" class="card-img-top" alt="${item.productName}">
             </div>
 
             <div class="card__right">
@@ -146,8 +146,10 @@ function renderProductsInCart(productList) {
     const cartContainer = document.querySelector(".cart .cart__body"); // Replace with your container selector
     cartContainer.innerHTML = ""; // Clear existing content
     productList.forEach((product) => {
-        const cartElement = createCartItem(product);
-        cartContainer.appendChild(cartElement);
+        if (product !== null) {
+            const cartElement = createCartItem(product);
+            cartContainer.appendChild(cartElement);
+        }
     });
 }
 
@@ -157,7 +159,7 @@ function renderProductsInCart(productList) {
 // }
 function showCart() {
     // Show cart
-    fetch("http://localhost:3000/customer/cart", {
+    fetch("http://localhost:5000/api/customer/cart", {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'

@@ -442,7 +442,7 @@ if (storedNotify) {
   localStorage.removeItem("notify");
 }
 function updateCartCount(increment = 1) {
-  fetch("http://localhost:3000/cart/", {
+  fetch("http://localhost:5000/api/customer/cart", {
         credentials: 'include',
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
@@ -453,7 +453,9 @@ function updateCartCount(increment = 1) {
             const cartCount = document.getElementById('cart-count');
             var __cart_count = 0;
             for (const item of data.cart) {
+              if (item !== null) {
                 __cart_count += item.quantity;
+              }
             }
             cartCount.innerText = __cart_count;
         });
