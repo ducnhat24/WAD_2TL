@@ -23,7 +23,7 @@
       <div class="col-12 col-md-6">
         <div class="card custom-card">
           <img
-            src="data:image/png;base64,{{product.productMainImage}}"
+            src="{{product.productMainImage}}"
             alt="{{product.productName}} Exterior"
             class="card-img-top custom-img-size"
           />
@@ -84,13 +84,13 @@
   </div>
   <div class="cars-list">
 
-    {{!-- {{#each sameProducts}}
+    {{#each sameProducts}}
 
         <div class="card">
             <div class="card_img">
                 <div class="card_img_fake1"></div>
                 <a href="/product/{{this._id}}">
-                    <img src="data:image/png;base64,{{this.image}}" class="card-img-top" alt="{{this.name}}">
+                    <img src="{{this.productMainImage}}" class="card-img-top" alt="{{this.productName}}">
                 </a>
             </div>
 
@@ -98,7 +98,7 @@
                 <div class="card_price">
                     <div class="card_price_fake">
                         <div class="card_price_value">
-                            {{this.price}}
+                            {{this.productPrice}}
                         </div>
                     </div>
                 </div>
@@ -106,17 +106,17 @@
                 <div class="card_detail">
                     <div class="card_title">
                         <a href="/product/{{this._id}}">
-                            <h5 class="card-title">{{this.name}}</h5>
+                            <h5 class="card-title">{{this.productName}}</h5>
                         </a>
                     </div>
                     <div class="card_description">
-                        <p>{{this.description}}</p>
+                        <p>{{this.productDescription}}</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{/each}} --}}
+        {{/each}}
   </div>
 </div>
 

@@ -109,22 +109,22 @@ document.addEventListener("DOMContentLoaded", function () {
         // Token invalid or missing; show login/signup links
         document.querySelector(".header__account").innerHTML = `
           <div class="header__account__item">
-            <a href="/signup">Signup</a>
+            <a href="/customer/signup">Signup</a>
           </div>
           <div class="header__account__item">
-            <a href="/login">Login</a>
+            <a href="/customer/login">Login</a>
           </div>
         `;
         const loginDiv = document.createElement("div");
         loginDiv.classList.add("header__item");
         loginDiv.innerHTML = `
-          <a href="/login">Login</a>
+          <a href="/customer/login">Login</a>
         `;
 
         const signupDiv = document.createElement("div");
         signupDiv.classList.add("header__item");
         signupDiv.innerHTML = `
-          <a href="/signup">Signup</a>
+          <a href="/customer/signup">Signup</a>
         `;
 
         const headerFeature = document.querySelector(".header__feature");
@@ -137,10 +137,10 @@ document.addEventListener("DOMContentLoaded", function () {
       // Show login/signup if there's an error
       document.querySelector(".header__account").innerHTML = `
         <div class="header__account__item">
-          <a href="/signup">Signup</a>
+          <a href="/customer/signup">Signup</a>
         </div>
         <div class="header__account__item">
-          <a href="/login">Login</a>
+          <a href="/customer/login">Login</a>
         </div>
       `;
     });
@@ -464,7 +464,7 @@ function handleGoogleLogin() {
     // Xử lý logic đăng nhập qua Google
     console.log("Google login clicked");
     // Redirect hoặc mở popup tương ứng
-    window.location.href = 'http://localhost:3000/auth/google'; // Điều hướng đến endpoint xử lý Google OAuth
+    window.location.href = 'http://localhost:5000/user/auth/google'; // Điều hướng đến endpoint xử lý Google OAuth
 
 }
 

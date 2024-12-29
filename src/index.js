@@ -9,7 +9,7 @@ const { route } = require('./routes/index');
 const cookieParser = require('cookie-parser');
 app.use(express.json());
 
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = ['http://localhost:5000'];
 app.use(cors({
   // origin: 'https://wad-ga-06-a8w4.vercel.app',
   origin: function (origin, callback) {
@@ -27,6 +27,10 @@ app.engine("handlebars", engine({
   layoutsDir: path.join(__dirname, ""), // Thư mục chứa layout
   defaultLayout: "main", // Layout mặc định
   extname: ".handlebars", // Sử dụng phần mở rộng .handlebars
+    runtimeOptions: {
+    allowProtoPropertiesByDefault: true, // Cho phép truy cập thuộc tính từ prototype
+    allowProtoMethodsByDefault: true,   // Cho phép gọi các phương thức từ prototype (nếu cần)
+  },
   helpers: {
     eqString: (a, b) => String(a) === String(b),
     includes: (item, array) => Array.isArray(array) && array.includes(item),

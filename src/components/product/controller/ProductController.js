@@ -4,7 +4,7 @@ class ProductController {
     async showProducts(req, res) {
         try {
             const products = await ProductService.getAllProducts();
-            res.render('product', { productItems: products.data });
+            res.render('product', { products: products.data });
         } catch (error) {
             console.error(error);
         }
@@ -14,8 +14,15 @@ class ProductController {
         try {
             const id = req.params.id;
             const value = await ProductService.getProductById(id);
+            const sameProducts = await ProductService.getSameProduct({
+                brand: value.data[0].productBrand,
+                category: value.data[0].productCategory,
+                _id: value.data[0]._id, // Pass the original product's ID to exclude it
+            });
             if (value.status === 'success') {
-                res.render('product_details', { product: value.data[0] });
+                console.log(sameProducts);
+                // res.render('product_details', { product: value.data[0] });
+                res.render('product_details', { product: value.data[0], sameProducts: sameProducts });   
             } else {
                 console.log(value.message);
             }
@@ -86,7 +93,7 @@ class ProductController {
         }
     }
 
-    async filterProduct(req, res) {
+    async   filterProduct(req, res) {
         try {
             const { page, limit, brands, origins, sortType, sortBy } = req.body;
             const query = {

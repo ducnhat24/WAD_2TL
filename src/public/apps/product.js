@@ -15,7 +15,7 @@ function addCart() {
     if (!isNaN(quantityContainer.value) && Number(quantityContainer.value) > 0) {
         quantity = Number(quantityContainer.value);
     }
-    fetch("http://localhost:3000/customer/cart", {
+    fetch("http://localhost:5000/api/customer/cart", {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -37,7 +37,7 @@ function addCart() {
 }
 
 function updateCartCount(increment = 1) {
-    fetch("http://localhost:3000/customer/cart", {
+    fetch("http://localhost:5000/api/customer/cart", {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'
@@ -57,7 +57,7 @@ function updateCartCount(increment = 1) {
 function prefetchPage(page) {
     if (cache.has(page) || page > totalPages || page < 1) return;
 
-    fetch(`http://localhost:3000/product/limitation`, {
+    fetch(`http://localhost:5000/api/product/limitation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ page, limit })
@@ -77,7 +77,7 @@ function loadProducts() {
         return;
     }
     showSpinner(); // Hiển thị spinner
-    fetch(`http://localhost:3000/product/limitation`, {
+    fetch(`http://localhost:5000/api/product/limitation`, {
         credentials: 'include',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -122,7 +122,7 @@ function createProductElement(product) {
     card.innerHTML = `
         <div class="card_img">
             <a href="/product/${product._id}">
-                <img src="data:image/png;base64,${product.productMainImage}" alt="${product.productName}" class="card-img-top">
+                <img src="${product.productMainImage}" alt="${product.productName}" class="card-img-top">
             </a>
         </div>
         <div class="card_content">
@@ -159,7 +159,7 @@ function handleSearch() {
   }
 
   showSpinner();
-    fetch(`http://localhost:3000/product/search`, {
+    fetch(`http://localhost:5000/api/product/search`, {
     credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -210,8 +210,8 @@ function prefetchPage(page) {
 
     const searchQuery = document.querySelector("#search__bar__product").value;
     const url = searchQuery 
-      ? 'http://localhost:3000/product/search'
-      : 'http://localhost:3000/product/';
+      ? 'http://localhost:5000/api/product/search'
+      : 'http://localhost:5000/api/product/';
     
     const payload = searchQuery 
       ? { keysearch: searchQuery, page, limit }
@@ -280,8 +280,8 @@ function filterProducts() {
         document.querySelectorAll('#brand-filter input[type="checkbox"]:checked')
     ).map(input => input.id.replace('checkbox_', ''));
 
-    const selectedModels = Array.from(
-        document.querySelectorAll('#model-filter input[type="checkbox"]:checked')
+    const selectedCategories = Array.from(
+        document.querySelectorAll('#category-filter input[type="checkbox"]:checked')
     ).map(input => input.id.replace('checkbox_', ''));
 
     // const selectedPrice = document.getElementById('price-filter').value;
@@ -293,7 +293,7 @@ function filterProducts() {
         page: currentPage,
         limit: limit,
         brands: selectedBrands, // Array
-        origins: selectedModels, // Array
+        categories: selectedCategories, // Array
         // price: selectedPrice, // Số hoặc chuỗi nếu backend cần
         sortType: selectedSort.includes('asc') ? 'asc' : 'desc', // Phân tích từ id
         sortBy: 'productPrice', // Hoặc một trường cụ thể
@@ -303,7 +303,7 @@ function filterProducts() {
     console.log(filterPayload);
     showSpinner();
     // Fetch filtered products
-    fetch('http://localhost:3000/product/filter', {
+    fetch('http://localhost:5000/api/product/filter', {
         credentials: 'include',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -338,7 +338,7 @@ function showBrand() {
         document.querySelectorAll('#brand-filter input[type="checkbox"]:checked')
     ).map(input => input.id.replace('checkbox_', ''));
     
-    fetch('http://localhost:3000/product/brands', {
+    fetch('http://localhost:5000/api/brand', {
         credentials: 'include',
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
@@ -352,10 +352,10 @@ function showBrand() {
                     <div class="custom-checkbox-group">
                         <input 
                             type="checkbox" 
-                            id="checkbox_${brand}" 
+                            id="checkbox_${brand._id}" 
                             class="custom-checkbox" 
                             ${selectedBrands.includes(brand) ? 'checked' : ''}>
-                        <label class="custom-label" for="checkbox_${brand}">${brand}</label>
+                        <label class="custom-label" for="checkbox_${brand._id}">${brand.brandName}</label>
                     </div>
                 `;
 
@@ -366,35 +366,35 @@ function showBrand() {
         .catch(error => console.error('Error loading brands:', error));
 }
 
-function showOrigin() {
-    const modelFilterArea = document.getElementById('model-filter');
-    var models = [];
-    const selectedModels = Array.from(
-        document.querySelectorAll('#model-filter input[type="checkbox"]:checked')
+function showCategory() {
+    const categoryFilterArea = document.getElementById('category-filter');
+    var categories = [];
+    const selectedCategories = Array.from(
+        document.querySelectorAll('#category-filter input[type="checkbox"]:checked')
     ).map(input => input.id.replace('checkbox_', ''));
     
-    fetch('http://localhost:3000/product/origins', {
+    fetch('http://localhost:5000/api/category', {
         credentials: 'include',
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     })
         .then(response => response.json())
         .then(data => {
-            models = data.data;
-            for (const model of models) {
-                const modelElement = document.createElement('div');
-                 modelElement.innerHTML = `
+            categories = data.data;
+            for (const category of categories) {
+                const categoryElement = document.createElement('div');
+                 categoryElement.innerHTML = `
                     <div class="custom-checkbox-group">
                         <input 
                             type="checkbox" 
-                            id="checkbox_${model}" 
+                            id="checkbox_${category._id}" 
                             class="custom-checkbox" 
-                            ${selectedModels.includes(model) ? 'checked' : ''}>
-                        <label class="custom-label" for="checkbox_${model}">${model}</label>
+                            ${selectedCategories.includes(category) ? 'checked' : ''}>
+                        <label class="custom-label" for="checkbox_${category._id}">${category.categoryName}</label>
                     </div>
                 `;
 
-                modelFilterArea.appendChild(modelElement);
+                categoryFilterArea.appendChild(categoryElement);
             }
         })
         .catch(error => console.error('Error loading models:', error));
@@ -402,7 +402,7 @@ function showOrigin() {
 
 function loadSideBar() {
     showBrand();
-    showOrigin();
+    showCategory();
 }
 
 
