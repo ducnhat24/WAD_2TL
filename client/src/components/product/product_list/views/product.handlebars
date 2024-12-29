@@ -46,7 +46,7 @@
                         value="{{selectedPrice}}">
 
                     <h5 class="mt-4">Origin</h5>
-                    <div id="model-filter" class="filter-area btn-group-toggle" data-toggle="buttons">
+                    <div id="category-filter" class="filter-area btn-group-toggle" data-toggle="buttons">
                         {{!-- {{#each models}}
 
                         <input type="checkbox" id="checkbox_{{this}}" {{#if (includes this
@@ -111,7 +111,7 @@
                                     <div class="card_img">
                                         <div class="card_img_fake1"></div>
                                         <a href="/product/{{this._id}}">
-                                            <img src="data:image/png;base64,{{this.productMainImage}}" class="card-img-top"
+                                            <img src="{{this.productMainImage}}" class="card-img-top"
                                                 alt="{{this.productName}}">
                                         </a>
                                     </div>

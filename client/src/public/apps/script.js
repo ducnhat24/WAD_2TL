@@ -352,87 +352,87 @@ function handleSearch() {
   location.href = "/product/search?" + queryString;
 }
 
-function handleFilter() {
-  // Select all checkboxesBrand in the container
-  const checkboxesBrand = document.querySelectorAll(
-    '#brand-filter input[type="checkbox"]'
-  );
-  console.log(checkboxesBrand);
-  // Filter checked checkboxesBrand and retrieve their associated label text
-  const selectedBrands = Array.from(checkboxesBrand)
-    .filter((checkbox) => checkbox.checked) // Only checked checkboxesBrand
-    .map((checkbox) => {
-      // Find the associated label using the 'for' attribute
-      const label = document.querySelector(`label[for="${checkbox.id}"]`);
-      return label ? label.textContent.trim() : null; // Get the label text
-    })
-    .filter((brand) => brand !== null); // Remove null values in case of missing labels
+// function handleFilter() {
+//   // Select all checkboxesBrand in the container
+//   const checkboxesBrand = document.querySelectorAll(
+//     '#brand-filter input[type="checkbox"]'
+//   );
+//   console.log(checkboxesBrand);
+//   // Filter checked checkboxesBrand and retrieve their associated label text
+//   const selectedBrands = Array.from(checkboxesBrand)
+//     .filter((checkbox) => checkbox.checked) // Only checked checkboxesBrand
+//     .map((checkbox) => {
+//       // Find the associated label using the 'for' attribute
+//       const label = document.querySelector(`label[for="${checkbox.id}"]`);
+//       return label ? label.textContent.trim() : null; // Get the label text
+//     })
+//     .filter((brand) => brand !== null); // Remove null values in case of missing labels
 
-  // Output the selected brands
-  console.log("Selected Brands:", selectedBrands);
+//   // Output the selected brands
+//   console.log("Selected Brands:", selectedBrands);
 
-  const checkboxesModel = document.querySelectorAll(
-    '#model-filter input[type="checkbox"]'
-  );
-  const selectedModels = Array.from(checkboxesModel)
-    .filter((checkbox) => checkbox.checked)
-    .map((checkbox) => {
-      const label = document.querySelector(`label[for="${checkbox.id}"]`);
-      return label ? label.textContent.trim() : null;
-    })
-    .filter((model) => model !== null);
+//   const checkboxesModel = document.querySelectorAll(
+//     '#category-filter input[type="checkbox"]'
+//   );
+//   const selectedModels = Array.from(checkboxesModel)
+//     .filter((checkbox) => checkbox.checked)
+//     .map((checkbox) => {
+//       const label = document.querySelector(`label[for="${checkbox.id}"]`);
+//       return label ? label.textContent.trim() : null;
+//     })
+//     .filter((model) => model !== null);
 
-  // Use the `selectedBrands` array for filtering logic
+//   // Use the `selectedBrands` array for filtering logic
 
-  const radiosSort = document.querySelectorAll(
-    '#sort-filter input[type="radio"]'
-  );
+//   const radiosSort = document.querySelectorAll(
+//     '#sort-filter input[type="radio"]'
+//   );
 
-  const selectedSort = Array.from(radiosSort).find((radio) => radio.checked);
+//   const selectedSort = Array.from(radiosSort).find((radio) => radio.checked);
 
-  if (selectedSort) {
-    const sortID = selectedSort.id;
-    const sortTypeQuery = sortID.split("_")[1];
-    const sortByQuery = sortID.split("_")[2];
-    console.log("Selected Sort:", sortTypeQuery, sortByQuery);
-  }
+//   if (selectedSort) {
+//     const sortID = selectedSort.id;
+//     const sortTypeQuery = sortID.split("_")[1];
+//     const sortByQuery = sortID.split("_")[2];
+//     console.log("Selected Sort:", sortTypeQuery, sortByQuery);
+//   }
 
-  let endpoint = "/product";
-  console.log(endpoint);
-  if (selectedBrands.length > 0 || selectedModels.length > 0 || selectedSort) {
-    endpoint += "/filter?";
-  }
+//   let endpoint = "/product";
+//   console.log(endpoint);
+//   if (selectedBrands.length > 0 || selectedModels.length > 0 || selectedSort) {
+//     endpoint += "/filter?";
+//   }
 
-  let flag = false;
-  if (selectedBrands.length > 0) {
-    flag = true;
-    endpoint += "brands=" + selectedBrands.join(",");
-  }
+//   let flag = false;
+//   if (selectedBrands.length > 0) {
+//     flag = true;
+//     endpoint += "brands=" + selectedBrands.join(",");
+//   }
 
-  if (flag) {
-    endpoint += "&";
-  }
+//   if (flag) {
+//     endpoint += "&";
+//   }
 
-  if (selectedModels.length > 0) {
-    flag = true;
-    endpoint += "models=" + selectedModels.join(",");
-  }
+//   if (selectedModels.length > 0) {
+//     flag = true;
+//     endpoint += "models=" + selectedModels.join(",");
+//   }
 
-  if (flag) {
-    endpoint += "&";
-  }
+//   if (flag) {
+//     endpoint += "&";
+//   }
 
-  if (selectedSort) {
-    endpoint +=
-      "sortby=" +
-      selectedSort.id.split("_")[1] +
-      "&sorttype=" +
-      selectedSort.id.split("_")[2];
-  }
+//   if (selectedSort) {
+//     endpoint +=
+//       "sortby=" +
+//       selectedSort.id.split("_")[1] +
+//       "&sorttype=" +
+//       selectedSort.id.split("_")[2];
+//   }
 
-  console.log(endpoint);
-  location.href = endpoint;
-}
+//   console.log(endpoint);
+//   location.href = endpoint;
+// }
 
 const storedNotify = localStorage.getItem("notify");
 if (storedNotify) {

@@ -21,7 +21,7 @@ class ProductDetailsService {
         }
     }
     
-    async getSameProducts(brand, model) {
+    async getSameProducts(brand, category) {
         try {
             //fetch all products 
             const response = await fetch("http://localhost:3000/product/", {
@@ -34,7 +34,7 @@ class ProductDetailsService {
             }
             else {
                 const responseJson = await response.json();
-                const allSameProducts = responseJson.data.filter((p) => p.model === model);
+                const allSameProducts = responseJson.data.filter((p) => p.brandName === brand || p.categoryName === category);
                 if (allSameProducts.length > 3) {
                     return allSameProducts.slice(0, 3);
                 }

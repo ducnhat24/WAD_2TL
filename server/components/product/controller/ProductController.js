@@ -67,10 +67,10 @@ class ProductController {
 
     async filterProduct(req, res) {
         try {
-            const { page, limit, brands, origins, sortType, sortBy } = req.body;
+            const { page, limit, brands, categories, sortType, sortBy } = req.body;
             const query = {
                 brands: brands,
-                origins: origins,
+                categories: categories,
                 sortType: sortType,
                 sortBy: sortBy
             };

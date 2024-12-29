@@ -150,52 +150,118 @@ class ProductService {
     //     }
     // }
 
+    // async filterProduct(query) {
+    //     try {
+    //         const brandArray = query.brands;
+    //         const categoryArray = query.categories;
+    //         const sortBy = query.sortBy;
+    //         const sortType = query.sortType;
+    //         console.log(query);
+
+    //         let products = await Product.find();
+    //         // console.log(products);
+    //         if (products) {
+    //             if (brandArray.length > 0) {
+    //                 products = products.filter((product) => {
+    //                     brandArray.includes(product.productBrand.toString());
+    //                 });
+    //             }
+    //             console.log(products.length);
+
+    //             if (categoryArray.length > 0) {
+    //                 products = products.filter((product) => categoryArray.includes(product.productCategory.toString));
+    //             }
+
+    //             if (sortBy && sortType) {
+    //                 if (sortType === "asc") {
+    //                     products.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : -1);
+    //                 } else {
+    //                     products.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : -1);
+    //                 }
+    //             }
+    //             console.log(products);
+    //             return {
+    //                 status: "success",
+    //                 message: "Filter successfully",
+    //                 data: products,
+    //             }
+    //         } else {
+    //             return {
+    //                 status: "error",
+    //                 message: "Unavailable product",
+    //             }
+    //         }
+    //     } catch (error) {
+    //         return {
+    //             status: "error",
+    //             message: error.message,
+    //         }
+    //     }
+    // }
+
     async filterProduct(query) {
-        try {
-            console.log("Product Service:");
-            console.log(query);
-            const brandArray = query.brands;
-            const originArray = query.origins;
-            const sortBy = query.sortBy;
-            const sortType = query.sortType;
+    try {
+        const brandArray = query.brands || [];
+        const categoryArray = query.categories || [];
+        const sortBy = query.sortBy;
+        const sortType = query.sortType;
 
-            let products = await Product.find();
+        console.log(query);
 
+        const allProducts = await Product.find();
 
-            if (products) {
-                if (brandArray.length > 0) {
-                    products = products.filter((product) => brandArray.includes(product.productBrand));
-                }
+        if (allProducts && allProducts.length > 0) {
+            let filteredByBrand = allProducts;
 
-                if (originArray.length > 0) {
-                    products = products.filter((product) => originArray.includes(product.productMadeIn));
-                }
-
-                if (sortBy && sortType) {
-                    if (sortType === "asc") {
-                        products.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : -1);
-                    } else {
-                        products.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : -1);
-                    }
-                }
-                return {
-                    status: "success",
-                    message: "Filter successfully",
-                    data: products,
-                }
-            } else {
-                return {
-                    status: "error",
-                    message: "Unavailable product",
-                }
+            // Filter by brand
+            if (brandArray.length > 0) {
+                filteredByBrand = allProducts.filter((product) =>
+                    brandArray.includes(product.productBrand.toString())
+                );
             }
-        } catch (error) {
+
+            let filteredByCategory = filteredByBrand;
+
+            // Filter by category
+            if (categoryArray.length > 0) {
+                filteredByCategory = filteredByBrand.filter((product) =>
+                    categoryArray.includes(product.productCategory.toString())
+                );
+            }
+
+            let sortedProducts = filteredByCategory;
+
+            // Sort by field
+            if (sortBy && sortType) {
+                sortedProducts = [...filteredByCategory].sort((a, b) => {
+                    if (sortType === "asc") {
+                        return a[sortBy] > b[sortBy] ? 1 : -1;
+                    } else {
+                        return a[sortBy] < b[sortBy] ? 1 : -1;
+                    }
+                });
+            }
+
+            console.log(sortedProducts);
+            return {
+                status: "success",
+                message: "Filter successfully",
+                data: sortedProducts,
+            };
+        } else {
             return {
                 status: "error",
-                message: error.message,
-            }
+                message: "Unavailable product",
+            };
         }
+    } catch (error) {
+        return {
+            status: "error",
+            message: error.message,
+        };
     }
+}
+
 
     async addProduct(product) {
         try {
