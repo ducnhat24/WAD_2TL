@@ -3,7 +3,10 @@ const customerAPIRoute = express.Router();
 const { verifyToken } = require('../../../middleware/JWTAction');
 const CustomerController = require('../controller/CustomerController');
 const CartController = require('../controller/CartController');
+const { authenticateGoogle, handleGoogleCallback } = require('../../../middleware/GoogleOAuth');
 
+customerAPIRoute.get('/auth/google', authenticateGoogle);
+customerAPIRoute.get('/auth/google/callback', handleGoogleCallback);
 customerAPIRoute.post('/signup', CustomerController.addUser);
 customerAPIRoute.post('/login', CustomerController.login);
 customerAPIRoute.post('/logout', CustomerController.logout);

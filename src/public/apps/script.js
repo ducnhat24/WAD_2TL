@@ -1,4 +1,4 @@
-const url = "http://localhost:3000";
+const url = "http://localhost:5000";
 let user = null;
 
 function showNav() {
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
   console.log("Access token: ", accessToken);
   console.log("Refresh token: ", refreshToken);
   // Fetch authentication status
-  fetch(url + "/customer/authentication", {
+  fetch(url + "/api/customer/authentication", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -172,7 +172,7 @@ function handleSubmitSignup() {
   }
 
   // Send data to server
-  fetch(url + "/customer/signup", {
+  fetch(url + "/api/customer/signup", {
     credentials: 'include',
     method: "POST",
     headers: {
@@ -218,7 +218,7 @@ function handleSubmitLogin() {
   }
 
   // Send data to server
-  fetch(url + "/customer/login", {
+  fetch(url + "/api/customer/login", {
     credentials: 'include',
     method: "POST",
     headers: {
@@ -255,7 +255,7 @@ function handleSubmitLogin() {
 
 function handleLogout() {
   console.log("Logout form submitted");
-  fetch(url + "/customer/logout", {
+  fetch(url + "/api/customer/logout", {
     credentials: 'include',
     method: "POST",
     credentials: 'include',
@@ -464,7 +464,7 @@ function handleGoogleLogin() {
     // Xử lý logic đăng nhập qua Google
     console.log("Google login clicked");
     // Redirect hoặc mở popup tương ứng
-    window.location.href = 'http://localhost:5000/user/auth/google'; // Điều hướng đến endpoint xử lý Google OAuth
+    window.location.href = 'http://localhost:5000/api/customer/auth/google'; // Điều hướng đến endpoint xử lý Google OAuth
 
 }
 

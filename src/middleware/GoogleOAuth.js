@@ -8,7 +8,7 @@ const UserService = require('../components/customer/model/CustomerService'); // 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: `${process.env.BASE_URL}/auth/google/callback`,
+    callbackURL: `http://localhost:5000/api/customer/auth/google/callback`,
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         // console.log('Google Profile:', profile);
