@@ -1,7 +1,7 @@
 class SignupController {
-    showSignup(req, res) {
-        res.render('signup');
-    }
+  showSignup(req, res) {
+    res.render("signup");
+  }
 }
 
-module.exports = new SignupController;
+module.exports = new SignupController();
