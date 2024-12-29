@@ -121,25 +121,66 @@
 </div>
 
 <div class="review">
-  <div class="review__header">
-    <h2 id="reviewCars">WRITE A REVIEW</h2>
+  <div>
+    <h2 id="reviewCars" class="review__header">WRITE A REVIEW</h2>
     <hr />
-    <div class="col-md-12 bg-light mt-3 p-5">
-      <form>
-        <div class="form-group">
-          <textarea
-            cols="30"
-            rows="7"
-            class="form-control"
-            placeholder="Please share more about your experience with this car"
-          ></textarea>
+    <div class="review_box">
+      <p>Your Rating:</p>
+      <ul class="list" id="starList">
+        <li><a><i class="fa fa-star"></i></a></li>
+        <li><a><i class="fa fa-star"></i></a></li>
+        <li><a><i class="fa fa-star"></i></a></li>
+        <li><a><i class="fa fa-star"></i></a></li>
+        <li><a><i class="fa fa-star"></i></a></li>
+      </ul>
+      <form
+        class="row contact_form"
+        action="/reviews"
+        method="POST"
+        id="reviewForm"
+        novalidate="novalidate"
+      >
+        <input type="hidden" name="rating" id="ratingInput" value="0" />
+        <div class="col-md-12">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              name="name"
+              placeholder="Your Full Name"
+              required
+            />
+          </div>
         </div>
-        <div class="form-group mt-3">
-          <input
-            type="submit"
-            class="btn btn-primary py-3 px-5"
-            value="submit a review"
-          />
+        <div class="col-md-12">
+          <div class="form-group">
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              placeholder="Email Address"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <textarea
+              class="form-control"
+              name="comment"
+              id="comment"
+              rows="3"
+              placeholder="Your Review"
+              required
+            ></textarea>
+          </div>
+        </div>
+        <div class="col-md-12 text-right">
+          <button type="submit" class="primary-btn">
+            Add Review
+          </button>
         </div>
       </form>
     </div>
@@ -148,12 +189,117 @@
 </div>
 
 <div class="review mt-5">
-  <div class="review__header">
-    <h2 id="reviewCars">VIEW REVIEWS</h2>
+  <div>
+    <h2 id="reviewCars" class="review__header">VIEW REVIEWS</h2>
     <hr />
-    <div class="col-md-12 bg-light mt-3 p-5">
+    <div class="review_section mt-5">
+      <!-- Overall Rating -->
+      <div class="row">
+        <div class="col-6 overall_box">
+          <h4>Overall</h4>
+          <h2 class="overall_rating">3.1</h2>
+          <p>(10 Reviews)</p>
+        </div>
+        <div class="col-6 rating_breakdown">
+          <h4>Based on 10 Reviews</h4>
+          <ul>
+            <li>
+              1 Star
+              <span class="stars">
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </span>
+              2
+            </li>
+            <li>
+              2 Star
+              <span class="stars">
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </span>
+              1
+            </li>
+            <li>
+              3 Star
+              <span class="stars">
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </span>
+              3
+            </li>
+            <li>
+              4 Star
+              <span class="stars">
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star"></i>
+              </span>
+              2
+            </li>
+            <li>
+              5 Star
+              <span class="stars">
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+                <i class="fa fa-star checked"></i>
+              </span>
+              2
+            </li>
+          </ul>
+        </div>
+      </div>
 
+      <!-- Review List -->
+      <div class="review_list">
+        <div class="review_item">
+          <h5>meo meo</h5>
+          <p class="stars">
+            <i class="fa fa-star checked"></i>
+            <i class="fa fa-star checked"></i>
+            <i class="fa fa-star checked"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+          </p>
+          <p>a</p>
+        </div>
+        <div class="review_item">
+          <h5>meo meo</h5>
+          <p class="stars">
+            <i class="fa fa-star checked"></i>
+            <i class="fa fa-star checked"></i>
+            <i class="fa fa-star checked"></i>
+            <i class="fa fa-star checked"></i>
+            <i class="fa fa-star"></i>
+          </p>
+          <p>hi</p>
+        </div>
+        <div class="review_item">
+          <h5>meo meo</h5>
+          <p class="stars">
+            <i class="fa fa-star checked"></i>
+            <i class="fa fa-star checked"></i>
+            <i class="fa fa-star checked"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+          </p>
+          <p>chào các con vợ</p>
+        </div>
+      </div>
     </div>
-
   </div>
 </div>
+
+<div></div>
