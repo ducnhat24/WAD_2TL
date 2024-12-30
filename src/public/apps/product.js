@@ -2,6 +2,11 @@ let currentPage = 1; // Current page number
 let limit = 5;       // Items per page
 let totalPages = 0;  // Total number of pages
 const cache = new Map(); // Cache to store prefetched pages
+let searchQuery = ''; // Search query
+let selectedBrands = []; // Selected brands
+let selectedCategories = []; // Selected categories
+let selectedSort = ''; // Selected sort type
+
 
 function addCart() {
     // Add item to cart
@@ -55,57 +60,237 @@ function updateCartCount(increment = 1) {
         });
 }
 
-// // Prefetch next page data
-// function prefetchPage(page) {
-//     // if (cache.has(page) || page > totalPages || page < 1) return;
 
-//     fetch(`http://localhost:5000/api/product/limitation`, {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({ page, limit })
-
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             cache.set(page, data.item);
-//         })
-//         .catch(error => console.error(`Error prefetching page ${page}:`, error));
-// }
-
-// Load products for the current page
 function loadProducts() {
-    if (cache.has(currentPage)) {
-        renderProducts(cache.get(currentPage));
-        const payload = {
+    const queryParams = getQueryParams();
+    
+    // Check if there are any filter parameters
+    const hasFilters = queryParams.brands.length > 0 || 
+                      queryParams.categories.length > 0 || 
+                      queryParams.sortType || 
+                      queryParams.keysearch;
+
+    if (hasFilters) {
+        // If there are filters, use filter API endpoint
+        const filterPayload = {
             page: currentPage,
-            limit: limit
+            limit: limit,
+            brands: queryParams.brands,
+            categories: queryParams.categories,
+            sortType: queryParams.sortType,
+            sortBy: queryParams.sortBy
         };
-        updateURL(payload); // Cập nhật URL
-        return;
+
+        if (queryParams.keysearch) {
+            // If there's a search query, use search endpoint
+            handleSearchWithParams(queryParams.keysearch);
+        } else {
+            // Otherwise use filter endpoint
+            applyFilters(filterPayload);
+        }
+    } else if (cache.has(currentPage)) {
+        renderProducts(cache.get(currentPage));
+        updateURL({ page: currentPage, limit });
+    } else {
+        // No filters, load regular products
+        showSpinner();
+        fetch(`http://localhost:5000/api/product/limitation`, {
+            credentials: 'include',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ page: currentPage, limit: limit })
+        })
+            .then(response => response.json())
+            .then(data => {
+                hideSpinner();
+                const { totalPages: total, item } = data;
+                totalPages = total;
+                cache.set(currentPage, item);
+                renderProducts(item);
+                prefetchPage(currentPage + 1);
+                updateURL({ page: currentPage, limit });
+            })
+            .catch(error => console.error('Error loading products:', error));
     }
-    showSpinner(); // Hiển thị spinner
-    fetch(`http://localhost:5000/api/product/limitation`, {
+}
+
+function handleSearchWithParams(query) {
+    showSpinner();
+    fetch(`http://localhost:5000/api/product/search`, {
         credentials: 'include',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ page: currentPage, limit: limit })
+        body: JSON.stringify({ 
+            keysearch: query,
+            page: currentPage,
+            limit: limit
+        })
+    })
+        .then(res => res.json())
+        .then(data => {
+            hideSpinner();
+            if (data.item.length === 0) {
+                notify({
+                    type: "warning",
+                    msg: "No results found"
+                });
+                resetPagination();
+            } else {
+                totalPages = data.totalPages;
+                cache.clear();
+                cache.set(currentPage, data.item);
+                renderProducts(data.item);
+                prefetchPage(currentPage + 1);
+            }
+        })
+        .catch(error => {
+            hideSpinner();
+            notify({
+                type: "error",
+                msg: error.message
+            });
+        });
+}
+
+function applyFilters(filterPayload) {
+    showSpinner();
+    fetch('http://localhost:5000/api/product/filter', {
+        credentials: 'include',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(filterPayload)
     })
         .then(response => response.json())
         .then(data => {
-            hideSpinner(); // Ẩn spinner
+            hideSpinner();
             const { totalPages: total, item } = data;
-            totalPages = total; // Update total pages
-            console.log("Current page: " + currentPage);
-            cache.set(currentPage, item); // Cache the current page
-            renderProducts(item); // Render products
-            prefetchPage(currentPage + 1); // Prefetch the next page
-            const payload = {
-                page: currentPage,
-                limit: limit
-            };
-            updateURL(payload); // Cập nhật URL
+            totalPages = total;
+            cache.clear();
+            cache.set(currentPage, item);
+            renderProducts(item);
+            prefetchPage(currentPage + 1);
         })
-        .catch(error => console.error('Error loading products:', error));
+        .catch(error => console.error('Error filtering products:', error));
+}
+
+function resetPagination() {
+    document.getElementById('page-info').textContent = `Page 0 of 0`;
+    document.getElementById('prev-btn').disabled = true;
+    document.getElementById('next-btn').disabled = true;
+    const itemsContainer = document.getElementById('items-container');
+    itemsContainer.innerHTML = '';
+}
+
+// Modify the DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', () => {
+    const queryParams = getQueryParams();
+
+    // Update UI based on URL parameters
+    if (queryParams.keysearch) {
+        document.querySelector('#search__bar__product').value = queryParams.keysearch;
+    }
+
+    // Load sidebar first so checkboxes exist
+    loadSideBar().then(() => {
+        // After sidebar is loaded, set the checkboxes
+        queryParams.brands.forEach(brand => {
+            const checkbox = document.getElementById(`checkbox_${brand}`);
+            if (checkbox) checkbox.checked = true;
+        });
+
+        queryParams.categories.forEach(category => {
+            const checkbox = document.getElementById(`checkbox_${category}`);
+            if (checkbox) checkbox.checked = true;
+        });
+
+        if (queryParams.sortType) {
+            const radio = document.getElementById(`sort_${queryParams.sortType}`);
+            if (radio) radio.checked = true;
+        }
+
+        // Set current page and limit
+        currentPage = queryParams.page;
+        limit = queryParams.limit;
+
+        // Load products with filters
+        loadProducts();
+    });
+});
+
+// Modify loadSideBar to return a promise
+function loadSideBar() {
+    return Promise.all([
+        new Promise((resolve) => {
+            const brandFilterArea = document.getElementById('brand-filter');
+            brandFilterArea.innerHTML = ''; // Clear existing content
+            
+            fetch('http://localhost:5000/api/brand', {
+                credentials: 'include',
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.data.forEach(brand => {
+                        const brandElement = document.createElement('div');
+                        brandElement.innerHTML = `
+                            <div class="custom-checkbox-group">
+                                <input 
+                                    type="checkbox" 
+                                    id="checkbox_${brand._id}" 
+                                    class="custom-checkbox">
+                                <label class="custom-label" for="checkbox_${brand._id}">${brand.brandName}</label>
+                            </div>
+                        `;
+                        // Kiểm tra xem phần tử đã có chưa, nếu chưa thì thêm
+                        if (!document.getElementById(`checkbox_${brand._id}`)) {
+                            brandFilterArea.appendChild(brandElement);
+                        }
+                        // brandFilterArea.appendChild(brandElement);
+                    });
+                    resolve();
+                })
+                .catch(error => {
+                    console.error('Error loading brands:', error);
+                    resolve();
+                });
+        }),
+        new Promise((resolve) => {
+            const categoryFilterArea = document.getElementById('category-filter');
+            categoryFilterArea.innerHTML = ''; // Clear existing content
+            
+            fetch('http://localhost:5000/api/category', {
+                credentials: 'include',
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.data.forEach(category => {
+                        const categoryElement = document.createElement('div');
+                        categoryElement.innerHTML = `
+                            <div class="custom-checkbox-group">
+                                <input 
+                                    type="checkbox" 
+                                    id="checkbox_${category._id}" 
+                                    class="custom-checkbox">
+                                <label class="custom-label" for="checkbox_${category._id}">${category.categoryName}</label>
+                            </div>
+                        `;
+                        // Kiểm tra xem phần tử đã có chưa, nếu chưa thì thêm
+                        if (!document.getElementById(`checkbox_${category._id}`)) {
+                            categoryFilterArea.appendChild(categoryElement);
+                        }
+                        // categoryFilterArea.appendChild(categoryElement);
+                    });
+                    resolve();
+                })
+                .catch(error => {
+                    console.error('Error loading categories:', error);
+                    resolve();
+                });
+        })
+    ]);
 }
 
 // Update prefetchPage to handle search queries
@@ -133,51 +318,6 @@ function prefetchPage(page) {
         })
         .catch(error => console.error(`Error prefetching page ${page}:`, error));
 }
-
-// Hàm cập nhật URL
-// function updateURL() {
-//     const searchQuery = document.querySelector("#search__bar__product").value;
-//     const queryParams = new URLSearchParams({
-//         page: currentPage,
-//         limit: limit,
-//     });
-
-//     // Thêm keysearch vào URL nếu có
-//     if (searchQuery) {
-//         queryParams.set('search', searchQuery);
-//     }
-
-//     const newURL = `${window.location.pathname}?${queryParams.toString()}`;
-//     history.pushState(null, '', newURL);
-// }
-
-// function updateURL({ page, limit, keysearch, brands = [], categories = [], sortType, sortBy }) {
-//     const queryParams = new URLSearchParams();
-
-//     // Add pagination parameters
-//     if (page) queryParams.set('page', page);
-//     if (limit) queryParams.set('limit', limit);
-
-//     // Add search query if it exists
-//     if (keysearch) queryParams.set('keysearch', keysearch);
-
-//     // Add filters for brands and categories
-//     if (brands.length > 0) {
-//         queryParams.set('brands', brands.join(','));
-//     }
-
-//     if (categories.length > 0) {
-//         queryParams.set('categories', categories.join(','));
-//     }
-
-//     // Add sorting parameters if provided
-//     if (sortType) queryParams.set('sortType', sortType);
-//     if (sortBy) queryParams.set('sortBy', sortBy);
-
-//     // Update the URL in the browser without reloading
-//     const newURL = `${window.location.pathname}?${queryParams.toString()}`;
-//     history.pushState(null, '', newURL);
-// }
 
 function updateURL({
     page = 1,
@@ -380,6 +520,7 @@ document.getElementById('next-btn').addEventListener('click', () => {
 function filterProducts() {
     // Get filter values from the UI
     // const searchValue = document.getElementById('search__bar__product').value.trim();
+    currentPage = 1;
     const selectedBrands = Array.from(
         document.querySelectorAll('#brand-filter input[type="checkbox"]:checked')
     ).map(input => input.id.replace('checkbox_', ''));
@@ -555,8 +696,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-function loadSideBar() {
-    showBrand();
-    showCategory();
-}
+// function loadSideBar() {
+//     showBrand();
+//     showCategory();
+// }
 

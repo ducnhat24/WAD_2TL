@@ -22,23 +22,6 @@
                     </div>
                     <h5 class="mt-4">Brand</h5>
                     <div id="brand-filter" class="filter-area btn-group-toggle" data-toggle="buttons">
-                        {{!-- {{#each brands}}
-                        <input type="checkbox" id="checkbox_{{this}}" {{#if (includes this
-                            ../selectedBrands)}}checked{{/if}}>
-                        <label class="btn btn-outline-warning" for="checkbox_{{this}}">{{this}}</label>
-                        {{/each}} --}}
-
-                        {{!-- <input type="checkbox" id="checkbox_bmw" {{#if (includes "bmw"
-                            selectedBrands)}}checked{{/if}}>
-                        <label class="btn btn-outline-warning" for="checkbox_bmw">BMW</label>
-
-                        <input type="checkbox" id="checkbox_ferrari" {{#if (includes "ferrari"
-                            selectedBrands)}}checked{{/if}}>
-                        <label class="btn btn-outline-warning" for="checkbox_ferrari">Ferrari</label>
-
-                        <input type="checkbox" id="checkbox_audi" {{#if (includes "audi"
-                            selectedBrands)}}checked{{/if}}>
-                        <label class="btn btn-outline-warning" for="checkbox_audi">Audi</label> --}}
                     </div>
 
                     <h5 class="mt-4">Price</h5>
@@ -47,34 +30,8 @@
 
                     <h5 class="mt-4">Origin</h5>
                     <div id="category-filter" class="filter-area btn-group-toggle" data-toggle="buttons">
-                        {{!-- {{#each models}}
-
-                        <input type="checkbox" id="checkbox_{{this}}" {{#if (includes this
-                            ../selectedModels)}}checked{{/if}}>
-                        <label class="btn btn-outline-warning" for="checkbox_{{this}}">{{this}}</label>
-                        {{/each}} --}}
-
-                        {{!-- <input type="checkbox" id="checkbox_sedan" {{#if (includes "sedan"
-                            selectedBrands)}}checked{{/if}}>
-                        <label class="btn btn-outline-warning" for="checkbox_sedan">Sedan</label>
-
-                        <input type="checkbox" id="checkbox_suv" {{#if (includes "suv" selectedBrands)}}checked{{/if}}>
-                        <label class="btn btn-outline-warning" for="checkbox_suv">SUV</label>
-
-                        <input type="checkbox" id="checkbox_van" {{#if (includes "van" selectedBrands)}}checked{{/if}}>
-                        <label class="btn btn-outline-warning" for="checkbox_van">Van</label> --}}
                     </div>
                     <h5 class="mt-4">Sort</h5>
-                    {{!-- <div id="sort-filter" class="filter-area btn-group-toggle" data-toggle="buttons">
-                        <input type="radio" name="sort" id="sort_price_asc" {{#if (eqString selectedSort "price_asc"
-                            )}}checked{{/if}}>
-                        <label class="btn btn-outline-warning" for="sort_price_asc">Price ↑</label>
-
-                        <input type="radio" name="sort" id="sort_price_desc" {{#if (eqString selectedSort "price_desc"
-                            )}}checked{{/if}}>
-                        <label class="btn btn-outline-warning" for="sort_price_desc">Price ↓</label>
-
-                    </div> --}}
                     <div id="sort-filter" class="filter-area custom-radio-group">
                         <input type="radio" name="sort" id="sort_price_asc" class="custom-radio" {{#if (eqString selectedSort "price_asc")}}checked{{/if}}>
                         <label class="custom-label" for="sort_price_asc">Price ↑</label>
