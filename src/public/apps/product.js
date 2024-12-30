@@ -682,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (queryParams.sortType) {
-        const radio = document.getElementById(queryParams.sortType === 'asc' ? 'sort_asc' : 'sort_desc');
+        const radio = document.getElementById(queryParams.sortType === 'asc' ? 'sort_price_asc' : 'sort_price_desc');
         if (radio) radio.checked = true;
     }
 
