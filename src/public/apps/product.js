@@ -55,22 +55,22 @@ function updateCartCount(increment = 1) {
         });
 }
 
-// Prefetch next page data
-function prefetchPage(page) {
-    // if (cache.has(page) || page > totalPages || page < 1) return;
+// // Prefetch next page data
+// function prefetchPage(page) {
+//     // if (cache.has(page) || page > totalPages || page < 1) return;
 
-    fetch(`http://localhost:5000/api/product/limitation`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ page, limit })
+//     fetch(`http://localhost:5000/api/product/limitation`, {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ page, limit })
 
-    })
-        .then(response => response.json())
-        .then(data => {
-            cache.set(page, data.item);
-        })
-        .catch(error => console.error(`Error prefetching page ${page}:`, error));
-}
+//     })
+//         .then(response => response.json())
+//         .then(data => {
+//             cache.set(page, data.item);
+//         })
+//         .catch(error => console.error(`Error prefetching page ${page}:`, error));
+// }
 
 // Load products for the current page
 function loadProducts() {
@@ -98,6 +98,31 @@ function loadProducts() {
         .catch(error => console.error('Error loading products:', error));
 }
 
+// Update prefetchPage to handle search queries
+function prefetchPage(page) {
+    // if (cache.has(page) || page > totalPages || page < 1) return;
+
+    const searchQuery = document.querySelector("#search__bar__product").value;
+    const url = searchQuery 
+      ? 'http://localhost:5000/api/product/search'
+      : 'http://localhost:5000/api/product/limitation';
+    
+    const payload = searchQuery 
+      ? { keysearch: searchQuery, page, limit }
+      : { page, limit };
+
+    fetch(url, {
+        credentials: 'include',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+        .then(response => response.json())
+        .then(data => {
+            cache.set(page, data.item);
+        })
+        .catch(error => console.error(`Error prefetching page ${page}:`, error));
+}
 
 // Render products on the page
 function renderProducts(products) {
@@ -205,31 +230,7 @@ function handleSearch() {
     });
 }
 
-// Update prefetchPage to handle search queries
-function prefetchPage(page) {
-    // if (cache.has(page) || page > totalPages || page < 1) return;
 
-    const searchQuery = document.querySelector("#search__bar__product").value;
-    const url = searchQuery 
-      ? 'http://localhost:5000/api/product/search'
-      : 'http://localhost:5000/api/product/';
-    
-    const payload = searchQuery 
-      ? { keysearch: searchQuery, page, limit }
-      : { page, limit };
-
-    fetch(url, {
-        credentials: 'include',
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    })
-        .then(response => response.json())
-        .then(data => {
-            cache.set(page, data.item);
-        })
-        .catch(error => console.error(`Error prefetching page ${page}:`, error));
-}
 
 // Add event listener for search input
 document.querySelector("#search__bar__product").addEventListener("keyup", function(event) {

@@ -42,7 +42,7 @@ body {
 .featured-cars {
     margin: 0px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     flex: 1;
 }
 

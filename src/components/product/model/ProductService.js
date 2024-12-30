@@ -54,22 +54,23 @@ class ProductService {
         try {
             // Calculate skip value for pagination
             const skip = (page - 1) * limit;
-
+            // console.log(keysearch);
             // Get total count
             const totalProducts = await Product.countDocuments({
                 $or: [
-                    { name: { $regex: keysearch, $options: 'i' } },
-                    { description: { $regex: keysearch, $options: 'i' } }
+                    { productName: { $regex: keysearch, $options: 'i' } },
+                    { productDescription: { $regex: keysearch, $options: 'i' } }
                 ]
             });
+            // console.log(totalProducts);
 
             // Get paginated results
             const products = await Product.find({
                 $or: [
                     { productName: { $regex: keysearch, $options: 'i' } },
                     { productDescription: { $regex: keysearch, $options: 'i' } },
-                    { productBrand: { $regex: keysearch, $options: 'i' } },
-                    { productMaterial: { $regex: keysearch, $options: 'i' } }
+                    // { productBrand: { $regex: keysearch, $options: 'i' } },
+                    // { productMaterial: { $regex: keysearch, $options: 'i' } }
                 ]
             })
                 .skip(skip)
