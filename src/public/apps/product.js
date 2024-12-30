@@ -76,7 +76,11 @@ function updateCartCount(increment = 1) {
 function loadProducts() {
     if (cache.has(currentPage)) {
         renderProducts(cache.get(currentPage));
-        updateURL(); // Cập nhật URL
+        const payload = {
+            page: currentPage,
+            limit: limit
+        };
+        updateURL(payload); // Cập nhật URL
         return;
     }
     showSpinner(); // Hiển thị spinner
@@ -95,7 +99,11 @@ function loadProducts() {
             cache.set(currentPage, item); // Cache the current page
             renderProducts(item); // Render products
             prefetchPage(currentPage + 1); // Prefetch the next page
-            updateURL(); // Cập nhật URL
+            const payload = {
+                page: currentPage,
+                limit: limit
+            };
+            updateURL(payload); // Cập nhật URL
         })
         .catch(error => console.error('Error loading products:', error));
 }
@@ -182,14 +190,14 @@ function updateURL({
 } = {}) {
     const queryParams = new URLSearchParams();
 
-    const searchQuery = document.querySelector("#search__bar__product").value;
+    // const searchQuery = document.querySelector("#search__bar__product").value;
 
     // Add pagination parameters
     if (page) queryParams.set('page', page);
     if (limit) queryParams.set('limit', limit);
 
     // Add search query if it exists
-    if (searchQuery) queryParams.set('keysearch', searchQuery);
+    if (keysearch) queryParams.set('keysearch', keysearch);
 
     // Add filters for brands and categories
     if (brands.length > 0) {
@@ -306,7 +314,13 @@ function handleSearch() {
         // Prefetch next page of search results
         prefetchPage(currentPage + 1);
         // Update the URL
-        updateURL();
+        const payload = {
+            keysearch: query,
+            page: currentPage,
+            limit: limit
+        };
+        
+        updateURL(payload);
       }
     })
     .catch((error) => {
@@ -493,12 +507,56 @@ function showCategory() {
         .catch(error => console.error('Error loading models:', error));
 }
 
+function getQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+
+    return {
+        page: parseInt(params.get('page') || '1'),
+        limit: parseInt(params.get('limit') || '10', 10),
+        keysearch: params.get('keysearch') || '',
+        brands: params.get('brands') ? params.get('brands').split(',') : [],
+        categories: params.get('categories') ? params.get('categories').split(',') : [],
+        sortType: params.get('sortType') || '',
+        sortBy: params.get('sortBy') || ''
+    };
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const queryParams = getQueryParams();
+
+    // Cập nhật các giá trị từ URL vào các filter UI
+    if (queryParams.keysearch) {
+        document.querySelector('#search__bar__product').value = queryParams.keysearch;
+    }
+
+    queryParams.brands.forEach(brand => {
+        const checkbox = document.getElementById(`checkbox_${brand}`);
+        if (checkbox) checkbox.checked = true;
+    });
+
+    queryParams.categories.forEach(category => {
+        const checkbox = document.getElementById(`checkbox_${category}`);
+        if (checkbox) checkbox.checked = true;
+    });
+
+    if (queryParams.sortType) {
+        const radio = document.getElementById(queryParams.sortType === 'asc' ? 'sort_asc' : 'sort_desc');
+        if (radio) radio.checked = true;
+    }
+
+    // Set current page and limit
+    currentPage = queryParams.page;
+    limit = queryParams.limit;
+
+    // Load products with initial filters
+    loadProducts();
+    loadSideBar();
+});
+
+
 function loadSideBar() {
     showBrand();
     showCategory();
 }
 
-
-// Initial load
-loadSideBar();
-loadProducts();

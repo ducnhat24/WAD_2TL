@@ -279,6 +279,8 @@ class ProductService {
         }
     }
 
+    
+
     async updateProduct(productId, product) {
         try {
             const findProduct = await Product.findOne({ _id: productId });
