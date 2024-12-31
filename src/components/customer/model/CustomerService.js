@@ -159,6 +159,28 @@ class CustomerService {
             };
         }
     }
+
+    async getAllUsers() {
+        try {
+            const users = await Customer.find();
+            if (!users) {
+                return {
+                    status: "error",
+                    message: "No users found",
+                };
+            }
+            return {
+                status: "success",
+                message: "Users found",
+                data: users,
+            };
+        } catch (error) {
+            return {
+                status: "error",
+                message: error.message,
+            };
+        }
+    }
 }
 
 module.exports = new CustomerService;

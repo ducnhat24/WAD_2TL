@@ -3,10 +3,12 @@ const { seedBrands } = require('./seedBrands');
 const { seedCategories } = require('./seedCategories');
 const { seedShipping } = require('./seedShipping');
 const { seedUsers } = require('./seedUsers');
+const { seedCustomers } = require('./seedCustomers');
 
 async function seed() {
     try {
-        await seedUsers();
+        await seedCustomers();
+        // await seedUsers();
         // await seedShipping();
         // await seedBrands();
         // await seedCategories();
