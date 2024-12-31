@@ -1,0 +1,535 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.product-container {
+    margin: 20px 0;
+    width: 100%;
+}
+
+.product-content {
+    width: 100%;
+    padding: 20px;
+}
+
+.car-feature {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin: 0 auto;
+    background-color: #fff;
+}
+
+.featured-cars-section {
+    margin: 0px;
+    width: 100%;
+}
+
+.product__wrapper {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.featured-cars {
+    margin: 0px;
+    display: flex;
+    justify-content: space-evenly;
+    flex: 1;
+}
+
+.cars-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 10px;
+}
+
+
+.text-navy {
+    color: var(--navy-color); /* Đổi màu chữ thành navy */
+}
+
+
+.card {
+    margin: 10px 10px;
+    background-color: #fff;
+    width: 250px;
+    height: 350px;
+    position: relative;
+    border: none;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+
+}
+
+.card:hover {
+    background-color: #fff;
+    color: black;
+    transform: scale(1.05);
+}
+
+.card_img img {
+    position: relative; /* Đảm bảo z-index có hiệu lực */
+    z-index: 20; /* Cao hơn các phần tử khác */
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Điều chỉnh để ảnh vừa khung */
+}
+.card_img {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 220px;
+    background: var(--navy-color);
+    border-radius: 10px;
+    z-index: 0; /* Đặt giá trị cao */
+
+}
+
+.card_img .card_img_fake1 {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    height: 30px;
+    width: 50px;
+    background-color: #fff;
+    z-index: 1;
+
+}
+
+.card_img .card_img_fake1::before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 10px;
+    background: var(--navy-color);
+    z-index: 2;
+}
+
+.card_content {
+    width: 100%;
+    height: 120px;
+    background: #1d1a2c;
+    border-radius: 10px;
+    border-top-left-radius: 0px;
+    position: absolute;
+    bottom: 0;
+}
+
+.card_content .card_price {
+    position: absolute;
+    top: -60px;
+    left: 0;
+    background: #fff;
+    height: 60px;
+    width: 150px;
+    border-top-right-radius: 15px;
+    z-index: 1;
+}
+
+.card_content .card_price .card_price_fake {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: #1d1a2c;
+    height: 50px;
+    width: 140px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#checkout-product-text{
+    margin-bottom: 60px;
+}
+
+.card_content .card_price .card_price_fake .card_price_value {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 5px 20px;
+    background: #fff;
+    border-radius: 5px;
+}
+
+.card_detail {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+}
+
+.card_detail .card_title {
+    margin-top: 5px;
+}
+
+.card_detail .card_title h5 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    /* padding: 5px; */
+    /* white-space: nowrap !important; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 220px;
+    height : 30px;
+}
+
+
+.card_detail .card_description p {
+    font-size: 12px;
+    color: #fff;
+    padding: 0px 10px;
+    text-align: justify;
+    text-overflow: ellipsis;
+}
+
+
+/* .card_content .card_price:after {
+    position: absolute;
+    content: '';
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border-bottom-left-radius: 17px;
+    bottom: -10px;
+    right: 0;
+    transform: translateX(100%);
+    border-bottom: 10px solid #fff;
+    border-left: 10px solid #fff;
+} */
+
+.card_img img {
+    width: 100%;
+    height: 80%;
+    object-fit: scale-down;
+}
+
+/* .card-title {
+    color: orange;
+    font-weight: 700;
+    font-size: 1.0rem;
+    text-align: left;
+}
+
+.card-text {
+    font-size: 0.9rem;
+}
+
+.card a {
+    padding: 10px 2px;
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: scale-down;
+} */
+
+.check_latest_text {
+    text-align: center;
+}
+
+.text-muted {
+    text-align: left;
+}
+
+.feature-cars__title {
+    margin-top: 20px;
+}
+
+.btn-outline-warning {
+    width: 120px;
+}
+
+.btn-group-toggle {
+    margin: 5px;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    display: none;
+}
+
+.sidebar {
+    margin: 10px 10px;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 0px 8px 4px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    background-color: #fff;
+    width: 300px;
+    height: fit-content;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+
+}
+.sidebar:hover {
+    background-color: white;
+    color: black;
+    transform: scale(1.05);
+}
+.sidebar label {
+    border: 2px solid --primary-color;
+    width: 100px;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: white;
+    color: var(--navy-color);
+    font-weight: bold;
+    margin: 5px;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.filter-area {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+input[type="checkbox"]:checked+label,
+input[type="radio"]:checked+label {
+    background-color: var(--navy-color-hover);
+    color: white;
+}
+
+label {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 2px solid var(--navy-color);
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: white;
+    color: var(--navy-color);
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+
+input[type="range"] {
+    -webkit-appearance: none;
+    /* Loại bỏ giao diện mặc định */
+    width: 100%;
+    height: 8px;
+    background: var(--navy-color);
+    border-radius: 5px;
+    outline: none;
+    transition: background 0.3s;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 2px solid var(--navy-color);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+input[type="range"]:hover {
+    background: var(--navy-color-hover);
+    transform: scale(1.05);
+}
+
+.fas.fa-search {
+    color: #ffffff;
+    font-size: 1.2rem;
+    /* Kích thước */
+
+    border-radius: 8px;
+}
+
+#search__bar__product {
+    margin-right: 8px;
+}
+
+.custom_button {
+    background-color: var(--navy-color);
+    color: white;
+    border: none;
+    padding: 9px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+
+}
+
+.custom_button:hover {
+    background-color: var(--navy-color-hover);
+    transform: scale(1.05);
+}
+
+.fas fa-filter {
+    color: #ffffff;
+    font-size: 1.2rem;
+    /* Kích thước */
+
+    border-radius: 8px;
+}
+
+#button_filter {
+    background-color: var(--navy-color);
+    color: white;
+    border: none;
+    padding: 9px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+    
+
+}
+
+#button_filter:hover {
+    background-color: var(--navy-color-hover);
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+    }
+
+}
+
+#pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    height: fit-content;
+}
+
+#page-info {
+    margin: 0px 10px;   
+}
+
+#product-page{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    
+}
+
+
+.spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner.hidden {
+    display: none; /* Ẩn spinner khi không cần */
+}
+
+.spinner-inner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid var(--navy-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* Container styles */
+.custom-radio-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Hide the default radio buttons */
+.custom-radio {
+    display: none;
+}
+
+/* Style for custom labels */
+.custom-label {
+    display: inline-block;
+    padding: 10px 0px;
+    border: 2px solid var(--navy-color);
+    border-radius: 5px;
+    background-color: #fff;
+    color: var(--navy-color);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+/* Hover effect */
+.custom-label:hover {
+    background-color: var(--navy-color-hover);
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* Checked state */
+.custom-radio:checked + .custom-label {
+    background-color: var(--navy-color-hover);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure the group fits well in responsive designs */
+.filter-area {
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+/* Wrapper cho checkbox group */
+.custom-checkbox-group {
+    display: inline-flex; /* Sắp xếp các checkbox theo hàng ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin: 5px 10px; /* Tạo khoảng cách giữa các checkbox */
+}
+
+/* Checkbox ẩn đi */
+.custom-checkbox {
+    display: none;
+}
+
+
+/* Checkbox được chọn */
+.custom-checkbox:checked + .custom-label {
+    background-color: var(--navy-color-hover);
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+

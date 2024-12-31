@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=VarelaRound:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Varela Round', sans-serif;
+    position: relative;
+}
+
+body::-webkit-scrollbar {
+    width: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #000;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+:root {
+    --size-icon: 15px;
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --warning-color: #ffc107;
+    --width-notify: 400px;
+    --right-notify: 20px;
+
+    --border-radius: 10px;
+    --main-color: #80002a;
+    --main-scroll-color: #3b3b3b93;
+    --background-color: #fff;
+    --item-color: #f2f2f2;
+    --text-color: #000;
+    --text-in-background-color: #fff;
+    --navy-color: #2E5077; /* Mã màu navy */
+    --navy-color-hover: #1d1a2c; /* Mã màu navy khi hover */
+}
