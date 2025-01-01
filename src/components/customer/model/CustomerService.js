@@ -208,6 +208,48 @@ class CustomerService {
             };
         }
     }
+
+    async filterUser(query) {
+        try {
+            const { sortBy, sortType, keySearch } = query;
+            const querySearch = keySearch ? {
+                $or: [
+                    { customerName: { $regex: keySearch, $options: 'i' } },
+                    { customerEmail: { $regex: keySearch, $options: 'i' } },
+                ]
+            } : {};
+            const customers = await Customer.find(querySearch);
+
+            if (!customers) {
+                return {
+                    status: "error",
+                    message: "No users found",
+                };
+            }
+
+            let users = customers;
+            if (sortBy) {
+                users = [...customers].sort((a, b) => {
+                    if (sortType === "asc") {
+                        return a[sortBy] > b[sortBy] ? 1 : -1;
+                    } else {
+                        return a[sortBy] < b[sortBy] ? 1 : -1;
+                    }
+                });
+            }
+
+            return {
+                status: "success",
+                message: "Users found",
+                data: users,
+            };
+        } catch (error) {
+            return {
+                status: "error",
+                message: error.message,
+            };
+        }
+    }
 }
 
 module.exports = new CustomerService;

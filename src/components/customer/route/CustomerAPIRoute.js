@@ -5,6 +5,7 @@ const CustomerController = require('../controller/CustomerController');
 const CartController = require('../controller/CartController');
 const { authenticateGoogle, handleGoogleCallback } = require('../../../middleware/GoogleOAuth');
 
+customerAPIRoute.get('/filter', CustomerController.filterUser);
 customerAPIRoute.put('/:id', CustomerController.updateStatusAccountUser);
 customerAPIRoute.get('/', CustomerController.getAllUsers);
 customerAPIRoute.get('/auth/google', authenticateGoogle);
