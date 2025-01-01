@@ -108,10 +108,12 @@ class ProductService {
             const { brand, category, _id } = product;
 
             // Fetch all products with the same brand and category
-            const allSameProducts = await Product.find({     $or: [
-                { productBrand: brand },
-                { productCategory: category }
-            ]});
+            const allSameProducts = await Product.find({
+                $or: [
+                    { productBrand: brand },
+                    { productCategory: category }
+                ]
+            });
 
             // Exclude the original product
             const filteredProducts = allSameProducts.filter((p) => !p._id.equals(_id));
@@ -129,67 +131,68 @@ class ProductService {
 
 
     async filterProduct(query) {
-    try {
-        const brandArray = query.brands || [];
-        const categoryArray = query.categories || [];
-        const sortBy = query.sortBy;
-        const sortType = query.sortType;
+        try {
+            console.log("query:", query);
+            const brandArray = query.brands || [];
+            const categoryArray = query.categories || [];
+            const sortBy = query.sortBy;
+            const sortType = query.sortType;
 
-        // console.log(query);
+            // console.log(query);
 
-        const allProducts = await Product.find();
+            const allProducts = await Product.find();
 
-        if (allProducts && allProducts.length > 0) {
-            let filteredByBrand = allProducts;
+            if (allProducts && allProducts.length > 0) {
+                let filteredByBrand = allProducts;
 
-            // Filter by brand
-            if (brandArray.length > 0) {
-                filteredByBrand = allProducts.filter((product) =>
-                    brandArray.includes(product.productBrand.toString())
-                );
+                // Filter by brand
+                if (brandArray.length > 0) {
+                    filteredByBrand = allProducts.filter((product) =>
+                        brandArray.includes(product.productBrand.toString())
+                    );
+                }
+
+                let filteredByCategory = filteredByBrand;
+
+                // Filter by category
+                if (categoryArray.length > 0) {
+                    filteredByCategory = filteredByBrand.filter((product) =>
+                        categoryArray.includes(product.productCategory.toString())
+                    );
+                }
+
+                let sortedProducts = filteredByCategory;
+
+                // Sort by field
+                if (sortBy && sortType) {
+                    sortedProducts = [...filteredByCategory].sort((a, b) => {
+                        if (sortType === "asc") {
+                            return a[sortBy] > b[sortBy] ? 1 : -1;
+                        } else {
+                            return a[sortBy] < b[sortBy] ? 1 : -1;
+                        }
+                    });
+                }
+
+                // console.log(sortedProducts);
+                return {
+                    status: "success",
+                    message: "Filter successfully",
+                    data: sortedProducts,
+                };
+            } else {
+                return {
+                    status: "error",
+                    message: "Unavailable product",
+                };
             }
-
-            let filteredByCategory = filteredByBrand;
-
-            // Filter by category
-            if (categoryArray.length > 0) {
-                filteredByCategory = filteredByBrand.filter((product) =>
-                    categoryArray.includes(product.productCategory.toString())
-                );
-            }
-
-            let sortedProducts = filteredByCategory;
-
-            // Sort by field
-            if (sortBy && sortType) {
-                sortedProducts = [...filteredByCategory].sort((a, b) => {
-                    if (sortType === "asc") {
-                        return a[sortBy] > b[sortBy] ? 1 : -1;
-                    } else {
-                        return a[sortBy] < b[sortBy] ? 1 : -1;
-                    }
-                });
-            }
-
-            // console.log(sortedProducts);
-            return {
-                status: "success",
-                message: "Filter successfully",
-                data: sortedProducts,
-            };
-        } else {
+        } catch (error) {
             return {
                 status: "error",
-                message: "Unavailable product",
+                message: error.message,
             };
         }
-    } catch (error) {
-        return {
-            status: "error",
-            message: error.message,
-        };
     }
-}
 
     // async filterProduct(query) {
     //     try {
@@ -279,7 +282,7 @@ class ProductService {
         }
     }
 
-    
+
 
     async updateProduct(productId, product) {
         try {

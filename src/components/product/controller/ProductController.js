@@ -22,7 +22,7 @@ class ProductController {
             if (value.status === 'success') {
                 // console.log(sameProducts);
                 // res.render('product_details', { product: value.data[0] });
-                res.render('product_details', { product: value.data[0], sameProducts: sameProducts });   
+                res.render('product_details', { product: value.data[0], sameProducts: sameProducts });
             } else {
                 console.log(value.message);
             }
@@ -93,17 +93,22 @@ class ProductController {
         }
     }
 
-    async   filterProduct(req, res) {
+    async filterProduct(req, res) {
         try {
-            const { page, limit, brands, origins, sortType, sortBy } = req.body;
+            const { page, limit, brands, categories, sortType, sortBy } = req.query;
             const query = {
                 brands: brands,
-                origins: origins,
+                categories: categories,
                 sortType: sortType,
                 sortBy: sortBy
             };
 
             const products = await ProductService.filterProduct(query);
+            if (!page) {
+                res.json(products)
+                return;
+            }
+
             const totalPages = Math.ceil(products.data.length / limit);
             const startIndex = (page - 1) * limit;
             const endIndex = page * limit;
@@ -146,66 +151,66 @@ class ProductController {
     // }
 
     async getSomeProduct(req, res) {
-    try {
-        // Extract page, limit, and filters from the request body
-        const { page = 1, limit = 5, searchQuery = '', selectedBrands = [], selectedCategories = [], selectedSort = '' } = req.body;
+        try {
+            // Extract page, limit, and filters from the request body
+            const { page = 1, limit = 5, searchQuery = '', selectedBrands = [], selectedCategories = [], selectedSort = '' } = req.body;
 
-        // Parse page and limit
-        const currentPage = parseInt(page) || 1;
-        const itemsPerPage = parseInt(limit) || 5;
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = currentPage * itemsPerPage;
+            // Parse page and limit
+            const currentPage = parseInt(page) || 1;
+            const itemsPerPage = parseInt(limit) || 5;
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = currentPage * itemsPerPage;
 
-        // Fetch all products
-        let products = await ProductService.getAllProducts();
-        let allProducts = products.data;
+            // Fetch all products
+            let products = await ProductService.getAllProducts();
+            let allProducts = products.data;
 
-        // Apply search query filter if provided
-        if (searchQuery) {
-            allProducts = allProducts.data.filter(product => 
-                product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                product.description.toLowerCase().includes(searchQuery.toLowerCase())
-            );
+            // Apply search query filter if provided
+            if (searchQuery) {
+                allProducts = allProducts.data.filter(product =>
+                    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    product.description.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+
+            // Apply brand filter if selected
+            if (selectedBrands.length > 0) {
+                allProducts = allProducts.filter(product => selectedBrands.includes(product.brand));
+            }
+
+            // Apply category filter if selected
+            if (selectedCategories.length > 0) {
+                allProducts = allProducts.filter(product => selectedCategories.includes(product.category));
+            }
+
+            // Apply sort if selected
+            if (selectedSort === 'asc') {
+                allProducts = allProducts.sort((a, b) => a.name.localeCompare(b.name)); // Sorting in ascending order
+            } else if (selectedSort === 'desc') {
+                allProducts = allProducts.sort((a, b) => b.name.localeCompare(a.name)); // Sorting in descending order
+            }
+
+            // Paginate the products
+            const productToDisplay = allProducts.slice(startIndex, endIndex);
+
+            // Calculate total pages
+            const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+
+            console.log('Current page:', currentPage);
+            console.log('Total pages:', totalPages);
+
+            // Send the response
+            res.json({
+                currentPage: currentPage,
+                totalPages: totalPages,
+                item: productToDisplay,
+            });
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("An error occurred while fetching products");
         }
-
-        // Apply brand filter if selected
-        if (selectedBrands.length > 0) {
-            allProducts = allProducts.filter(product => selectedBrands.includes(product.brand));
-        }
-
-        // Apply category filter if selected
-        if (selectedCategories.length > 0) {
-            allProducts = allProducts.filter(product => selectedCategories.includes(product.category));
-        }
-
-        // Apply sort if selected
-        if (selectedSort === 'asc') {
-            allProducts = allProducts.sort((a, b) => a.name.localeCompare(b.name)); // Sorting in ascending order
-        } else if (selectedSort === 'desc') {
-            allProducts = allProducts.sort((a, b) => b.name.localeCompare(a.name)); // Sorting in descending order
-        }
-
-        // Paginate the products
-        const productToDisplay = allProducts.slice(startIndex, endIndex);
-
-        // Calculate total pages
-        const totalPages = Math.ceil(allProducts.length / itemsPerPage);
-
-        console.log('Current page:', currentPage);
-        console.log('Total pages:', totalPages);
-
-        // Send the response
-        res.json({
-            currentPage: currentPage,
-            totalPages: totalPages,
-            item: productToDisplay,
-        });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("An error occurred while fetching products");
     }
-}
 
 
     async addProduct(req, res) {
