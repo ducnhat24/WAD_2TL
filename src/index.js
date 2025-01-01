@@ -9,7 +9,7 @@ const { route } = require('./routes/index');
 const cookieParser = require('cookie-parser');
 app.use(express.json());
 
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = ['http://localhost:5000'];
 app.use(cors({
   // origin: 'https://wad-ga-06-a8w4.vercel.app',
   origin: function (origin, callback) {

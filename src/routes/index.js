@@ -7,6 +7,7 @@ const customerRoute = require('../components/customer/route/CustomerRoute');
 const customerAPIRoute = require('../components/customer/route/CustomerAPIRoute');
 const categoryAPIRoute = require('../components/category/route/CategoryAPIRoute');
 const brandAPIRoute = require('../components/brand/route/BrandAPIRoute');
+const orderAPIRoute = require('../components/customer/route/OrderAPIRoute');
 
 function route(app) {
     app.use('/', siteRoute);

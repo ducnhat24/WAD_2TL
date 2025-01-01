@@ -4,6 +4,8 @@ const { verifyToken } = require('../../../middleware/JWTAction');
 const CustomerController = require('../controller/CustomerController');
 const CartController = require('../controller/CartController');
 const { authenticateGoogle, handleGoogleCallback } = require('../../../middleware/GoogleOAuth');
+const OrderController = require('../controller/OrderController');
+const OrderAPIRoute = require('./OrderAPIRoute');
 
 customerAPIRoute.put('/:id', CustomerController.updateStatusAccountUser);
 customerAPIRoute.get('/', CustomerController.getAllUsers);
@@ -18,5 +20,7 @@ customerAPIRoute.get('/cart', CartController.getCart);
 customerAPIRoute.post('/cart', CartController.addProductToCart);
 customerAPIRoute.put('/cart', CartController.updateProductInCart);
 customerAPIRoute.delete('/cart', CartController.removeProductFromCart);
+
+customerAPIRoute.use('/order', OrderAPIRoute);
 
 module.exports = customerAPIRoute;
