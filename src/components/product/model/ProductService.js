@@ -50,40 +50,40 @@ class ProductService {
         }
     }
 
-    async searchProducts(keysearch, page, limit) {
-        try {
-            // Calculate skip value for pagination
-            const skip = (page - 1) * limit;
-            // console.log(keysearch);
-            // Get total count
-            const totalProducts = await Product.countDocuments({
-                $or: [
-                    { productName: { $regex: keysearch, $options: 'i' } },
-                    { productDescription: { $regex: keysearch, $options: 'i' } }
-                ]
-            });
-            // console.log(totalProducts);
+    // async searchProducts(keysearch, page, limit) {
+    //     try {
+    //         // Calculate skip value for pagination
+    //         const skip = (page - 1) * limit;
+    //         // console.log(keysearch);
+    //         // Get total count
+    //         const totalProducts = await Product.countDocuments({
+    //             $or: [
+    //                 { productName: { $regex: keysearch, $options: 'i' } },
+    //                 { productDescription: { $regex: keysearch, $options: 'i' } }
+    //             ]
+    //         });
+    //         // console.log(totalProducts);
 
-            // Get paginated results
-            const products = await Product.find({
-                $or: [
-                    { productName: { $regex: keysearch, $options: 'i' } },
-                    { productDescription: { $regex: keysearch, $options: 'i' } },
-                    // { productBrand: { $regex: keysearch, $options: 'i' } },
-                    // { productMaterial: { $regex: keysearch, $options: 'i' } }
-                ]
-            })
-                .skip(skip)
-                .limit(limit);
+    //         // Get paginated results
+    //         const products = await Product.find({
+    //             $or: [
+    //                 { productName: { $regex: keysearch, $options: 'i' } },
+    //                 { productDescription: { $regex: keysearch, $options: 'i' } },
+    //                 // { productBrand: { $regex: keysearch, $options: 'i' } },
+    //                 // { productMaterial: { $regex: keysearch, $options: 'i' } }
+    //             ]
+    //         })
+    //             .skip(skip)
+    //             .limit(limit);
 
-            return {
-                totalProducts,
-                products
-            };
-        } catch (error) {
-            throw error;
-        }
-    }
+    //         return {
+    //             totalProducts,
+    //             products
+    //         };
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
 
     // async getSameProduct(product) {
     //     try {
@@ -126,6 +126,23 @@ class ProductService {
         } catch (error) {
             console.error(error);
             throw new Error("An error occurred while fetching similar products");
+        }
+    }
+
+
+    async searchProducts(keysearch) {
+        try {
+            // Get all matching products without pagination
+            const products = await Product.find({
+                $or: [
+                    { productName: { $regex: keysearch, $options: 'i' } },
+                    { productDescription: { $regex: keysearch, $options: 'i' } }
+                ]
+            });
+
+            return products;
+        } catch (error) {
+            throw error;
         }
     }
 

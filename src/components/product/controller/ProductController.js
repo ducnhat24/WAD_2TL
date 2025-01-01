@@ -58,9 +58,43 @@ class ProductController {
         }
     }
 
-    async searchProduct(req, res) {
-        // console.log("Request body:", req.body);
+    // async searchProduct(req, res) {
+    //     // console.log("Request body:", req.body);
 
+    //     const { keysearch, page = 1, limit = 5 } = req.body;
+
+    //     if (!keysearch) {
+    //         return res.status(400).json({
+    //             status: "error",
+    //             msg: "Search query is required"
+    //         });
+    //     }
+
+    //     try {
+    //         // Get total count and products from service
+    //         const { totalProducts, products } = await ProductService.searchProducts(keysearch, page, limit);
+
+    //         // Calculate total pages
+    //         const totalPages = Math.ceil(totalProducts / limit);
+
+    //         res.json({
+    //             status: "success",
+    //             totalPages,
+    //             item: products,
+    //             currentPage: page,
+    //             totalItems: totalProducts
+    //         });
+    //     } catch (error) {
+    //         console.error(error);
+    //         res.status(500).json({
+    //             status: "error",
+    //             msg: "An error occurred while searching for products"
+    //         });
+    //     }
+    // }
+
+    // ProductController.js
+    async searchProduct(req, res) {
         const { keysearch, page = 1, limit = 5 } = req.body;
 
         if (!keysearch) {
@@ -71,16 +105,20 @@ class ProductController {
         }
 
         try {
-            // Get total count and products from service
-            const { totalProducts, products } = await ProductService.searchProducts(keysearch, page, limit);
+            // Get all matching products from service
+            const products = await ProductService.searchProducts(keysearch);
 
-            // Calculate total pages
+            // Apply pagination in the controller
+            const totalProducts = products.length;
             const totalPages = Math.ceil(totalProducts / limit);
+            const startIndex = (page - 1) * limit;
+            const endIndex = page * limit;
+            const productsToDisplay = products.slice(startIndex, endIndex);
 
             res.json({
                 status: "success",
                 totalPages,
-                item: products,
+                item: productsToDisplay,
                 currentPage: page,
                 totalItems: totalProducts
             });
@@ -92,6 +130,7 @@ class ProductController {
             });
         }
     }
+
 
     async filterProduct(req, res) {
         try {
