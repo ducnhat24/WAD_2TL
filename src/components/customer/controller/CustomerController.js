@@ -73,6 +73,23 @@ class CustomerController {
             });
         }
     }
+
+    async updateStatusAccountUser(req, res) {
+        try {
+            const { id } = req.params;
+            const status = await CustomerService.updateStatusAccountUser(id);
+            if (status.status === 'success') {
+                return res.status(200).json(status);
+            }
+
+            return res.status(400).json(status);
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                msg: 'Internal server error'
+            });
+        }
+    }
 }
 
 module.exports = new CustomerController;

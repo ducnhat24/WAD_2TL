@@ -181,6 +181,33 @@ class CustomerService {
             };
         }
     }
+
+    async updateStatusAccountUser(id) {
+        try {
+            const user = await Customer.findById(id);
+            if (!user) {
+                return {
+                    status: "error",
+                    message: "User not found",
+                };
+            }
+            if (user.customerAccountStatus === "ACTIVE") {
+                user.customerAccountStatus = "INACTIVE";
+            } else {
+                user.customerAccountStatus = "ACTIVE";
+            }
+            await user.save();
+            return {
+                status: "success",
+                message: "User status updated",
+            };
+        } catch (error) {
+            return {
+                status: "error",
+                message: error.message,
+            };
+        }
+    }
 }
 
 module.exports = new CustomerService;
