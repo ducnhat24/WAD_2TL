@@ -7,6 +7,7 @@ const { authenticateGoogle, handleGoogleCallback } = require('../../../middlewar
 const OrderController = require('../controller/OrderController');
 const OrderAPIRoute = require('./OrderAPIRoute');
 
+customerAPIRoute.get('/filter', CustomerController.filterUser);
 customerAPIRoute.put('/:id', CustomerController.updateStatusAccountUser);
 customerAPIRoute.get('/', CustomerController.getAllUsers);
 customerAPIRoute.get('/auth/google', authenticateGoogle);

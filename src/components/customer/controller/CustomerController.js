@@ -90,6 +90,23 @@ class CustomerController {
             });
         }
     }
+
+    async filterUser(req, res) {
+        try {
+            // const { sortBy, sortType } = req.query;
+            const status = await CustomerService.filterUser(req.query);
+            if (status.status === 'success') {
+                return res.status(200).json(status);
+            }
+
+            return res.status(400).json(status);
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                msg: 'Internal server error'
+            });
+        }
+    }
 }
 
 module.exports = new CustomerController;
