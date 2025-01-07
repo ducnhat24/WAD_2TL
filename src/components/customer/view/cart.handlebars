@@ -34,48 +34,111 @@
         {{/each}} --}}
     </div>
 
-    <div class="cart__detail">
-        <div class="cart__customer__detail">
-            {{!-- <div class="cart__customer__detail__title">
-                <span>Customer Details</span>
+    <div class="cart__summary">
+        <div class="cart__detail">
+            <div class="cart__customer__detail">
+                {{!-- <div class="cart__customer__detail__title">
+                    <span>Customer Details</span>
+                </div>
+                <div class="cart__customer__detail__content">
+                    <div class="cart__customer__detail__item">
+                        <span>Name:</span>
+                        <span>Bui Dinh Gia Vy</span>
+                    </div>
+                    <div class="cart__customer__detail__item">
+                        <span>Email:</span>
+                        <span>hehehe@gmail.com</span>
+                    </div>
+                </div> --}}
             </div>
-            <div class="cart__customer__detail__content">
-                <div class="cart__customer__detail__item">
-                    <span>Name:</span>
-                    <span>Bui Dinh Gia Vy</span>
+
+            <div class="cart__products__detail">
+                {{!-- <div class="cart__products__detail__title">
+                    <span>Products Details</span>
                 </div>
-                <div class="cart__customer__detail__item">
-                    <span>Email:</span>
-                    <span>hehehe@gmail.com</span>
-                </div>
+                <div class="cart__products__detail__content">
+                    <div class="cart__products__detail__item">
+                        <span>Subtotal:</span>
+                        <span>$100</span>
+                    </div>
+                    <div class="cart__products__detail__item">
+                        <span>Shipping:</span>
+                        <span>$10</span>
+                    </div>
+                    <div class="cart__products__detail__item">
+                        <span>Total:</span>
+                        <span>$110</span>
+                    </div>
+                </div> --}}
+            </div>
+            {{!-- <div id="checkout_button">
+                <a href="/customer/order">
+                    <button class="custom_button">Checkout</button>
+                </a>
             </div> --}}
         </div>
 
-        <div class="cart__products__detail">
-            {{!-- <div class="cart__products__detail__title">
-                <span>Products Details</span>
+        <div class="cart__checkout">
+            <div class="cart__checkout__item">
+                <div class="cart__checkout__item__title">Order summary</div>
+                <div class="cart__checkout__item__content">
+                    <div class="cart__checkout__item__content__item">
+                        <span class="cart__checkout__item__content__item__field">Number of items: </span>
+                        <span class="cart__checkout__item__content__item__value">2</span>
+                    </div>
+
+                    <div class="cart__checkout__item__content__item">
+                        <span class="cart__checkout__item__content__item__field">
+                            Subtotal:
+                        </span>
+                        <span class="cart__checkout__item__content__item__value">
+
+                        </span>
+                    </div>
+
+                    <div class="cart__checkout__item__content__item">
+                        <span class="cart__checkout__item__content__item__field">
+                            Shipping:
+                        </span>
+                        <span class="cart__checkout__item__content__item__value">
+
+                        </span>
+                    </div>
+
+                    <div class="cart__checkout__item__content__item">
+                        <span class="cart__checkout__item__content__item__field">
+                            Total:
+                        </span>
+                        <span class="cart__checkout__item__content__item__value">
+
+                        </span>
+                    </div>
+                </div>
             </div>
-            <div class="cart__products__detail__content">
-                <div class="cart__products__detail__item">
-                    <span>Subtotal:</span>
-                    <span>$100</span>
+
+            <div class="cart__checkout__item">
+                <div class="cart__checkout__item__title">Shipping detail</div>
+                <div class="cart__checkout__item__content">
+                    <select name="" id="">
+                        <option value="">Shipping Method</option>
+                        <option value="">cái tạm</option>
+                        <option value="">cái tạm</option>
+                        <option value="">cái tạm</option>
+                    </select>
                 </div>
-                <div class="cart__products__detail__item">
-                    <span>Shipping:</span>
-                    <span>$10</span>
+                <div class="cart__checkout__item__content">
+                    <div class="cart__checkout_item__content__shipping-field">Address</div>
+                    <textarea name="" id=""></textarea>
                 </div>
-                <div class="cart__products__detail__item">
-                    <span>Total:</span>
-                    <span>$110</span>
+
+                <div class="cart__checkout__button">
+                    <button>Pay</button>
                 </div>
-            </div> --}}
+            </div>
         </div>
-        <div id="checkout_button">
-            <a href="/customer/order">
-                <button class="custom_button">Checkout</button>
-            </a>
-        </div>
+
     </div>
+
 </div>
 
 <script src="/apps/cart.js"></script>

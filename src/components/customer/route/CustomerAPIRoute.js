@@ -7,6 +7,11 @@ const { authenticateGoogle, handleGoogleCallback } = require('../../../middlewar
 const OrderController = require('../controller/OrderController');
 const OrderAPIRoute = require('./OrderAPIRoute');
 
+customerAPIRoute.put('/cart', verifyToken, CartController.updateProductInCart);
+customerAPIRoute.delete('/cart', CartController.removeProductFromCart);
+customerAPIRoute.post('/cart', CartController.addProductToCart);
+customerAPIRoute.get('/cart', CartController.getCart);
+
 customerAPIRoute.get('/filter', CustomerController.filterUser);
 customerAPIRoute.put('/:id', CustomerController.updateStatusAccountUser);
 customerAPIRoute.get('/', CustomerController.getAllUsers);
@@ -16,11 +21,6 @@ customerAPIRoute.post('/signup', CustomerController.addUser);
 customerAPIRoute.post('/login', CustomerController.login);
 customerAPIRoute.post('/logout', CustomerController.logout);
 customerAPIRoute.post('/authentication', verifyToken, CustomerController.auth);
-
-customerAPIRoute.get('/cart', CartController.getCart);
-customerAPIRoute.post('/cart', CartController.addProductToCart);
-customerAPIRoute.put('/cart', CartController.updateProductInCart);
-customerAPIRoute.delete('/cart', CartController.removeProductFromCart);
 
 customerAPIRoute.use('/order', OrderAPIRoute);
 

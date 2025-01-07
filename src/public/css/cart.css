@@ -5,7 +5,7 @@
 }
 
 .cart .cart__body {
-    width: 800px;
+    width: 50%;
     height: 100vh;
 }
 
@@ -25,22 +25,26 @@
 .cart__left {
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3);
     padding: 10px;
-    width: 180px;
-    height: 150px;
+    width: 120px;
+    aspect-ratio: 3/2;
     border-radius: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 10px;
-    background-color: #f9f9f9; /* Optional: Thêm màu nền */
+    background-color: #f9f9f9;
+    /* Optional: Thêm màu nền */
 }
 
 .cart__left img {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 75%;
+    max-height: 75%;
     object-fit: cover;
-    border-radius: inherit; /* Làm tròn giống container */
+    border-radius: inherit;
+    background-color: #ffa500;
+    /* Làm tròn giống container */
 }
+
 .card__right {
     margin-left: 20px;
     flex: 1;
@@ -58,6 +62,12 @@
     position: relative;
 }
 
+.cart__item~.cart__item {
+    margin-top: 20px;
+}
+
+
+
 .cart__item>button {
     position: absolute;
     width: 30px;
@@ -74,7 +84,7 @@
 }
 
 .cart__item>button:last-child {
-    right: 60px;
+    right: 30px;
 }
 
 .cart__item+.cart__item {
@@ -89,7 +99,7 @@
 }
 
 .cart__item__title .cart__product__name span {
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 700;
 }
 
@@ -104,10 +114,14 @@
     font-size: 0.9rem;
     border-radius: 10px;
     font-weight: 700;
-    overflow: hidden;    /* Ẩn văn bản vượt quá kích thước */
-    text-overflow: ellipsis; /* Thêm dấu ba chấm khi văn bản bị cắt */
-    display: inline-block; /* Đảm bảo span có thể thay đổi kích thước */
-    max-width: 400px; /* Thiết lập chiều rộng tối đa cho span */
+    overflow: hidden;
+    /* Ẩn văn bản vượt quá kích thước */
+    text-overflow: ellipsis;
+    /* Thêm dấu ba chấm khi văn bản bị cắt */
+    display: inline-block;
+    /* Đảm bảo span có thể thay đổi kích thước */
+    max-width: 400px;
+    /* Thiết lập chiều rộng tối đa cho span */
 }
 
 .card__item__footer {
@@ -117,11 +131,12 @@
 }
 
 .card__product__price span {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 700;
     background-color: #ffa500;
     border-radius: 10px;
     padding: 5px 10px;
+    color: white;
 }
 
 .cart__item__btn {
@@ -135,7 +150,7 @@
 .cart__item__btn button {
     background-color: #ffa500;
     border: none;
-    padding: 2px 10px;
+    padding: 2px 5px;
     font-weight: 700;
     cursor: pointer;
 }
@@ -143,18 +158,84 @@
 
 .cart__item__btn span {
     font-weight: 700;
+    font-size: 14px;
     padding: 0 15px;
 }
 
-
-.cart .cart__detail {
-    margin-left: 20px;
+.cart__summary {
+    display: flex;
     flex: 1;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.cart .cart__checkout {
+    margin-top: 20px;
+}
+
+.cart .cart__checkout,
+.cart .cart__detail {
+    width: 100%;
     border-radius: 10px;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
     height: fit-content;
     padding: 20px;
 }
+
+.cart__checkout__item__title {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.cart__checkout__item__content {
+    margin: 10px 0;
+}
+
+.cart__checkout_item__content__shipping-field {
+    text-align: center;
+    font-weight: 600;
+}
+
+.cart__checkout__item__content textarea {
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #000;
+}
+
+.cart__checkout__item__content select {
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #000;
+}
+
+.cart__checkout__item__content__item__field {
+    font-weight: 700;
+}
+
+.cart__checkout_item__content__shipping-field {
+    text-align: center;
+}
+
+.cart__checkout__button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.cart__checkout__button button {
+    padding: 10px 20px;
+    background-color: #ffa500;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* .cart__checkout__item__content__item__value {} */
 
 .cart__products__detail .cart__products__detail__title,
 .cart__customer__detail .cart__customer__detail__title {
@@ -175,4 +256,27 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
+}
+
+.cart__body input[type="checkbox"] {
+    display: none;
+}
+
+.cart__body input[type="checkbox"]:checked+label {
+    background-color: #ffa500;
+    color: #fff;
+}
+
+.cart__body input[type="checkbox"]:checked+label .cart__item__btn {
+    border-color: #fff;
+}
+
+.cart__body input[type="checkbox"]:checked+label .cart__item__btn button {
+    background-color: #fff;
+    color: #ffa500;
+}
+
+.cart__body input[type="checkbox"]:checked+label .card__product__price span {
+    background-color: #fff;
+    color: #ffa500;
 }

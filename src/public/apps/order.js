@@ -19,7 +19,6 @@ function renderOrderUser(user) {
         `;
 }
 
-
 function createCartItem(item) {
     // Create container div
     const cartItemDiv = document.createElement("div");
@@ -74,23 +73,22 @@ function renderOrderSummary(cart) {
     cart = cart.filter(item => item !== null);
     const orderSummary = document.querySelector('.order__count');
     const subtotal = cart.reduce((acc, item) => acc + item.productPrice * item.quantity, 0);
-    const shipping = 100000;
-    const total = subtotal + shipping;
+    const shippingMethodSelect = document.getElementById('shipping-method');
     orderSummary.innerHTML = `
         <div class="order__summary">
             <div class="order__summary__content">
                 <h3>Order Summary</h3>
                 <div class="order__summary__item">
                     <span>Subtotal:</span>
-                    <span>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(subtotal,)}</span>
+                    <span id='shipping-sub-total-price'>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(subtotal,)}</span>
                 </div>
                 <div class="order__summary__item">
                     <span>Shipping:</span>
-                    <span>${shipping}</span>
+                    <span id="shipping-fee">None</span>
                 </div>
                 <div class="order__summary__item">
                     <span>Total:</span>
-                    <span>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(total,)}</span>
+                    <span id='shipping-total-price'>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(subtotal,)}</span>
                 </div>
             </div>
         </div>
@@ -108,29 +106,44 @@ function showOrder() {
             console.log(data);
             // renderProductsInCart(data.cart);
             renderProductsInCart(data.cart);
-
             renderOrderUser(data.user);
             renderOrderSummary(data.cart);
         });
 }
 
+
+const shippingMethodSelect = document.getElementById('shipping-method');
+shippingMethodSelect.addEventListener('change', () => {
+    console.log("ShippingFEE: ", shippingMethodSelect.value);
+    const shippingFeeElement = document.getElementById('shipping-fee');
+    const formattedShippingFee = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(shippingMethodSelect.value);
+    shippingFeeElement.textContent = formattedShippingFee;
+    const shippingTotal = document.getElementById('shipping-total-price');
+    const shippingSubTotal = document.getElementById('shipping-sub-total-price');
+    const subTotal = Number(shippingSubTotal.textContent.replace(/\D/g, ''));
+    const total = subTotal + Number(shippingMethodSelect.value);
+    shippingTotal.textContent = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(total);
+});
+
 function fetchShippingMethods() {
-    fetch("http://localhost:5000/api/customer/order/shipping-methods", {
+    fetch("http://localhost:5000/api/shipping", {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'
     })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             const shippingMethodSelect = document.getElementById('shipping-method');
-            data.methods.forEach(method => {
+            data.data.forEach(method => {
                 const option = document.createElement('option');
-                option.value = method._id; // Hoặc giá trị unique của method
+                option.value = method.shippingFee; // Hoặc giá trị unique của method
                 option.textContent = method.shippingName; // Tên phương thức giao hàng
                 shippingMethodSelect.appendChild(option);
             });
         });
 }
+
 
 //Xử lý khi người dùng gửi thông tin vận chuyển:
 document.getElementById('shipping-form').addEventListener('submit', (event) => {

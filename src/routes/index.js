@@ -8,6 +8,7 @@ const customerAPIRoute = require('../components/customer/route/CustomerAPIRoute'
 const categoryAPIRoute = require('../components/category/route/CategoryAPIRoute');
 const brandAPIRoute = require('../components/brand/route/BrandAPIRoute');
 const orderAPIRoute = require('../components/customer/route/OrderAPIRoute');
+const shippingAPIRoute = require('../components/shipping/route/ShippingAPIRoute');
 
 function route(app) {
     app.use('/', siteRoute);
@@ -22,7 +23,7 @@ function route(app) {
 
     app.use('/api/category', categoryAPIRoute);
     app.use('/api/brand', brandAPIRoute);
-
+    app.use('/api/shipping', shippingAPIRoute);
 }
 
 module.exports = { route };

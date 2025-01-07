@@ -1,6 +1,5 @@
 function handleDeleteCard(id) {
     const productId = id;
-    console.log(productId);
     fetch("http://localhost:5000/api/customer/cart", {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
@@ -9,7 +8,6 @@ function handleDeleteCard(id) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             location.reload();
             // showCart();
         })
@@ -39,7 +37,6 @@ function handleUpdateQuantity(id, quantity) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             location.reload();
             // showCart();
         })
@@ -47,9 +44,10 @@ function handleUpdateQuantity(id, quantity) {
 
 function createCartItem(item) {
     // Create container div
-    const cartItemDiv = document.createElement("div");
+    const cartItemDiv = document.createElement("label");
+    cartItemDiv.htmlFor = item._id;
     cartItemDiv.classList.add("cart__item");
-    cartItemDiv.id = item._id;
+    // cartItemDiv.id = item._id;
 
     cartItemDiv.innerHTML = `
             <div class="cart__left" >
@@ -60,9 +58,6 @@ function createCartItem(item) {
                 <div class="cart__item__title">
                     <div class="cart__product__name">
                         <span>${item.productName}</span>
-                    </div>
-                    <div class="cart__product__description">
-                        <span>${item.productDescription}</span>
                     </div>
                 </div>
 
@@ -79,8 +74,10 @@ function createCartItem(item) {
                 </div>
 
             </div>
-            <button class="delete-product" onclick="handleDeleteCard(event)">X</button>
-            <button class="edit-quantity" onclick="">?</button>
+        
+            
+            <button class="delete-product">X</button>
+            <button class="edit-quantity">?</button>
     `;
 
     cartItemDiv.querySelector('.delete-product').addEventListener("click", () => handleDeleteCard(item._id));
@@ -122,7 +119,7 @@ function renderDetailUser(user) {
 function renderProductsDetail(productList) {
     let totalPrice = 0;
     productList.forEach((product) => {
-        totalPrice += Number(product.productPrice) * Number(product.productQuantity);
+        totalPrice += Number(product.productPrice) * Number(product.quantity);
     });
     const productDetailContainer = document.querySelector(".cart__products__detail"); // Replace with your container selector
     productDetailContainer.innerHTML = `
@@ -142,12 +139,30 @@ function renderProductsDetail(productList) {
     `; // Clear existing content
 }
 
+let productOrdered = [];
+
 function renderProductsInCart(productList) {
     const cartContainer = document.querySelector(".cart .cart__body"); // Replace with your container selector
+
     cartContainer.innerHTML = ""; // Clear existing content
     productList.forEach((product) => {
         if (product !== null) {
+            const checkbox = document.createElement("input");
+            checkbox.id = product._id;
+            checkbox.type = "checkbox";
+            checkbox.onclick = () => {
+                if (checkbox.checked) {
+                    productOrdered.push(product);
+                } else {
+                    productOrdered = productOrdered.filter((item) => item._id !== product._id);
+                }
+
+                console.log(productOrdered);
+            }
+
             const cartElement = createCartItem(product);
+
+            cartContainer.appendChild(checkbox);
             cartContainer.appendChild(cartElement);
         }
     });
@@ -167,6 +182,7 @@ function showCart() {
     })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             renderProductsInCart(data.cart);
             renderDetailUser(data.user);
             renderProductsDetail(data.cart);

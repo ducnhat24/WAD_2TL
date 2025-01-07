@@ -15,7 +15,6 @@ class CartService {
             const cartItem = user.customerCart.find(
                 (item) => item.productId.toString() === productID
             );
-            console.log(cartItem);
 
             if (cartItem) {
                 // Nếu đã tồn tại, cập nhật số lượng
@@ -38,20 +37,17 @@ class CartService {
     async removeProductFromCart({ userID, productID }) {
         try {
             // Tìm người dùng
-            console.log(userID);
-            console.log(productID);
             const user = await Customer.findOne({ _id: userID });
             if (!user) {
                 return { status: 'error', message: "Customer not found" };
             }
 
             // Lọc bỏ sản phẩm có `productID` ra khỏi giỏ hàng
-            const newCart = user.cart.filter(
+            const newCart = user.customerCart.filter(
                 (item) => item.productId.toString() !== productID
             );
-            user.cart = newCart;
+            user.customerCart = newCart;
 
-            console.log(user.cart);
             // Lưu thay đổi
             await user.save();
             return { status: 'success', message: "Product removed from cart" };
@@ -71,13 +67,13 @@ class CartService {
                 return { status: 'error', message: "Customer not found" };
             }
 
-            const newCart = user.cart.map((item) => {
+            const newCart = user.customerCart.map((item) => {
                 if (item.productId.toString() === productID) {
                     item.quantity = quantity;
                 }
                 return item;
             });
-            user.cart = newCart;
+            user.customerCart = newCart;
 
             // Lưu thay đổi
             await user.save();
@@ -102,11 +98,6 @@ class CartService {
             if (!user.customerCart) return [];
             const productsInCart = await Promise.all(
                 user.customerCart.map(async (item) => {
-                    // const product = await Product.findOne({ _id: item.productId });
-                    // return {
-                    //     ...product["_doc"],
-                    //     quantity: item.quantity,
-                    // };
                     const product = await Product.findOne({ _id: item.productId });
                     if (!product) {
                         console.warn(`Product with ID ${item.productId} not found.`);
@@ -123,7 +114,6 @@ class CartService {
                 username: user.customerName,
                 useremail: user.customerEmail,
             }
-            console.log(productsInCart.productMainImage);
             return { status: 'success', user: userDisplay, cart: productsInCart };
 
         } catch (error) {

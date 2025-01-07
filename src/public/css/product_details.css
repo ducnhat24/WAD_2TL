@@ -14,8 +14,7 @@
   position: relative;
   width: 100%;
   height: 100vh;
-  background: url("/images/ProductDetailBackground.jpg") no-repeat center
-    center/cover;
+  background: url("/images/ProductDetailBackground.jpg") no-repeat center center/cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,23 +52,21 @@
   align-items: center;
 }
 
-.specifications__content img {
+.product_detail_container {
+  display: flex;
+  align-items: center;
+  background-color: red;
+}
+
+.product_detail_left {
   width: 300px;
-  margin-right: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .table {
   text-align: left;
-}
-
-/* Footer */
-.footer {
-  background-color: #333;
-  color: #fff;
-  padding: 20px;
-  display: flex;
-  justify-content: space-around;
-  text-align: center;
 }
 
 .product_header {
@@ -139,38 +136,52 @@
 
 /* Card tùy chỉnh */
 .custom-card {
-  border: none; /* Loại bỏ viền card */
+  border: none;
+  /* Loại bỏ viền card */
   border-radius: 10px;
-  overflow: hidden; /* Đảm bảo hình ảnh không bị tràn ra ngoài */
+  overflow: hidden;
+  /* Đảm bảo hình ảnh không bị tràn ra ngoài */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
-  margin: 10px; /* Tạo khoảng cách giữa các card */
-  width: 100%; /* Chiếm toàn bộ chiều rộng của container */
-  max-width: 500px; /* Tối đa là 400px (hoặc tùy chỉnh kích thước bạn muốn) */
+  margin: 10px;
+  /* Tạo khoảng cách giữa các card */
+  width: 100%;
+  /* Chiếm toàn bộ chiều rộng của container */
+  max-width: 500px;
+  /* Tối đa là 400px (hoặc tùy chỉnh kích thước bạn muốn) */
 }
 
 .custom-card:hover {
-  transform: translateY(-5px); /* Hiệu ứng hover nâng card */
+  transform: translateY(-5px);
+  /* Hiệu ứng hover nâng card */
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Hình ảnh trong card */
 .custom-img-size {
-  height: 250px; /* Chiều cao cố định */
-  width: 100%; /* Chiều rộng đầy đủ của card */
-  object-fit: contain; /* Cắt ảnh để vừa khung và giữ tỷ lệ đẹp */
+  height: 250px;
+  /* Chiều cao cố định */
+  width: 100%;
+  /* Chiều rộng đầy đủ của card */
+  object-fit: contain;
+  /* Cắt ảnh để vừa khung và giữ tỷ lệ đẹp */
 }
 
 /* Đảm bảo cột info có không gian rộng hơn */
 .specifications-table .detail {
-  width: 30%; /* Chiếm 30% chiều rộng */
-  white-space: nowrap; /* Không xuống dòng nội dung trong cột */
+  width: 30%;
+  /* Chiếm 30% chiều rộng */
+  white-space: nowrap;
+  /* Không xuống dòng nội dung trong cột */
 }
 
 .specifications-table .info {
-  width: 70%; /* Chiếm 70% chiều rộng */
-  word-wrap: break-word; /* Chia nhỏ từ nếu quá dài */
-  word-break: break-word; /* Đảm bảo từ quá dài không tràn */
+  width: 70%;
+  /* Chiếm 70% chiều rộng */
+  word-wrap: break-word;
+  /* Chia nhỏ từ nếu quá dài */
+  word-break: break-word;
+  /* Đảm bảo từ quá dài không tràn */
 }
 
 #each-production-quanity {
@@ -185,6 +196,7 @@
 .review__header {
   text-align: center;
 }
+
 .review__header h2 {
   font-weight: 800;
   font-size: 44px;

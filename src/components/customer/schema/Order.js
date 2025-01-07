@@ -47,7 +47,7 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    orderPayement: {
+    orderPayment: {
         type: Number,
         default: 0,
     },
