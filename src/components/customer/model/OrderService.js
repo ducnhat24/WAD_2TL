@@ -1,71 +1,88 @@
 const Shipping = require('../../shipping/schema/Shipping.js');
 const Order = require('../schema/Order.js');
+
+const mongoose = require('mongoose');
+
 class OrderService {
 
-    async createOrder() {
+// async createOrder(orderData) {
+//         try {
+//             // Kiểm tra dữ liệu cần thiết
+//             const {
+//                 customerID,
+//                 orderListProduct,
+//                 orderShippingAddress,
+//                 orderShippingMethod,
+//                 orderShippingFee,
+//                 orderTotalPrice,
+//                 orderPayment,
+//                 orderStatus,
+//             } = orderData;
+
+//             if (!customerID || !orderListProduct || !orderShippingAddress || !orderShippingMethod) {
+//                 throw new Error("Missing required fields.");
+//             }
+
+//             // Tạo đơn hàng mới
+//             const newOrder = new Order({
+//                 customerID,
+//                 orderListProduct,
+//                 orderShippingAddress,
+//                 orderShippingMethod,
+//                 orderShippingFee,
+//                 orderTotalPrice,
+//                 orderPayment,
+//                 orderStatus,
+//             });
+
+//             // Lưu vào MongoDB
+//             return await newOrder.save();
+//         } catch (error) {
+//             console.error("Error creating order:", error);
+//             throw error;
+//         }
+    //     }
+    
+        async createOrder(orderData) {
         try {
+            const {
+                customerID,
+                orderListProduct,
+                orderShippingAddress,
+                orderShippingMethod,
+                orderShippingFee,
+                orderTotalPrice,
+                orderPayment,
+                orderStatus,
+            } = orderData;
+
+            // Kiểm tra và chuyển đổi ObjectId
+            if (!mongoose.Types.ObjectId.isValid(customerID)) {
+                throw new Error("Invalid customerID.");
+            }
+            console.log(orderShippingMethod);
+            if (!mongoose.Types.ObjectId.isValid(orderShippingMethod)) {
+                throw new Error("Invalid orderShippingMethod.");
+            }
+
+
             // Tạo đơn hàng mới
-            // return { status: 'success' };
-            const cart = await Cart.findOne({ customer: req.user._id });
-            if (!cart) {
-                return res.status(400).json({ message: 'Cart not found' });
-            }
-            const order = new Order({
-                customer: req.user._id,
-                items: cart.items,
-                shippingAddress: req.body.address,
-                shippingMethod: req.body.shippingMethod,
-                status: 'pending',
+            const newOrder = new Order({
+                customerID, // Chuyển đổi sang ObjectId
+                orderListProduct,
+                orderShippingAddress,
+                orderShippingMethod, // Chuyển đổi sang ObjectId
+                orderShippingFee,
+                orderTotalPrice,
+                orderPayment,
+                orderStatus,
             });
-            await order.save();
-            cart.items = [];
-            await cart.save();
-        } catch (error) {
-            return { status: 'error', message: error.message };
-        }
-    }
 
-    async getShippingMethods() {
-        try {
-            const shippingMethods = await Shipping.find();
-            return { status: 'success', methods: shippingMethods };
+            // Lưu vào MongoDB
+            return await newOrder.save();
         } catch (error) {
-            return { status: 'error', message: error.message };
-        }
-    }
-
-    async updateShipping(address, shippingMethod) {
-        try {
-            // Cập nhật thông tin vận chuyển
-            // return { status: 'success' };
-            const order = await Order
-                .findOne({ customer: req.user._id, status: 'pending' })
-                .populate('items.product');
-            if (!order) {
-                return res.status(400).json({ message: 'Order not found' });
-            }
-            order.shippingAddress = address;
-            order.shippingMethod = shippingMethod;
-            await order.save();
-        } catch (error) {
-            return { status: 'error', message: error.message };
-        }
-    }
-
-    async updateStatusOrder(status) {
-        try {
-            // Cập nhật trạng thái đơn hàng
-            // return { status: 'success' };
-            const order = await Order
-                .findOne({ customer: req.user._id, status: 'pending' })
-                .populate('items.product');
-            if (!order) {
-                return res.status(400).json({ message: 'Order not found' });
-            }
-            order.status = status;
-            await order.save();
-        } catch (error) {
-            return { status: 'error', message: error.message };
+            console.error("Error creating order:", error);
+            throw error;
         }
     }
 }
