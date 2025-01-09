@@ -1,51 +1,35 @@
 const OrderService = require('../model/OrderService');
 class OrderController {
     showOrder(req, res) {
-        //call the service to create an order in the database
-        OrderService.createOrder();
-
-
         res.render('order');
     }
 
-    async getShippingMethods(req, res) {
+    async addOrder(req, res) {
         try {
-            const result = await OrderService.getShippingMethods();
-            if (result.status === 'success') {
-                return res.status(200).json({ methods: result.methods });
-            }
-            return res.status(500).json({ message: "Error getting shipping methods" });
-        }
-        catch (err) {
-            console.log(err.message);
-        }
-    }
+            const {
+                customerID,
+                orderShippingMethod,
+                orderListProduct,
+                orderShippingAddress,
+                orderShippingFee,
+                orderTotalPrice,
+                orderPayment,
+                orderStatus,
+            } = req.body;
 
-    async updateShipping(req, res) {
-        try {
-            const { address, shippingMethod } = req.body;
-            const result = await OrderService.updateShipping(address, shippingMethod);
-            if (result.status === 'success') {
-                return res.status(200).json({ success: true });
+            // Kiểm tra dữ liệu đầu vào
+            if (!customerID || !orderListProduct || !orderShippingAddress || !orderShippingMethod) {
+                return res.status(400).json({ message: "Missing required fields." });
             }
-            return res.status(500).json({ message: "Error updating shipping information" });
-        }
-        catch (err) {
-            console.log(err.message);
-        }
-    }
 
-    async updateStatusOrder(req, res) {
-        try {
-            const { status } = req.body;
-            const result = await OrderService.updateStatusOrder(status);
-            if (result.status === 'success') {
-                return res.status(200).json({ success: true });
-            }
-            return res.status(500).json({ message: "Error updating order status" });
-        }
-        catch (err) {
-            console.log(err.message);
+            // Gọi hàm trong service
+            const savedOrder = await OrderService.createOrder(req.body);
+
+            // Trả phản hồi thành công
+            res.status(201).json({ message: "Order created successfully", order: savedOrder });
+        } catch (error) {
+            // Trả lỗi phản hồi
+            res.status(500).json({ message: error.message || "Internal Server Error" });
         }
     }
 }

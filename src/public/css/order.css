@@ -1,4 +1,4 @@
-.order {
+/* .order {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -8,10 +8,6 @@
 
 .order__header, .order__footer {
     text-align: center;
-}
-
-.order__header {
-    /* margin-top: 10px; */
 }
 
 #first_selection{
@@ -53,10 +49,134 @@
     align-items: center;
 }
 
-
-
-
 .order__product_list {
     margin-top: 20px;
 }
+ */
 
+.order {
+    margin-top: 50px;
+    padding: 20px;
+}
+
+.order__header {
+    width: 100%;
+    text-align: center;
+}
+
+.order__body {}
+
+.order__feature {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.order__feature__left {
+    display: flex;
+}
+
+.order__feature__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.order__feature__item+.order__feature__item {
+    margin-left: 10px;
+}
+
+.order__body .order__table {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+
+.order__table__footer,
+.order__table__data,
+.order__table__header {
+    width: 100%;
+    padding: 5px 10px;
+}
+
+.order__table__footer,
+.order__table__header {
+    background-color: #ffa500;
+    font-weight: 700;
+    color: #fff;
+}
+
+.order__table__items {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 5px 0px;
+}
+
+.order__table__item {
+    text-align: center;
+    margin: 0 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.order__table__item:nth-child(1) {
+    flex: 2;
+}
+
+.order__table__item:nth-child(2) {
+    flex: 2;
+}
+
+.order__table__item:nth-child(3) {
+    flex: 3;
+}
+
+.order__table__item:nth-child(4) {
+    flex: 3;
+}
+
+.order__table__item:nth-child(5) {
+    flex: 1;
+}
+
+.order__table__item .order__table__item__status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: green;
+}
+
+.order__table__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.order__table__button {
+    padding: 0 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.order__table__button button {
+    background-color: transparent;
+    border: none;
+    margin: 0 5px;
+}
+
+.order__table__button button i {
+    font-size: 20px;
+    color: #fff;
+}

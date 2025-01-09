@@ -22,6 +22,8 @@ customerAPIRoute.post('/login', CustomerController.login);
 customerAPIRoute.post('/logout', CustomerController.logout);
 customerAPIRoute.post('/authentication', verifyToken, CustomerController.auth);
 
+
 customerAPIRoute.use('/order', OrderAPIRoute);
+
 
 module.exports = customerAPIRoute;

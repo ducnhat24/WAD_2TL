@@ -84,15 +84,15 @@
                 <div class="cart__checkout__item__content">
                     <div class="cart__checkout__item__content__item">
                         <span class="cart__checkout__item__content__item__field">Number of items: </span>
-                        <span class="cart__checkout__item__content__item__value">2</span>
+                        <span id="numberOfItems" class="cart__checkout__item__content__item__value">0</span>
                     </div>
 
                     <div class="cart__checkout__item__content__item">
                         <span class="cart__checkout__item__content__item__field">
                             Subtotal:
                         </span>
-                        <span class="cart__checkout__item__content__item__value">
-
+                        <span id="subtotal" class="cart__checkout__item__content__item__value">
+                            0
                         </span>
                     </div>
 
@@ -100,8 +100,8 @@
                         <span class="cart__checkout__item__content__item__field">
                             Shipping:
                         </span>
-                        <span class="cart__checkout__item__content__item__value">
-
+                        <span id="shipping" class="cart__checkout__item__content__item__value">
+                            0
                         </span>
                     </div>
 
@@ -109,8 +109,8 @@
                         <span class="cart__checkout__item__content__item__field">
                             Total:
                         </span>
-                        <span class="cart__checkout__item__content__item__value">
-
+                        <span id="total" class="cart__checkout__item__content__item__value">
+                            0
                         </span>
                     </div>
                 </div>
@@ -119,11 +119,8 @@
             <div class="cart__checkout__item">
                 <div class="cart__checkout__item__title">Shipping detail</div>
                 <div class="cart__checkout__item__content">
-                    <select name="" id="">
-                        <option value="">Shipping Method</option>
-                        <option value="">cái tạm</option>
-                        <option value="">cái tạm</option>
-                        <option value="">cái tạm</option>
+                    <select name="" id="shipping-method">
+                        <option value="">Select Shipping Method</option>
                     </select>
                 </div>
                 <div class="cart__checkout__item__content">
@@ -131,7 +128,7 @@
                     <textarea name="" id=""></textarea>
                 </div>
 
-                <div class="cart__checkout__button">
+                <div class="cart__checkout__button" id="pay-button">
                     <button>Pay</button>
                 </div>
             </div>
