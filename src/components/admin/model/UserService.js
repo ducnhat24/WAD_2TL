@@ -59,8 +59,8 @@ class UserService {
             return {
                 status: 'success',
                 message: 'User logged in',
-                accessToken: generateAccessToken({ userID: user._id }),
-                refreshToken: generateRefreshToken({ userID: user._id }),
+                accessToken: generateAccessToken({ userID: user._id, userRole: user.userRole }),
+                refreshToken: generateRefreshToken({ userID: user._id, userRole: user.userRole }),
                 data: user,
             };
 
@@ -119,6 +119,87 @@ class UserService {
             status: 'success',
             message: 'Update user information successfully'
         }
+    }
+
+    async deleteUser(id, userID) {
+        if (id === userID) {
+            return {
+                status: 'error',
+                message: 'Cannot delete yourself!'
+            }
+        }
+        const user = await User.findOne({ _id: id });
+        if (!user) {
+            return {
+                status: 'error',
+                message: 'User not found'
+            }
+        }
+        await User.deleteOne({ _id: id });
+        return {
+            status: 'success',
+            message: 'Delete user successfully'
+        }
+    }
+
+    async addUser({ name, phone, email, address, role, dateOfBirth }) {
+        try {
+            const userFind = await User.findOne({ $and: [{ userName: name }, { userPhone: phone }] });
+            if (userFind) {
+                return {
+                    status: 'error',
+                    message: 'User already exists'
+                }
+            }
+
+            const password = await hashPassword('1');
+            const newUser = new User({
+                userName: name,
+                userPhone: phone,
+                userEmail: email,
+                userAddress: address,
+                userRole: role,
+                userDateOfBirth: dateOfBirth || '',
+                userPassword: password,
+            });
+
+            await newUser.save();
+
+            return {
+                status: 'success',
+                message: 'Add new user successfully'
+            }
+        }
+        catch (err) {
+            return {
+                status: 'error',
+                message: err.message
+            }
+        }
+    }
+
+    async editUserByAdmin(query, userID) {
+        const { type, data, id } = query;
+        if (id === userID) {
+            return {
+                status: 'error',
+                message: 'Cannot edit yourself in this page!'
+            }
+        }
+        const user = await User.findOne({ _id: id });
+        const attribute = 'user' + type.slice(0, 1).toUpperCase() + type.slice(1);
+        if (!user) {
+            return {
+                status: 'error',
+                message: 'User not found'
+            }
+        }
+        user[attribute] = data;
+        await user.save();
+        return {
+            status: 'success',
+            message: `Update ${user.userName}'s ${type} user successfully`,
+        };
     }
 }
 

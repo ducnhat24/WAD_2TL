@@ -66,7 +66,8 @@ class CustomerService {
                 };
             }
             const payload = {
-                id: existingUser._id,
+                userID: existingUser._id,
+                userRole: "Customer",
             };
             const refreshToken = generateRefreshToken(payload);
             await Customer.updateOne({ _id: existingUser._id }, { refreshToken: refreshToken });
@@ -89,7 +90,6 @@ class CustomerService {
     async loginWithGoogle(googleProfile) {
         try {
             const { id, customerEmail, name } = googleProfile;
-            console.log('Google Profile:', googleProfile);
             if (!customerEmail) {
                 throw new Error('Email is required');
             }

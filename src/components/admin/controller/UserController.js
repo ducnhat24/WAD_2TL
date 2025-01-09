@@ -67,7 +67,6 @@ class UserController {
             const { type, data } = req.query;
             const id = req.body.id;
             const query = { type, data, id };
-            console.log(query)
             const status = await UserService.editUserInfo(query);
             return res.status(200).json(status);
         }
@@ -78,6 +77,65 @@ class UserController {
             });
         }
     }
+
+    async deleteUser(req, res) {
+        const user = req.user;
+        if (user.userRole.toLowerCase() !== 'admin') {
+            return res.status(403).json({
+                status: 'error',
+                message: 'You do not have permission to access this resource'
+            });
+        }
+        const id = req.params.id;
+        try {
+            const status = await UserService.deleteUser(id, user.userID);
+            return res.status(200).json(status);
+        }
+        catch (err) {
+            res.status(500).json({
+                status: 'error',
+                message: err.message
+            });
+        }
+    }
+
+    async addUser(req, res) {
+        const { name, phone, email, address, role, dateOfBirth } = req.body;
+        try {
+            const status = await UserService.addUser({ name, phone, email, address, role, dateOfBirth });
+            return res.status(200).json(status);
+        }
+        catch (err) {
+            res.status(500).json({
+                status: 'error',
+                message: err.message
+            });
+        }
+    }
+
+    async editUserByAdmin(req, res) {
+        const user = req.user;
+        if (user.userRole && user.userRole.toLowerCase() !== 'admin') {
+            return res.status(403).json({
+                status: 'error',
+                message: 'You do not have permission to access this resource'
+            });
+        }
+        const { type, data } = req.body;
+        const id = req.params.id;
+        const query = { type, data, id };
+        try {
+            const status = await UserService.editUserByAdmin(query, user.userID);
+            return res.status(200).json(status);
+        }
+        catch (err) {
+            res.status(500).json({
+                status: 'error',
+                message: err.message
+            });
+        }
+    }
+
 }
 
 module.exports = new UserController;

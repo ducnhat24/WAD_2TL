@@ -30,7 +30,7 @@ async function seedUsers() {
             userDateOfBirth: '22/09/1992',
             userEmail: 'tranthib@gmail.com',
             userAddress: 'Hanoi',
-            userRole: 'Staff',
+            userRole: 'Manager',
             userPassword: password,
         },
         {
@@ -39,7 +39,7 @@ async function seedUsers() {
             userDateOfBirth: '05/11/1988',
             userEmail: 'phamvanc@gmail.com',
             userAddress: 'Ho Chi Minh City',
-            userRole: 'Staff',
+            userRole: 'Manager',
             userPassword: password,
         },
         {
@@ -48,7 +48,7 @@ async function seedUsers() {
             userDateOfBirth: '18/02/1995',
             userEmail: 'lethid@gmail.com',
             userAddress: 'Da Nang',
-            userRole: 'Staff',
+            userRole: 'Manager',
             userPassword: password,
         },
         {
