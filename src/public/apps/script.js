@@ -159,7 +159,7 @@ function validatePassword() {
   }
 }
 function handleSubmitSignup() {
-  console.log("Signup form submitted");
+  //console.log("Signup form submitted");
   const username = document.querySelector("#signup__username").value;
   const email = document.querySelector("#signup__email").value;
   const password = document.querySelector("#signup__password").value;
@@ -173,7 +173,7 @@ function handleSubmitSignup() {
 
   // Send data to server
   fetch(url + "/api/customer/signup", {
-    credentials: 'include',
+    credentials: "include",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -195,7 +195,7 @@ function handleSubmitSignup() {
             msg: data.msg,
           })
         );
-        location.href = "/login";
+        location.href = "login";
       }
     })
     .catch((error) => {
@@ -219,7 +219,7 @@ function handleSubmitLogin() {
 
   // Send data to server
   fetch(url + "/api/customer/login", {
-    credentials: 'include',
+    credentials: "include",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -256,9 +256,9 @@ function handleSubmitLogin() {
 function handleLogout() {
   console.log("Logout form submitted");
   fetch(url + "/api/customer/logout", {
-    credentials: 'include',
+    credentials: "include",
     method: "POST",
-    credentials: 'include',
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -443,32 +443,29 @@ if (storedNotify) {
 }
 function updateCartCount(increment = 1) {
   fetch("http://localhost:5000/api/customer/cart", {
-        credentials: 'include',
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
-    })
-        .then(response => response.json())
-        .then(data => {
-            const cartCount = document.getElementById('cart-count');
-            var __cart_count = 0;
-            for (const item of data.cart) {
-              if (item !== null) {
-                __cart_count += item.quantity;
-              }
-            }
-            cartCount.innerText = __cart_count;
-        });
-    
+    credentials: "include",
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const cartCount = document.getElementById("cart-count");
+      var __cart_count = 0;
+      for (const item of data.cart) {
+        if (item !== null) {
+          __cart_count += item.quantity;
+        }
+      }
+      cartCount.innerText = __cart_count;
+    });
 }
 
 function handleGoogleLogin() {
-    // Xử lý logic đăng nhập qua Google
-    console.log("Google login clicked");
-    // Redirect hoặc mở popup tương ứng
-    window.location.href = 'http://localhost:5000/api/customer/auth/google'; // Điều hướng đến endpoint xử lý Google OAuth
-
+  // Xử lý logic đăng nhập qua Google
+  console.log("Google login clicked");
+  // Redirect hoặc mở popup tương ứng
+  window.location.href = "http://localhost:5000/api/customer/auth/google"; // Điều hướng đến endpoint xử lý Google OAuth
 }
-
 
 updateCartCount(0);
