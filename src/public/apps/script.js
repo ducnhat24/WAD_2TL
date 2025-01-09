@@ -145,13 +145,21 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     });
 });
-
+function validateEmail() {
+  const email = document.getElementById("signup__email").value;
+  const errorSpan = document.getElementById("email-error");
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    errorSpan.style.display = "block";
+  } else {
+    errorSpan.style.display = "none";
+  }
+}
 function validatePassword() {
   const password = document.getElementById("signup__password").value;
   const errorSpan = document.getElementById("password-error");
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
   if (!passwordRegex.test(password)) {
     errorSpan.style.display = "block";
   } else {
