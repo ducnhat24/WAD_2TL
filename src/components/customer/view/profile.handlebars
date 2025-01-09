@@ -1,8 +1,10 @@
-<div class="container mb-3 mt-5 light-style flex-grow-1 container-p-y">
-  <div class="card edit-profile overflow-hidden">
+<div
+  class="profile-container mb-3 mt-5 light-style flex-grow-1 profile-container-p-y"
+>
+  <div class="profile-card profile-edit-profile overflow-hidden">
     <div class="row no-gutters row-bordered row-border-light">
       <div class="col-md-3 pt-0">
-        <div class="list-group list-group-flush account-settings-links">
+        <div class="list-group list-group-flush profile-account-settings-links">
           <a
             class="list-group-item list-group-item-action active"
             data-toggle="list"
@@ -22,6 +24,7 @@
       </div>
       <div class="col-md-9">
         <div class="tab-content">
+          <!-- General Tab -->
           <form
             action="/setting/update-profile/general"
             enctype="multipart/form-data"
@@ -29,16 +32,19 @@
             class="tab-pane fade active show"
             id="account-general"
           >
-
-            <div class="card-body media align-items-center">
-              <img src="{{profile.avatar}}" alt="" class="d-block ui-w-80" />
+            <div class="profile-card-body media align-items-center">
+              <img
+                src="{{profile.avatar}}"
+                alt=""
+                class="d-block profile-ui-w-80"
+              />
               <div class="media-body ml-4">
                 <label class="btn btn-outline-primary">
                   Upload new photo
                   <input
                     type="file"
                     name="avatar"
-                    class="account-settings-fileinput"
+                    class="profile-account-settings-fileinput"
                   />
                 </label>
                 &nbsp;
@@ -46,14 +52,13 @@
                   type="button"
                   class="btn btn-default md-btn-flat"
                 >Reset</button>
-
-                <div class="text-light small mt-1">Allowed JPG, GIF or PNG. Max
-                  size of 800K</div>
+                <div class="text-light small mt-1">
+                  Allowed JPG, GIF or PNG. Max size of 800K
+                </div>
               </div>
             </div>
             <hr class="border-light m-0" />
-
-            <div class="card-body">
+            <div class="profile-card-body">
               <div class="form-group">
                 <label class="form-label">Username</label>
                 <input
@@ -80,106 +85,99 @@
                   name="email"
                   value="{{profile.email}}"
                 />
-
-                <div class="form-group text-right mt-3">
-                  <button type="submit" class="btn btn-primary">Save changes</button>&nbsp;
-                  <button type="button" class="btn btn-default">Cancel</button>
-                </div>
+              </div>
+              <div class="form-group text-right mt-3">
+                <button type="submit" class="btn btn-primary">Save changes</button>&nbsp;
+                <button type="button" class="btn btn-default">Cancel</button>
               </div>
             </div>
           </form>
-          <div class="tab-pane fade" id="account-change-password">
-            <form
-              class="card-body pb-2"
-              action="/setting/update-profile/password"
-              method="post"
-            >
 
+          <!-- Change Password Tab -->
+          <form
+            action="/setting/update-profile/password"
+            method="post"
+            class="tab-pane fade"
+            id="account-change-password"
+          >
+            <div class="profile-card-body">
               <div class="form-group">
                 <label class="form-label">Current password</label>
                 <input
                   type="password"
                   class="form-control"
-                  name="currentPassword"
+                  name="current_password"
+                  required
                 />
               </div>
-
               <div class="form-group">
                 <label class="form-label">New password</label>
                 <input
                   type="password"
                   class="form-control"
-                  name="newPassword"
+                  name="new_password"
+                  required
                 />
               </div>
-
               <div class="form-group">
-                <label class="form-label">Repeat new password</label>
+                <label class="form-label">Confirm new password</label>
                 <input
                   type="password"
                   class="form-control"
-                  name="repeatNewPassword"
+                  name="confirm_new_password"
+                  required
+                />
+              </div>
+              <div class="form-group text-right mt-3">
+                <button type="submit" class="btn btn-primary">Change password</button>&nbsp;
+                <button type="button" class="btn btn-default">Cancel</button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Info Tab -->
+          <form
+            action="/setting/update-profile/info"
+            method="post"
+            class="tab-pane fade"
+            id="account-info"
+          >
+            <div class="profile-card-body">
+              <div class="form-group">
+                <label class="form-label">Phone number</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="phone"
+                  value="{{profile.phone}}"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Address</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="address"
+                  value="{{profile.address}}"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Date of birth</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  name="dob"
+                  value="{{profile.dob}}"
                 />
               </div>
               <div class="form-group text-right mt-3">
                 <button type="submit" class="btn btn-primary">Save changes</button>&nbsp;
                 <button type="button" class="btn btn-default">Cancel</button>
               </div>
-            </form>
-          </div>
-          <div class="tab-pane fade" id="account-info">
-            <form action="/setting/update-profile/info" method="post">
-              <div class="card-body pb-2">
-                <div class="form-group">
-                  <label class="form-label">Birthday</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    name="birthday"
-                    value="{{formatDate profile.birthday}}"
-                  />
-                </div>
-                <div class="form-group mt-1">
-                  <label class="form-label">Địa chỉ</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="address"
-                    value="{{profile.address}}"
-                  />
-                </div>
-              </div>
-              <hr class="border-light m-0" />
-              <div class="card-body pb-2">
-                <h6 class="mb-4">Contacts</h6>
-                <div class="form-group">
-                  <label class="form-label">Phone</label>
-                  <input
-                    type="tel"
-                    class="form-control"
-                    name="phone"
-                    value="{{profile.phone}}"
-                  />
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Facebook</label>
-                  <input
-                    type="url"
-                    class="form-control"
-                    name="facebook"
-                    value="{{profile.facebook}}"
-                  />
-                </div>
-                <div class="form-group text-right mt-3">
-                  <button type="submit" class="btn btn-primary">Save changes</button>&nbsp;
-                  <button type="button" class="btn btn-default">Cancel</button>
-                </div>
-              </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
-
 </div>
