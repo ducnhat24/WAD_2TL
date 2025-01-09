@@ -7,8 +7,8 @@ const { seedCustomers } = require('./seedCustomers');
 
 async function seed() {
     try {
-        await seedCustomers();
-        // await seedUsers();
+        // await seedCustomers();
+        await seedUsers();
         // await seedShipping();
         // await seedBrands();
         // await seedCategories();

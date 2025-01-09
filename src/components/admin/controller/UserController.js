@@ -61,6 +61,23 @@ class UserController {
             });
         }
     }
+
+    async editUser(req, res) {
+        try {
+            const { type, data } = req.query;
+            const id = req.body.id;
+            const query = { type, data, id };
+            console.log(query)
+            const status = await UserService.editUserInfo(query);
+            return res.status(200).json(status);
+        }
+        catch (err) {
+            res.status(500).json({
+                status: 'error',
+                message: err.message
+            });
+        }
+    }
 }
 
 module.exports = new UserController;

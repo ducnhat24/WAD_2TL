@@ -40,6 +40,16 @@ const UserSchema = new Schema({
         required: true
     },
 
+    userListOrder: [
+        {
+            oderID: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Order',
+                default: null
+            },
+        }
+    ],
+
     userCreatedDateTime: {
         type: Date,
         default: new Date()

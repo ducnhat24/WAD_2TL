@@ -101,6 +101,25 @@ class UserService {
             };
         }
     }
+
+    async editUserInfo(query) {
+        // console.log(query);
+        const { type, data, id } = query;
+        const userData = await User.findOne({ _id: id });
+
+        if (!userData) {
+            return {
+                status: 'error',
+                message: 'User not found'
+            }
+        }
+        userData[type] = data
+        await userData.save();
+        return {
+            status: 'success',
+            message: 'Update user information successfully'
+        }
+    }
 }
 
 module.exports = new UserService;
