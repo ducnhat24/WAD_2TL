@@ -1,5 +1,5 @@
 <div class="order">
-    <div class="order__header">
+    <div class="order__header" id="testpopup">
         <h2>Orders</h2>
     </div>
 
@@ -120,5 +120,66 @@
     </div>
 </div>
 
+<div id="order-details-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" id="close-button">&times;</span>
+        <h2>ORDER DETAILS</h2>
+        {{!-- <div class="order-details">
+            <div class="customer-info">
+                <h3>Customer</h3>
+                <p><b>Name:</b> <span id="customer-name"></span></p>
+                <p><b>Email:</b> <span id="customer-email"></span></p>
+                <p><b>Address:</b> <span id="customer-address"></span></p>
+            </div>
+            <div class="order-info">
+                <h3>Order Info</h3>
+                <p><b>Order ID:</b> <span id="order-id"></span></p>
+                <p><b>Created Time:</b> <span id="order-time"></span></p>
+                <p><b>Shipping address:</b> <span id="shipping-address"></span></p>
+                <p><b>Shipping fee:</b> <span id="shipping-fee"></span></p>
+
+                <p><b>Shipping:</b> <span id="order-shipping"></span></p>
+                <p><b>Total Price:</b> <span id="order-total-price"></span></p>
+                <p><b>Shipper:</b> <span id="order-shipper"></span></p>
+            </div>
+        </div> --}}
+        <div class="order-details">
+            <div class="order-details__columns">
+                <div class="customer-info">
+                    <h3>Customer</h3>
+                    <p><b>Name:</b> <span id="customer-name"></span></p>
+                    <p><b>Email:</b> <span id="customer-email"></span></p>
+                    <p><b>Address:</b> <span id="customer-address"></span></p>
+                </div>
+                <div class="order-info">
+                    <h3>Order Info</h3>
+                    <p><b>Order ID:</b> <span id="order-id"></span></p>
+                    <p><b>Created Time:</b> <span id="order-time"></span></p>
+                    <p><b>Shipping Address:</b> <span id="shipping-address"></span></p>
+                    <p><b>Shipping Fee:</b> <span id="shipping-fee"></span></p>
+                    <p><b>Shipping:</b> <span id="order-shipping"></span></p>
+                    <p><b>Total Price:</b> <span id="order-total-price"></span></p>
+                    <p><b>Shipper:</b> <span id="order-shipper"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-list">
+            <h3>Products</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Brand</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody id="product-list"></tbody>
+            </table>
+        </div>
+        <button id="close-modal">Close</button>
+    </div>
+</div>
 
 <script src="/apps/order.js"></script>

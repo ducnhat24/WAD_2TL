@@ -80,7 +80,12 @@ function renderOrders(orders) {
                 </div>
             </div>
         `;
+        // Chèn HTML vào DOM
         orderTableData.insertAdjacentHTML('beforeend', row);
+
+        // Gắn sự kiện click vào phần tử vừa chèn
+        const lastRow = orderTableData.lastElementChild; // Lấy phần tử vừa chèn
+        lastRow.addEventListener('click', () => openOrderDetails(order));
     });
 
     //handle when number of orders is less than pageSize: add empty rows
@@ -297,6 +302,185 @@ document.getElementById('page-size').addEventListener('change', (event) => {
 });
 
 
+// POPUP HANDLE
+// Lấy modal và các nút điều khiển
+const modal = document.getElementById("order-details-modal");
+const closeModalButton = document.getElementById("close-modal");
+
+// Hàm hiển thị modal
+// function openOrderDetails(order) {
+//     // Gán dữ liệu cho các phần tử trong modal
+//     document.getElementById("customer-name").textContent = order.customer.name;
+//     document.getElementById("customer-phone").textContent = order.customer.phone;
+//     document.getElementById("customer-address").textContent = order.customer.address;
+
+//     document.getElementById("order-id").textContent = order.id;
+//     document.getElementById("order-time").textContent = new Date(order.createdTime).toLocaleString();
+//     document.getElementById("order-shipping").textContent = order.shippingMethod;
+//     document.getElementById("order-total-price").textContent = order.totalPrice.toLocaleString('vi-VN') + " ₫";
+//     document.getElementById("order-shipper").textContent = order.shipper;
+
+//     const productList = document.getElementById("product-list");
+//     productList.innerHTML = ""; // Xóa danh sách cũ
+//     order.products.forEach(product => {
+//         const row = `
+//             <tr>
+//                 <td>${product.name}</td>
+//                 <td>${product.brand}</td>
+//                 <td>${product.unitPrice.toLocaleString('vi-VN')} ₫</td>
+//                 <td>${product.quantity}</td>
+//             </tr>
+//         `;
+//         productList.insertAdjacentHTML("beforeend", row);
+//     });
+
+//     // Hiển thị modal
+//     modal.style.display = "block";
+// }
+
+// // Đóng modal
+// closeModalButton.addEventListener("click", () => {
+//     modal.style.display = "none";
+// });
+
+
+// Hàm hiển thị modal
+// function openOrderDetails(order) {
+//     // Gán dữ liệu cho các phần tử trong modal
+//     document.getElementById("customer-name").textContent = order.customer.name;
+//     document.getElementById("customer-phone").textContent = order.customer.phone;
+//     document.getElementById("customer-address").textContent = order.customer.address;
+
+//     document.getElementById("order-id").textContent = order.id;
+//     document.getElementById("order-time").textContent = new Date(order.createdTime).toLocaleString();
+//     document.getElementById("order-shipping").textContent = order.shippingMethod;
+//     document.getElementById("order-total-price").textContent = order.totalPrice.toLocaleString('vi-VN') + " ₫";
+//     document.getElementById("order-shipper").textContent = order.shipper;
+
+//     const productList = document.getElementById("product-list");
+//     productList.innerHTML = ""; // Xóa danh sách cũ
+//     order.products.forEach(product => {
+//         const row = `
+//             <tr>
+//                 <td>${product.name}</td>
+//                 <td>${product.brand}</td>
+//                 <td>${product.unitPrice.toLocaleString('vi-VN')} ₫</td>
+//                 <td>${product.quantity}</td>
+//             </tr>
+//         `;
+//         productList.insertAdjacentHTML("beforeend", row);
+//     });
+
+//     // Hiển thị modal
+//     modal.style.display = "block";
+
+//     // Disable scrolling
+//     openModal();
+// }
+
+async function openOrderDetails(order) {
+
+
+    // Gán dữ liệu cho các phần tử trong modal
+    document.getElementById("customer-name").textContent = order.customerID.customerName;
+    document.getElementById("customer-email").textContent =  order.customerID.customerEmail; // Trường hợp không có số điện thoại
+    document.getElementById("customer-address").textContent = "Schema chưa có address"; // Trường hợp không có địa chỉ
+    document.getElementById("order-id").textContent = order._id;
+    document.getElementById("order-time").textContent = new Date(order.orderCreatedDateTime).toLocaleString();
+    document.getElementById("shipping-address").textContent = order.orderShippingAddress;
+    document.getElementById("order-shipping").textContent = order.orderShippingMethod.shippingName; // Nếu đã populate shipping method
+    document.getElementById("shipping-fee").textContent = `${order.orderShippingMethod.shippingFee.toLocaleString('vi-VN')} đ`; // Nếu đã populate shipping method
+    document.getElementById("order-total-price").textContent = `${order.orderTotalPrice.toLocaleString('vi-VN')} ₫`;
+    document.getElementById("order-shipper").textContent = "N/A";
+
+    // Xử lý danh sách sản phẩm
+    const productList = document.getElementById("product-list");
+    productList.innerHTML = ""; // Xóa danh sách cũ
+
+    order.orderListProduct.forEach(item => {
+        const product = item.productId; // Tham chiếu đến Product
+        const row = `
+            <tr>
+                <td>${product.productName || "Unknown Product"}</td>
+                <td>${product.productBrand?.brandName || "Unknown Brand"}</td>
+                <td>${item.productPrice.toLocaleString('vi-VN')} ₫</td>
+                <td>${item.quantity}</td>
+            </tr>
+        `;
+        productList.insertAdjacentHTML("beforeend", row);
+    });
+
+    // Hiển thị modal
+    modal.style.display = "block";
+
+    // Disable scrolling
+    document.body.classList.add("no-scroll");
+}
+
+
+// Đóng modal
+closeModalButton.addEventListener("click", () => {
+    modal.style.display = "none";
+    closeModal();
+});
+
+// Đóng modal khi click bên ngoài modal
+window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+        modal.style.display = "none";
+
+        // Enable scrolling
+        closeModal();
+    }
+});
+
+
+// Đóng modal khi click bên ngoài modal
+window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+}); 
+
+const orderData = {
+    id: 1,
+    createdTime: "2025-01-10T18:13:56",
+    customer: {
+        name: "Nguyen Van A",
+        phone: "0000000001",
+        address: "123 Nguyen Van Linh"
+    },
+    shippingMethod: "Standard Shipping",
+    totalPrice: 50000,
+    shipper: "Shipper A",
+    products: [
+        { name: "Iphone 12", brand: "Apple", unitPrice: 10000, quantity: 1 },
+        { name: "Iphone 11", brand: "Apple", unitPrice: 20000, quantity: 1 }
+    ]
+};
+
+
+document.getElementById('testpopup').addEventListener('click', () => {
+                openOrderDetails(orderData); // Hiển thị modal với thông tin chi tiết của đơn hàng
+});
+            
+document.getElementById('close-button').addEventListener('click', () => {
+    modal.style.display = "none"; // Đóng modal
+    closeModal();
+}
+);
+
+function openModal() {
+  const modal = document.querySelector('.modal');
+  modal.style.display = 'flex'; // Hiển thị modal
+  document.body.classList.add('no-scroll'); // Thêm lớp để vô hiệu hóa cuộn
+}
+
+function closeModal() {
+  const modal = document.querySelector('.modal');
+  modal.style.display = 'none'; // Ẩn modal
+  document.body.classList.remove('no-scroll'); // Xóa lớp để khôi phục cuộn
+}
 
 
 // // SORT IN SELECT
