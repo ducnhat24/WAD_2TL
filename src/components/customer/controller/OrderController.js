@@ -32,6 +32,19 @@ class OrderController {
             res.status(500).json({ message: error.message || "Internal Server Error" });
         }
     }
+
+    async getOrders(req, res) {
+        try {
+            // Gọi hàm trong service
+            const orders = await OrderService.getOrders();
+
+            // Trả phản hồi thành công
+            res.status(200).json({ data: orders });
+        } catch (error) {
+            // Trả lỗi phản hồi
+            res.status(500).json({ message: error.message || "Internal Server Error" });
+        }
+    }
 }
 
 module.exports = new OrderController;

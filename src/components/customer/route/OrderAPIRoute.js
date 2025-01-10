@@ -4,4 +4,5 @@ const OrderController = require('../controller/OrderController');
 
 
 orderAPIRoute.post('/', OrderController.addOrder);
+orderAPIRoute.get('/', OrderController.getOrders);
 module.exports = orderAPIRoute;

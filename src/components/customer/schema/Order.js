@@ -55,6 +55,12 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    orderShipper: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: false,
+        default: null,
+    }
 });
 
 const Order = mongoose.model("Order", orderSchema);
