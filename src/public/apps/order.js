@@ -193,9 +193,14 @@
 // fetchShippingMethods();
 
 
+
+
+
+
+
 async function fetchOrders() {
     try {
-        const response = await fetch('http://localhost:5000/api/customer/order');
+        const response = await fetch(`http://localhost:5000/api/customer/order`);
         if (!response.ok) {
             throw new Error('Failed to fetch orders');
         }
@@ -215,16 +220,16 @@ function renderOrders(orders) {
     const statusColors = {
         Processing: 'blue',
         Pending: 'orange',
-        Shipped: 'purple',
+        Delivered: 'purple',
         Completed: 'green',
         Cancelled: 'red'
     };
-
+    let countOrder = 0;
 
     orders.forEach(order => {
         const totalProducts = order.orderListProduct.reduce((sum, product) => sum + product.quantity, 0);
         const statusColor = statusColors[order.orderStatus] || 'gray'; // Mặc định là 'gray' nếu không có trạng thái phù hợp
-
+        countOrder++;
         const row = `
             <div class="order__table__items">
                 <div class="order__table__item">${order._id }</div>
@@ -240,6 +245,11 @@ function renderOrders(orders) {
 
         orderTableData.insertAdjacentHTML('beforeend', row);
     });
+    const countProductDiv = document.getElementById('order__count');
+
+    
+    // Hiển thị số lượng đơn hàng + "Order"
+    countProductDiv.textContent = `${countOrder} Order (s)`;
 }
 
 

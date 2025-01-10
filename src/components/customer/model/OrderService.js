@@ -49,9 +49,10 @@ class OrderService {
         }
     }
 
-    async getOrders() {
+    async getOrders(customerID) {
         try {
-            return await Order.find().exec();
+            const orders = await Order.find({customerID: customerID}).exec();
+            return orders;
         } catch (error) {
             console.error("Error getting orders:", error);
             throw error;

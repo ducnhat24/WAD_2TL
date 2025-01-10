@@ -35,8 +35,11 @@ class OrderController {
 
     async getOrders(req, res) {
         try {
+            const customerID = req.user.id;
+            console.log(req.user);
+
             // Gọi hàm trong service
-            const orders = await OrderService.getOrders();
+            const orders = await OrderService.getOrders(customerID);
 
             // Trả phản hồi thành công
             res.status(200).json({ data: orders });

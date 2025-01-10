@@ -250,7 +250,8 @@ function fetchShippingMethodsInCart() {
         // Thêm các phương thức mới từ API
         data.data.forEach(method => {
             const option = document.createElement('option');
-            option.value = method._id; // Giá trị tương ứng với phương thức
+            option.value = method.shippingFee; // Giá phí vận chuyển
+            option.setAttribute('data-shipping-id', method._id); // ID phương thức vận chuyển
             console.log("Method: ", method);
             option.textContent = `${method.shippingName} - ${method.shippingFee.toLocaleString('vi-VN')} ₫`; // Tên và giá
             shippingMethodSelect.appendChild(option);
@@ -278,7 +279,18 @@ document.getElementById('shipping-method').addEventListener('change', (event) =>
 document.getElementById('pay-button').addEventListener('click', async () => {
     try {
         // Thu thập thông tin từ giao diện
-        const shippingMethod = document.getElementById('shipping-method').value;
+        // const shippingMethod = document.getElementById('shipping-method').getAttribute('data-shipping-id');
+        
+        // Lấy phần tử select
+        const shippingMethodSelect = document.getElementById('shipping-method');
+
+        // Lấy option được chọn
+        const selectedOption = shippingMethodSelect.options[shippingMethodSelect.selectedIndex];
+
+        // Lấy giá trị data-shipping-id từ option được chọn
+        const shippingMethod = selectedOption.getAttribute('data-shipping-id');
+
+
         const shippingAddress = document.querySelector('textarea').value;
 
         if (!shippingMethod || !shippingAddress) {
