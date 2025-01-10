@@ -1,50 +1,63 @@
 <div class="order">
     <div class="order__header">
-        <h2>Order</h2>
+        <h2>Orders</h2>
     </div>
 
     <div class="order__body">
         <div class="order__feature">
             <div class="order__feature__left">
                 <div class="order__feature__item">
-                    <div class="order__feature__icon">
+                    {{!-- <div class="order__feature__icon">
                         <i class="fa-solid fa-filter"></i>
                     </div>
-                    <select name="" id="">
+                    <select name="" id="sort-options">
                         <option value="" selected disabled>Sort</option>
                         <option value="id">ID</option>
+                        <option value="num-of-products">Num of products</option>
                         <option value="creation-time">Creation Time</option>
                         <option value="price">Price</option>
-                    </select>
+                        <option value="status">Status</option>
+                    </select> --}}
+
                 </div>
                 <div class="order__feature__item">
-                    <div class="order__feature__icon">
-                        <i class="fa-solid fa-sort"></i>
-                    </div>
-                    <select name="" id="">
-                        <option value="" selected disabled>Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="success">Success</option>
-                        <option value="shipped">Shipped</option>
-
-                        <option value="completed">Completed</option>
-                        <option value="cancel">Cancel</option>
-                    </select>
+                    <input type="text" placeholder="Search ID" id="search-order">
+                    {{!-- <div class="order__feature__icon">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div> --}}
                 </div>
             </div>
 
             <div class="order__feature__right">
+                {{!-- <div class="order__feature__icon">
+                    <i class="fa-solid fa-sort"></i>
+                </div> --}}
+
                 <div class="order__feature__item">
-                    <input type="text" placeholder="Search">
-                    <div class="order__feature__icon">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
+                    <label for="page-size">Page Size: </label>
+                    <select id="page-size">
+                        <option value="4">4</option>
+                        <option value="8"selected>8</option>
+                        <option value="12">12</option>
+                    </select>
                 </div>
+
+                <select name="" id="status-options">
+                    <option value="" selected>Status</option>
+                    <option value="processing">Processing</option>
+                    <option value="pending">Pending</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+
+
+
             </div>
         </div>
 
         <div class="order__table">
-            <div class="order__table__header">
+            {{!-- <div class="order__table__header">
                 <div class="order__table__items">
                     <div class="order__table__item">ID</div>
                     <div class="order__table__item">Num of products</div>
@@ -54,7 +67,17 @@
                         <div class="order__table__item__status"></div>
                     </div>
                 </div>
+            </div> --}}
+            <div class="order__table__header">
+                <div class="order__table__items">
+                    <div class="order__table__item" id="sort-id">ID</div>
+                    <div class="order__table__item" id="sort-products">Num of products</div>
+                    <div class="order__table__item" id="sort-price">Total price</div>
+                    <div class="order__table__item" id="sort-time">Creation Time</div>
+                    <div class="order__table__item" id="sort-status">Status</div>
+                </div>
             </div>
+
 
             <div class="order__table__data">
                 <div class="order__table__items">
@@ -68,20 +91,34 @@
                 </div>
             </div>
             <div class="order__table__footer">
-                <div class="order__table__number" id="order__count">0</div>
+                <div class="order__table__number" id="order__count"></div>
+                    <div id="pagination-controls" class="pagination-controls">
+                        <div>
+                            <button id="prev-page" class="navigation_button">Previous</button>
+                        </div>
+                        <div id="current-page">1</div>
+                        <div>
+                            <button id="next-page" class="navigation_button">Next</button>
+                        </div>
+
+                    </div>
                 </div>
 
-                <div class="order__table__button">
+
+
+
+                {{!-- <div class="order__table__button">
                     <button>
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
                     <button>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
 </div>
+
 
 <script src="/apps/order.js"></script>

@@ -8,7 +8,6 @@
     text-align: center;
 }
 
-.order__body {}
 
 .order__feature {
     display: flex;
@@ -27,8 +26,17 @@
     align-items: center;
 }
 
-.order__feature__item+.order__feature__item {
+/* .order__feature__item+.order__feature__item {
     margin-left: 10px;
+} */
+
+.order__body{
+    height: 100vh;
+    width: 100%;
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; */
 }
 
 .order__body .order__table {
@@ -52,7 +60,8 @@
 
 .order__table__footer,
 .order__table__header {
-    background-color: #ffa500;
+    /* background-color: #ffa500; */
+    background-color: var(--navy-color);
     font-weight: 700;
     color: #fff;
 }
@@ -126,3 +135,97 @@
     color: #fff;
 }
 
+.order__table__item.sort-asc::after {
+    content: ' ▲'; /* Mũi tên lên */
+    color: gray;
+    margin-left: 5px;
+}
+
+.order__table__item.sort-desc::after {
+    content: ' ▼'; /* Mũi tên xuống */
+    color: gray;
+    margin-left: 5px;
+}
+
+.order__feature__right{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#search-order {
+    margin-right: 10px;
+}
+
+#status-options {
+    margin-left: 10px;
+    border-radius: 5px;
+    padding: 5px;
+    border: 1px solid var(--navy-color);
+}
+
+.navigation_button{
+    background-color: white;
+    color: var(--navy-color);
+    border: none;
+    padding: 9px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.navigation_button:hover{
+    background-color: var(--navy-color-hover);
+    color: white;
+    transform: scale(1.05);
+}
+
+#current-page {
+    width: 50px;
+    text-align: center;
+}
+
+#pagination-controls{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#search-order{
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid var(--navy-color);
+}
+
+#page-size{
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid var(--navy-color);
+}
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Khoảng cách giữa các nút */
+    margin-top: 20px;
+}
+
+.pagination-button {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #333;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.pagination-button:hover {
+    background-color: #e0e0e0;
+}
+
+.pagination-button.active {
+    background-color: var(--navy-color-hover);
+    color: white;
+    font-weight: bold;
+    border-color: #0056b3;
+}
