@@ -149,7 +149,6 @@ class ProductService {
 
     async filterProduct(query) {
         try {
-            console.log("query:", query);
             const brandArray = query.brands || [];
             const categoryArray = query.categories || [];
             const sortBy = query.sortBy;
@@ -178,7 +177,16 @@ class ProductService {
                     );
                 }
 
-                let sortedProducts = filteredByCategory;
+                let searchResult = filteredByCategory;
+                if (query.keySearch && query.keySearch !== "") {
+                    searchResult = filteredByCategory.filter((product) =>
+                        product.productName.toLowerCase().includes(query.keySearch.toLowerCase()) ||
+                        product.productDescription.toLowerCase().includes(query.keySearch.toLowerCase())
+                    );
+
+                }
+
+                let sortedProducts = searchResult;
 
                 // Sort by field
                 if (sortBy && sortType) {

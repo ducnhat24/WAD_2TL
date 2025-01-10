@@ -134,12 +134,13 @@ class ProductController {
 
     async filterProduct(req, res) {
         try {
-            const { page, limit, brands, categories, sortType, sortBy } = req.query;
+            const { page, limit, brands, categories, sortType, sortBy, keySearch } = req.query;
             const query = {
                 brands: brands,
                 categories: categories,
                 sortType: sortType,
-                sortBy: sortBy
+                sortBy: sortBy,
+                keySearch: keySearch,
             };
 
             const products = await ProductService.filterProduct(query);
