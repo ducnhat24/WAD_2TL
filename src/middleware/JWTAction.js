@@ -64,10 +64,11 @@ function verifyToken(req, res, next) {
         jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
             if (err) {
                 req.isAuthenticated = false;
-                return {
+                res.clearCookie('accessToken');
+                return res.json({
                     status: 'error',
                     message: 'Access token is invalid',
-                }
+                });
             }
 
             req.user = user;

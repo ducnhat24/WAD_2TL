@@ -3,7 +3,7 @@ const UserService = require('../model/UserService');
 class UserController {
     async getAllUsers(req, res) {
         try {
-            const users = await UserService.getAllUsers();
+            const users = await UserService.getAllUsers(req.query);
             if (users.status === 'error') {
                 return res.status(404).json(users);
             }

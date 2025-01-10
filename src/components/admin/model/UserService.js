@@ -14,15 +14,11 @@ async function hashPassword(password) {
 }
 
 class UserService {
-    async getAllUsers() {
+    async getAllUsers(query) {
+        const { role } = query;
         try {
-            const users = await User.find();
-            if (!users) {
-                return {
-                    status: 'error',
-                    message: 'No user found',
-                };
-            }
+            const queryForFind = role ? { userRole: role } : {};
+            const users = await User.find(queryForFind);
 
             return {
                 status: 'success',
