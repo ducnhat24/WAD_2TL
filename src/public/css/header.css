@@ -164,14 +164,6 @@
     margin: 0 15px;
 }
 
-.cart-button {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 24px;
-    cursor: pointer;
-    position: relative;
-}
 
 .cart-count {
     position: absolute;
@@ -195,6 +187,50 @@
 }
 
 .fa-file-invoice{
-    font-size: 20px;
+    background: none;
+    border: none;
     color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    position: relative;
+    margin-right: 10px;
+}
+
+.fa-cart-shopping {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 10px;
+    position: relative;
+}
+
+.fa-user {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    position: relative;
+}
+
+.cart-wrapper {
+    position: relative; /* Đặt vị trí tương đối để có thể định vị con */
+    display: inline-block; /* Đảm bảo cả biểu tượng và số lượng nằm cùng nhau */
+}
+
+.cart-wrapper .cart-count {
+    position: absolute; /* Đặt vị trí tuyệt đối so với container */
+    top: -5px; /* Điều chỉnh vị trí theo nhu cầu */
+    right: 5px; /* Điều chỉnh vị trí theo nhu cầu */
+    background-color: red; /* Màu nền để nổi bật số lượng */
+    color: white; /* Màu chữ */
+    font-size: 12px; /* Kích thước chữ */
+    font-weight: bold; /* Đậm chữ */
+    border-radius: 50%; /* Bo tròn thành hình tròn */
+    padding: 2px 6px; /* Khoảng cách bên trong */
+    min-width: 18px; /* Đảm bảo số lượng luôn tròn đẹp */
+    text-align: center; /* Canh giữa */
+    line-height: 1; /* Đảm bảo nội dung căn giữa */
 }

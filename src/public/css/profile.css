@@ -19,9 +19,9 @@ label.btn {
 }
 
 .btn-outline-primary {
-  border-color: #26b4ff;
+  border-color: var(--navy-color);
   background: transparent;
-  color: #26b4ff;
+  color: var(--navy-color);
 }
 
 .btn {
@@ -34,7 +34,7 @@ label.btn {
 
 .btn-facebook {
   border-color: rgba(0, 0, 0, 0);
-  background: #3b5998;
+  background: var(--navy-color);
   color: #fff;
 }
 

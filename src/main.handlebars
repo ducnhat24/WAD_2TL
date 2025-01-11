@@ -118,24 +118,30 @@
       </div>
       <div>
         <div>
-          <a href="/customer/order">
-            <button onClick="showOrder()" class="cart-button">
-              <i class="fa-solid fa-file-invoice"></i>
-            </button>
-          </a>
+
         </div>
       </div>
 
       <div class="cart_button">
         <div class="header__cart">
 
-          <a href="/customer/cart">
-            <button onClick="showCart()" class="cart-button">
-              <i class="fa-solid fa-cart-shopping"></i>
-            </button>
+          <a href="/customer/order">
+            <i class="fa-solid fa-file-invoice"></i>
           </a>
 
-          <span id="cart-count" class="cart-count">0</span>
+          <div class="cart-wrapper">
+            <a href="/customer/cart">
+              <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+            <span id="cart-count" class="cart-count">0</span>
+          </div>
+          
+          <a href="/customer/profile">
+            <i class="fa-solid fa-user"></i>
+          </a>
+
+
+
 
         </div>
         <div onclick="showNav()" class="header__btn__nav">
