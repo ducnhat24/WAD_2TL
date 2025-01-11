@@ -3,7 +3,10 @@ async function getCustomerID() {
         const response = await fetch('http://localhost:5000/api/customer/id');
         if (!response.ok) {
             throw new Error(`Error fetching customer ID: ${response.status}`);
-            // return null;
+        }
+        if (response.status == "error") {
+            alert("Please login first to write a review!");
+            return null;
         }
         const data = await response.json();
         return data.data._id; // Trả về dữ liệu customer ID từ API
@@ -86,6 +89,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const customerID = await getCustomerID(); // Lấy customer ID từ API
+        if (customerID === null) {
+            alert("Please login first to write a review!");
+
+            return; // Nếu không lấy được customer ID thì dừng
+        }
 
         try {
             // Gửi dữ liệu đến server
