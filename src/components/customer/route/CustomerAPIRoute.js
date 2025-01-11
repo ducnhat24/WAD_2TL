@@ -7,6 +7,9 @@ const { authenticateGoogle, handleGoogleCallback } = require('../../../middlewar
 const OrderController = require('../controller/OrderController');
 const OrderAPIRoute = require('./OrderAPIRoute');
 
+// route that return customer id
+customerAPIRoute.get("/id", verifyToken, CustomerController.getCustomerID);
+
 customerAPIRoute.put('/cart', verifyToken, CartController.updateProductInCart);
 customerAPIRoute.delete('/cart', CartController.removeProductFromCart);
 customerAPIRoute.post('/cart', CartController.addProductToCart);
@@ -24,6 +27,8 @@ customerAPIRoute.post('/authentication', verifyToken, CustomerController.auth);
 
 
 customerAPIRoute.use('/order', OrderAPIRoute);
+
+
 
 
 module.exports = customerAPIRoute;

@@ -1,4 +1,6 @@
 const Product = require("../schema/Product");
+const Brand = require("../../brand/schema/Brand");
+const Customer = require("../../customer/schema/Customer");
 
 class ProductService {
     async getAllProducts() {
@@ -31,6 +33,9 @@ class ProductService {
         try {
             const product = await Product.find({ _id: id });
             if (product) {
+                //populate productBrand
+                const productBrand = await Brand.findById(product[0].productBrand);
+                product[0].productBrand = productBrand;
                 return {
                     status: "success",
                     msg: "Product fetched successfully",
@@ -398,6 +403,52 @@ class ProductService {
             }
         }
     }
+
+    async getProductReviews(productId) {
+        try {
+            const product = await Product.findById(productId).select('productReviews');
+            if (product) {
+                //populate product productReviews customer
+                for (let i = 0; i < product.productReviews.length; i++) {
+                    const customer = await Customer.findById(product.productReviews[i].customerID);
+                    product.productReviews[i].customerID = customer;
+                }             
+
+                return {
+                    status: "success",
+                    data: product.productReviews,
+                };
+            }
+            return {
+                status: "error",
+                msg: "No reviews found",
+            };
+        } catch (error) {
+            console.error(error);
+            return {
+                status: "error",
+                msg: error.message,
+            };
+        }
+    }
+
+    async addReview(productId, reviewData) {
+        try {
+            const product = await Product.findById(productId);
+            if (!product) {
+                return null;
+            }
+
+            // Thêm review mới vào productReviews
+            product.productReviews.push(reviewData);
+            await product.save();
+            return true;
+        } catch (error) {
+            console.error('Error adding review:', error);
+            throw error;
+        }
+    }
+
 }
 
 module.exports = new ProductService;

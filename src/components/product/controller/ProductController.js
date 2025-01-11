@@ -297,6 +297,55 @@ class ProductController {
             res.status(500).send("An error occurred while fetching products");
         }
     }
+
+
+    async getReviews(req, res) {
+        try {
+            const productId = req.params.id;
+            console.log("Product ID:", productId);
+            const reviews = await ProductService.getProductReviews(productId);
+
+            if (reviews.status === "success") {
+                return res.status(200).json(reviews.data);
+            } else {
+                return res.status(404).json({ message: "No reviews found" });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Internal Server Error" });
+        }
+    }
+
+    // Tạo review mới
+    async createReview(req, res) {
+        const productId = req.params.id;
+        const {customerID, productReviewContent, productReviewRating } = req.body;
+
+        if (!productReviewContent || !productReviewRating) {
+            return res.status(400).json({ msg: 'Review content and rating are required' });
+        }
+
+        try {
+            const result = await ProductService.addReview(productId, {
+                productReviewContent,
+                productReviewRating,
+                customerID: customerID,
+            });
+
+            if (result) {
+                res.status(200).json({ msg: 'Review added successfully' });
+            } else {
+                res.status(404).json({ msg: 'Product not found' });
+            }
+        } catch (error) {
+            console.error('Error creating review:', error);
+            res.status(500).json({ msg: 'Server error' });
+        }
+    }
+
+    
+
 }
+
 
 module.exports = new ProductController;

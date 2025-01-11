@@ -107,6 +107,25 @@ class CustomerController {
             });
         }
     }
+
+    async getCustomerID(req, res) {
+        try {
+            console.log(req.user);
+            const customerID = await CustomerService.getCustomerID(req.user);
+            if (customerID.status === 'success') {
+                return res.status(200).json(customerID);
+            }
+
+            return res.status(400).json(customerID);
+        } catch (error) {
+            return res.status(500).json({
+                status: 'error',
+                msg: 'Internal server error'
+            });
+        }
+    }
+
+    
 }
 
 module.exports = new CustomerController;

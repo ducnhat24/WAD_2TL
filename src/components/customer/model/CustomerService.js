@@ -250,6 +250,30 @@ class CustomerService {
             };
         }
     }
+
+    async getCustomerID(user) {
+        try {
+            const customer = await Customer.findOne({ _id: user.id });
+            if (!customer) {
+                return {
+                    status: "error",
+                    message: "User not found",
+                };
+            }
+            return {
+                status: "success",
+                message: "User found",
+                data: customer,
+            };
+        }
+        catch (error) {
+            return {
+                status: "error",
+                message: error.message,
+            };
+        }
+    }
+
 }
 
 module.exports = new CustomerService;

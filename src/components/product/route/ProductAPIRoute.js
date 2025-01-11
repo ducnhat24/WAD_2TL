@@ -12,5 +12,11 @@ productAPIRouter.put('/:id', ProductController.updateProduct);
 productAPIRouter.get('/:id', ProductController.getProductDetails);
 productAPIRouter.post('/', ProductController.addProduct);
 productAPIRouter.get('/', ProductController.getProduct);
+// Lấy danh sách review
+productAPIRouter.get('/:id/reviews', ProductController.getReviews);
+// Thêm review
+productAPIRouter.post('/:id/reviews', ProductController.createReview);
+
+
 module.exports = productAPIRouter;
 

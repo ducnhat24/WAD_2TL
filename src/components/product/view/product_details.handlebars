@@ -1,19 +1,3 @@
-<!-- Banner Section -->
-{{!-- <div class="product_banner">
-  <div class=".container-fluid">
-    <div class="row banner__temp">
-      <div class="col-12 col-md-12 img-container">
-        <img src="data:image/png;base64,{{product.image}}" alt="CarBanner" class="img-fluid">
-      </div>
-      <div class="banner__des col-12 col-md-6">
-        <h1>911 CARRERA GTS</h1>
-        <p>Từ {{product.price}} VND • {{product.power}} PS • {{product.acceleration}} giây</p>
-      </div>
-    </div>
-  </div>
-</div> --}}
-
-<!-- Car Specifications -->
 <div class="specifications">
   <div class="product_header col-md-12">
     <h2>SPECIFICATIONS</h2>
@@ -30,7 +14,7 @@
       <table class="table specifications-table">
         <tr>
           <td class="detail">Product brand</td>
-          <td class="info">{{product.productBrand}}</td>
+          <td class="info">{{product.productBrand.brandName}}</td>
         </tr>
         <tr>
           <td class="detail">Product Name</td>
@@ -61,7 +45,7 @@
       </div>
       <input type="number" id="each-production-quanity" />
       <div>
-        <button onclick="javascript:addCart()" class="custom_button">Add Cart</button>
+        <button onclick="javascript:addCart()" class="custom_button" id="add_cart_button">Add Cart</button>
       </div>
 
     </div>
@@ -69,10 +53,10 @@
 
   <div class="sameproduct">
     <div class="sameproduct__header">
-      <h2 id="relatedCars">SAME PRODUCTS</h2>
       <hr class="newest-cars-divider" />
+      <h2 id="relatedCars">SAME PRODUCTS</h2>
     </div>
-    <div class="cars-list">
+    <div class="same_product_container">
 
       {{#each sameProducts}}
 
@@ -110,31 +94,100 @@
     </div>
   </div>
 
-  <div class="review">
+  {{!-- <div class="review">
     <div class="review__header">
-      <h2 id="reviewCars">WRITE A REVIEW</h2>
+      <h2 id="reviewCars">REVIEWS</h2>
       <hr />
-      <div class="col-md-12 bg-light mt-3 p-5">
-        <form>
-          <div class="form-group">
-            <textarea cols="30" rows="7" class="form-control" placeholder="Mô tả cụ thể đánh giá của bạn"></textarea>
-          </div>
-          <div class="form-group mt-3">
-            <input type="submit" class="btn btn-primary py-3 px-5" value="submit a review" />
-          </div>
-        </form>
-      </div>
-
+      <div class="card-review"></div>
     </div>
   </div>
 
-  <div class="review">
-    <div class="review__header">
-      <h2 id="reviewCars">VIEW REVIEWS</h2>
-      <hr />
-      <div class="col-md-12 bg-light mt-3 p-5">
+  <div class="review-form">
+    <h2>Write a Review</h2>
+    <form id="reviewForm" class="review-form__container">
+      <!-- Ratings -->
+      <div class="form-group">
+        <label for="rating">Your Rating:</label>
+        <div class="rating-stars">
+          <input type="radio" id="star1" name="rating" value="1" />
+          <label for="star1" title="1 star">★</label>
+          <input type="radio" id="star2" name="rating" value="2" />
+          <label for="star2" title="2 stars">★</label>
+          <input type="radio" id="star3" name="rating" value="3" />
+          <label for="star3" title="3 stars">★</label>
+          <input type="radio" id="star4" name="rating" value="4" />
+          <label for="star4" title="4 stars">★</label>
+          <input type="radio" id="star5" name="rating" value="5" />
+          <label for="star5" title="5 stars">★</label>
+        </div>
 
       </div>
 
+      <!-- Comment -->
+      <div class="form-group">
+        <label for="comment">Your Comment:</label>
+        <textarea id="comment" class="form-control" rows="5" placeholder="Write your review here..."></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+      </div>
+    </form>
+  </div> --}}
+  <div class="review__header">
+    <h2 id="reviewCars">REVIEWS</h2>
+    <hr />
+  </div>
+  <div class="review-section">
+    <div class="row">
+      <!-- Reviews Column -->
+      <div class="col-lg-8 col-md-12 review-column">
+        <div class="review">
+          <div class="review__header">
+            <div class="card-review"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Form Column -->
+    <div class="col-lg-4 col-md-12 form-column">
+        <div class="review-form">
+          <h2>Write a Review</h2>
+          <form id="reviewForm" class="review-form__container">
+            <!-- Ratings -->
+            <div class="form-group">
+              <label for="rating">Your Rating:</label>
+              <div class="rating-stars">
+                <input type="radio" id="star5" name="rating" value="5" />
+                <label for="star5" title="5 stars">★</label>
+                <input type="radio" id="star4" name="rating" value="4" />
+                <label for="star4" title="4 stars">★</label>
+                <input type="radio" id="star3" name="rating" value="3" />
+                <label for="star3" title="3 stars">★</label>
+                <input type="radio" id="star2" name="rating" value="2" />
+                <label for="star2" title="2 stars">★</label>
+                <input type="radio" id="star1" name="rating" value="1" />
+                <label for="star1" title="1 star">★</label>
+              </div>
+            </div>
+
+            <!-- Comment -->
+            <div class="form-group">
+              <label for="comment">Your Comment:</label>
+              <textarea id="comment" class="form-control" rows="5" placeholder="Write your review here..."></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">Submit Review</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
+
+
+
+<script src="/apps/review.js"></script>

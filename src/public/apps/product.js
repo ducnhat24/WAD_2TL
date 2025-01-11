@@ -696,6 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
 // function loadSideBar() {
 //     showBrand();
 //     showCategory();
