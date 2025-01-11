@@ -89,15 +89,15 @@ class OrderService {
         try {
             const dateNow = new Date();
             const dateFrom = {
-                day: query.dayFrom || 1,
-                month: query.monthFrom || 0,
-                year: query.yearFrom || dateNow.getFullYear(),
+                day: query.dayFrom ? (query.dayFrom === '' ? 1 : query.dayFrom) : 1,
+                month: query.monthFrom ? (query.monthFrom === '' ? 0 : query.monthFrom - 1) : 0,
+                year: query.yearFrom ? (query.yearFrom === '' ? dateNow.getFullYear() : query.yearFrom) : dateNow.getFullYear(),
             }
 
             const dateTo = {
-                day: query.dayTo || dateNow.getDate(),
-                month: query.monthTo || dateNow.getMonth(),
-                year: query.yearTo || dateNow.getFullYear(),
+                day: query.dayTo ? (query.dayTo === '' ? dateNow.getDate() : query.dayTo) : dateNow.getDate(),
+                month: query.monthTo ? (query.monthTo === '' ? dateNow.getMonth() : query.monthTo - 1) : dateNow.getMonth(),
+                year: query.yearTo ? (query.yearTo === '' ? dateNow.getFullYear() : query.yearTo) : dateNow.getFullYear(),
             }
 
             // const dateTest = new Date(dateFrom.year, dateFrom.month, dateFrom.day);
@@ -113,16 +113,31 @@ class OrderService {
                 }
             }).exec();
 
+            const ordersBeginning = await Order.find({
+                orderStatus: "Completed",
+                orderCreatedDateTime: {
+                    $lt: new Date(dateFrom.year, dateFrom.month, dateFrom.day),
+                }
+            }).exec();
 
-            let totalPurchase = 0;
+
+            let totalPurchaseBeginning = 0;
+            for (let i = 0; i < ordersBeginning.length; i++) {
+                totalPurchaseBeginning += Number(ordersBeginning[i].orderTotalPrice);
+            }
+
+            let totalPurchaseAfter = 0;
             for (let i = 0; i < orders.length; i++) {
-                totalPurchase += Number(orders[i].orderTotalPrice);
+                totalPurchaseAfter += Number(orders[i].orderTotalPrice);
             }
 
             return {
                 status: 'success',
                 message: 'Get total purchase successfully',
-                totalPurchase: totalPurchase,
+                data: {
+                    totalPurchaseBeginning,
+                    totalPurchaseAfter,
+                },
             }
 
         } catch (error) {
@@ -138,15 +153,15 @@ class OrderService {
         try {
             const dateNow = new Date();
             const dateFrom = {
-                day: query.dayFrom || 1,
-                month: query.monthFrom || 0,
-                year: query.yearFrom || dateNow.getFullYear(),
+                day: query.dayFrom ? (query.dayFrom === '' ? 1 : query.dayFrom) : 1,
+                month: query.monthFrom ? (query.monthFrom === '' ? 0 : query.monthFrom - 1) : 0,
+                year: query.yearFrom ? (query.yearFrom === '' ? dateNow.getFullYear() : query.yearFrom) : dateNow.getFullYear(),
             }
 
             const dateTo = {
-                day: query.dayTo || dateNow.getDate(),
-                month: query.monthTo || dateNow.getMonth(),
-                year: query.yearTo || dateNow.getFullYear(),
+                day: query.dayTo ? (query.dayTo === '' ? dateNow.getDate() : query.dayTo) : dateNow.getDate(),
+                month: query.monthTo ? (query.monthTo === '' ? dateNow.getMonth() : query.monthTo - 1) : dateNow.getMonth(),
+                year: query.yearTo ? (query.yearTo === '' ? dateNow.getFullYear() : query.yearTo) : dateNow.getFullYear(),
             }
 
             // const dateTest = new Date(dateFrom.year, dateFrom.month, dateFrom.day);
@@ -157,8 +172,8 @@ class OrderService {
             const orders = await Order.find({
                 orderStatus: "Completed",
                 orderCreatedDateTime: {
-                    $gte: new Date(dateFrom.year, dateFrom.month, dateFrom.day),
-                    $lt: new Date(dateTo.year, dateTo.month, dateTo.day),
+                    $gte: new Date(Number(dateFrom.year), Number(dateFrom.month), Number(dateFrom.day)),
+                    $lt: new Date(Number(dateTo.year), Number(dateTo.month), Number(dateTo.day)),
                 }
             }).exec();
 
@@ -179,10 +194,11 @@ class OrderService {
                 }
             }
 
+
             return {
                 status: 'success',
                 message: 'Get total purchase each product successfully',
-                listProduct: listProduct,
+                data: listProduct,
             }
 
         } catch (error) {
