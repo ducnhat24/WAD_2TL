@@ -66,13 +66,27 @@
             </form>
 
             <!-- Update Email -->
-            <form action="/setting/update-profile/email" method="post">
+            {{!-- <form action="/setting/update-profile/email" method="post">
               <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" class="form-control" value="{{profile.customerEmail}}">
               </div>
               <button type="submit" class="btn btn-success">Save Email</button>
+            </form> --}}
+            <form id="emailForm">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" value="{{profile.customerEmail}}">
+                <button type="button" id="saveEmail" class="btn btn-success">Save Email</button>
+              </div>
+
+              <div id="otpSection" style="display: none;">
+                <label for="otp">Enter OTP</label>
+                <input type="text" id="otp" class="form-control">
+                <button type="button" id="verifyOtp" class="btn btn-primary">Verify</button>
+              </div>
             </form>
+
           </div>
         </div>
       </div>
@@ -80,4 +94,5 @@
   </div>
 </div>
 
+<script src="/apps/profile.js"></script>
 
