@@ -118,15 +118,14 @@
   border-radius: 0.25rem;
 }
 
-.header__logo__wrapper{
+.header__logo__wrapper {
   scale: 0.6;
-
 }
 
 /* Discount */
 .img__sale {
-  height: 100% !important;
-  width: 100% !important;
+  max-height: 60% !important;
+  max-width: 60% !important;
 }
 
 .owl-carousel .owl-nav button.owl-prev,
