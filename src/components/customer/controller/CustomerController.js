@@ -1,9 +1,37 @@
 const CustomerService = require("../model/CustomerService");
 
 class CustomerController {
-  showProfile(req, res) {
-    res.render("profile");
+  // showProfile(req, res) {
+  //   // get user info from req.user
+  //   // render profile page with user info
+
+  //   const userID = req.user.id;
+
+  //   // call service to get user info
+  //   const user = CustomerService.getUserByID(userID);
+  //   res.render("profile", {profile: user});
+  // }
+
+  async showProfile(req, res) {
+    try {
+      // Lấy userID từ req.user
+      const userID = req.user.id;
+
+      // Gọi service để lấy thông tin user
+      const response = await CustomerService.getUserByID(userID);
+      // Kiểm tra kết quả
+      if (response.status === "error") {
+        return res.status(404).send(response.message);
+      }
+      console.log(response.data[0]);
+      // Render profile page với dữ liệu người dùng
+      res.render("profile", { profile: response.data[0] });
+    } catch (error) {
+      // Xử lý lỗi và trả về thông báo lỗi
+      res.status(500).send("Internal Server Error");
+    }
   }
+
 
   showSignup(req, res) {
     res.render("signup");

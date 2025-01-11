@@ -303,7 +303,32 @@ class CustomerService {
                 message: error.message,
             };
         }
+  }
+  
+  async getUserByID(id) {
+    try {
+      const user = await Customer.find({ _id: id });
+
+      if (!user) {
+        return {
+          status: "error",
+          message: "User not found",
+        };
+      }
+      return {
+        status: "success",
+        message: "User found",
+        data: user,
+      };
     }
+    catch (error) {
+      return {
+        status: "error",
+        message: error.message,
+      };
+    }
+  } 
+
 
 }
 
