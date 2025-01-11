@@ -2,8 +2,8 @@ async function getCustomerID() {
     try {
         const response = await fetch('http://localhost:5000/api/customer/id');
         if (!response.ok) {
-            // throw new Error(`Error fetching customer ID: ${response.status}`);
-            return null;
+            throw new Error(`Error fetching customer ID: ${response.status}`);
+            // return null;
         }
         const data = await response.json();
         return data.data._id; // Trả về dữ liệu customer ID từ API
