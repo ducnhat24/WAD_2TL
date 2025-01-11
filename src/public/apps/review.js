@@ -17,20 +17,20 @@ async function getCustomerID() {
     }
 }
 
-
-async function fetchReviews(productId) {
+async function fetchAllReviews(productId) {
     try {
         const response = await fetch(`http://localhost:5000/api/product/${productId}/reviews`);
         if (!response.ok) {
             throw new Error(`Error fetching reviews: ${response.status}`);
         }
         const data = await response.json();
-        return data; // Trả về dữ liệu review từ API
+        return data; // Trả về danh sách review từ API
     } catch (error) {
         console.error("Error fetching reviews:", error);
         return []; // Trả về mảng rỗng nếu có lỗi
     }
 }
+
 
 function renderReviews(reviews, reviewContainer) {
     reviewContainer.innerHTML = ""; // Xóa nội dung cũ
@@ -61,13 +61,23 @@ function renderReviews(reviews, reviewContainer) {
 
 async function loadReviews() {
     const productId = document.getElementById('hehe').innerText.trim();
+    const reviewsPerPage = 5; // Số review mỗi trang
+    let currentPage = 1;
 
-    fetchReviews(productId)
-        .then(reviews => {
-            const reviewContainer = document.querySelector('.card-review');
-            renderReviews(reviews, reviewContainer);
-        });
+    const allReviews = await fetchAllReviews(productId);
+
+    function updatePage(page) {
+        currentPage = page;
+        const reviewsToShow = paginateReviews(allReviews, currentPage, reviewsPerPage);
+        const reviewContainer = document.querySelector('.card-review');
+        renderReviews(reviewsToShow, reviewContainer);
+
+        renderPagination(allReviews.length, reviewsPerPage, currentPage, updatePage);
+    }
+
+    updatePage(currentPage); // Hiển thị trang đầu tiên
 }
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const productId = document.getElementById('hehe').innerText.trim(); // Lấy Product ID từ HTML
@@ -115,7 +125,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 alert('Review submitted successfully!');
                 reviewForm.reset(); // Xóa nội dung form
-                location.reload(); // Reload trang để hiển thị review mới
+                const reviews = await fetchAllReviews(productId); // Lấy review mới
+                const lastPage = Math.ceil(reviews.length / 5); // Tính trang cuối
+                const slicedReview = paginateReviews(reviews, lastPage, 5); // Hiển thị trang đầu tiên
+                renderReviews(slicedReview, document.querySelector('.card-review')); // Hiển thị review mới
+                // location.reload(); // Reload trang để hiển thị review mới
             } else {
                 alert(`Error: ${result.msg}`);
             }
@@ -126,15 +140,29 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+function paginateReviews(reviews, page, reviewsPerPage) {
+    const startIndex = (page - 1) * reviewsPerPage; // Vị trí bắt đầu
+    const endIndex = startIndex + reviewsPerPage;  // Vị trí kết thúc
+    return reviews.slice(startIndex, endIndex);    // Lấy phần tử trong khoảng [startIndex, endIndex)
+}
 
+function renderPagination(totalReviews, reviewsPerPage, currentPage, onPageChange) {
+    const totalPages = Math.ceil(totalReviews / reviewsPerPage);
+    const paginationContainer = document.querySelector('.pagination');
+    paginationContainer.innerHTML = ''; // Xóa nội dung cũ
 
-loadReviews();
+    for (let i = 1; i <= totalPages; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.textContent = i;
+        pageButton.className = 'page-btn';
+        if (i === currentPage) {
+            pageButton.classList.add('active');
+        }
+        pageButton.addEventListener('click', () => onPageChange(i));
+        paginationContainer.appendChild(pageButton);
+    }
+}
 
-// document.addEventListener("DOMContentLoaded", async function () {
-//     const productId = document.getElementById('hehe').innerText.trim(); // Lấy product ID từ HTML
-//     const reviewContainer = document.querySelector('.card-review'); // Vùng hiển thị review
-//     console.log("hehe");
-//     // Gọi API để lấy review và hiển thị chúng
-//     const reviews = await fetchReviews(productId);
-//     renderReviews(reviews, reviewContainer);
-// });
+document.addEventListener("DOMContentLoaded", function () {
+    loadReviews();
+});
