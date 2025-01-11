@@ -392,9 +392,10 @@ class CustomerService {
   async updateName(customerId, newName) {
     try {
       // Cập nhật tên mới cho khách hàng
+      console.log(customerId, newName);
       const updatedCustomer = await Customer.findByIdAndUpdate(
         customerId,
-        { customerName: newName },
+        { customerName: newName.customerName },
         { new: true }
       );
 

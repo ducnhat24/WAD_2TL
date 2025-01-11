@@ -179,10 +179,9 @@ class CustomerController {
   
   async updateName(req, res) {
     try {
-      const updatedCustomer = await CustomerService.updateName(req.user.id, {
-        customerName: req.body.username,
+      const updatedCustomer = await CustomerService.updateName(req.body.customerID, {
+        customerName: req.body.customerName,
       });
-
       res.status(200).json({ message: "Name updated successfully", updatedCustomer });
     } catch (error) {
       res.status(500).json({ error: error.message });

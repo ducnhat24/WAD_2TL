@@ -57,12 +57,12 @@
             </form>
 
             <!-- Update Name -->
-            <form action="/setting/update-profile/name" method="post" class="mb-4">
+            <form class="mb-4">
               <div class="form-group">
                 <label for="username">Name</label>
-                <input type="text" id="username" name="username" class="form-control" value="{{profile.customerName}}">
+                <input type="text" id="nameInput" name="username" class="form-control" value="{{profile.customerName}}">
               </div>
-              <button type="submit" class="btn btn-success">Save Name</button>
+              <button id="saveNameButton" class="btn btn-success">Save Name</button>
             </form>
 
             <!-- Update Email -->

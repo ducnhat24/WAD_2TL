@@ -52,3 +52,83 @@ document.getElementById("verifyOtp").addEventListener("click", async function ()
     alert("Invalid OTP.");
   }
 });
+
+// const saveNameButton = document.querySelector('#saveNameButton');
+// const nameInput = document.querySelector('#nameInput');
+
+
+// saveNameButton.addEventListener('click', async () => {
+//   const newName = nameInput.value.trim();
+//   const customerID = await getCustomerID();
+
+//   console.log(newName, customerID);
+//   if (newName) {
+//     try {
+//       const response = await fetch('http://localhost:5000/api/customer/update-profile/name', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ customerName: newName, customerID: customerID }),
+//       });
+
+//       const result = await response.json();
+//       if (response.ok) {
+//         alert('Name updated successfully');
+//       } else {
+//         alert(result.error);
+//       }
+//     } catch (error) {
+//       alert('An error occurred while updating the name');
+//     }
+//   } else {
+//     alert('Please enter a valid name');
+//   }
+// });
+
+// Lấy các phần tử cần thiết
+const saveNameButton = document.getElementById('saveNameButton');
+const nameInput = document.getElementById('nameInput');
+
+// Gắn sự kiện click vào nút Save Name
+saveNameButton.addEventListener('click', async (event) => {
+  // Ngăn chặn hành vi submit mặc định của form
+  event.preventDefault();
+
+  // Lấy giá trị từ input và customerID
+  const newName = nameInput.value.trim();
+  const customerID = await getCustomerID(); // Giả định hàm này trả về customerID hợp lệ
+
+  console.log('New name:', newName);
+  console.log('Customer ID:', customerID);
+
+  if (newName) {
+    try {
+      // Gửi yêu cầu POST đến API
+      const response = await fetch('http://localhost:5000/api/customer/update-profile/name', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ customerName: newName, customerID: customerID }),
+      });
+
+      // Chuyển đổi kết quả phản hồi thành JSON
+      const result = await response.json();
+
+      // Kiểm tra phản hồi
+      if (response.ok) {
+        alert('Name updated successfully');
+        location.reload();
+      } else {
+        console.error('Error from server:', result.error);
+        alert(result.error || 'Failed to update name');
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+      alert('An error occurred while updating the name');
+    }
+  } else {
+    alert('Please enter a valid name');
+  }
+});
