@@ -15,11 +15,11 @@
             data-toggle="list"
             href="#account-change-password"
           >Change password</a>
-          <a
+          {{! <a
             class="list-group-item list-group-item-action"
             data-toggle="list"
             href="#account-info"
-          >Info</a>
+          >Info</a> }}
         </div>
       </div>
       <div class="col-md-9">
@@ -34,7 +34,7 @@
           >
             <div class="profile-card-body media align-items-center">
               <img
-                src="{{profile.avatar}}"
+                src="{{profile.customerAvatar}}"
                 alt=""
                 class="d-block profile-ui-w-80"
               />
@@ -65,25 +65,17 @@
                   type="text"
                   class="form-control mb-1"
                   name="username"
-                  value="{{profile.username}}"
+                  value="{{profile.customerName}}"
                 />
               </div>
-              <div class="form-group">
-                <label class="form-label">Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="name"
-                  value="{{profile.name}}"
-                />
-              </div>
+
               <div class="form-group">
                 <label class="form-label">E-mail</label>
                 <input
                   type="text"
                   class="form-control mb-1"
                   name="email"
-                  value="{{profile.email}}"
+                  value="{{profile.customerEmail}}"
                 />
               </div>
               <div class="form-group text-right mt-3">
@@ -136,7 +128,7 @@
           </form>
 
           <!-- Info Tab -->
-          <form
+          {{!-- <form
             action="/setting/update-profile/info"
             method="post"
             class="tab-pane fade"
@@ -175,7 +167,7 @@
                 <button type="button" class="btn btn-default">Cancel</button>
               </div>
             </div>
-          </form>
+          </form> --}}
         </div>
       </div>
     </div>
