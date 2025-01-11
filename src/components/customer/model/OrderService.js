@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 class OrderService {
 
 
-        async createOrder(orderData) {
+    async createOrder(orderData) {
         try {
             const {
                 customerID,
@@ -55,7 +55,7 @@ class OrderService {
     async getOrders(customerID) {
         try {
             const orders = await Order.find({ customerID: customerID }).exec();
-            
+
             //populate shipping method
             for (let i = 0; i < orders.length; i++) {
                 const order = orders[i];
@@ -82,6 +82,134 @@ class OrderService {
         } catch (error) {
             console.error("Error getting orders:", error);
             throw error;
+        }
+    }
+
+    async getTotalPurchase(query) {
+        try {
+            const dateNow = new Date();
+            const dateFrom = {
+                day: query.dayFrom || 1,
+                month: query.monthFrom || 0,
+                year: query.yearFrom || dateNow.getFullYear(),
+            }
+
+            const dateTo = {
+                day: query.dayTo || dateNow.getDate(),
+                month: query.monthTo || dateNow.getMonth(),
+                year: query.yearTo || dateNow.getFullYear(),
+            }
+
+            // const dateTest = new Date(dateFrom.year, dateFrom.month, dateFrom.day);
+            // console.log(dateTest < dateNow);
+            // console.log(dateFrom);
+            // console.log(dateTo);
+
+            const orders = await Order.find({
+                orderStatus: "Completed",
+                orderCreatedDateTime: {
+                    $gte: new Date(dateFrom.year, dateFrom.month, dateFrom.day),
+                    $lt: new Date(dateTo.year, dateTo.month, dateTo.day),
+                }
+            }).exec();
+
+
+            let totalPurchase = 0;
+            for (let i = 0; i < orders.length; i++) {
+                totalPurchase += Number(orders[i].orderTotalPrice);
+            }
+
+            return {
+                status: 'success',
+                message: 'Get total purchase successfully',
+                totalPurchase: totalPurchase,
+            }
+
+        } catch (error) {
+            return {
+                status: 'error',
+                message: error.message || "Internal Server Error",
+            }
+        }
+
+    }
+
+    async getTotalPurchaseByEachProduct(query) {
+        try {
+            const dateNow = new Date();
+            const dateFrom = {
+                day: query.dayFrom || 1,
+                month: query.monthFrom || 0,
+                year: query.yearFrom || dateNow.getFullYear(),
+            }
+
+            const dateTo = {
+                day: query.dayTo || dateNow.getDate(),
+                month: query.monthTo || dateNow.getMonth(),
+                year: query.yearTo || dateNow.getFullYear(),
+            }
+
+            // const dateTest = new Date(dateFrom.year, dateFrom.month, dateFrom.day);
+            // console.log(dateTest < dateNow);
+            // console.log(dateFrom);
+            // console.log(dateTo);
+
+            const orders = await Order.find({
+                orderStatus: "Completed",
+                orderCreatedDateTime: {
+                    $gte: new Date(dateFrom.year, dateFrom.month, dateFrom.day),
+                    $lt: new Date(dateTo.year, dateTo.month, dateTo.day),
+                }
+            }).exec();
+
+            let listProduct = [];
+            for (let i = 0; i < orders.length; i++) {
+                const order = orders[i];
+                for (let j = 0; j < order.orderListProduct.length; j++) {
+                    const product = order.orderListProduct[j];
+                    const index = listProduct.findIndex(item => item.productId == product.productId);
+                    if (index == -1) {
+                        listProduct.push({
+                            productID: product.productId,
+                            totalPurchase: Number(product.productPrice) * Number(product.quantity),
+                        });
+                    } else {
+                        listProduct[index].totalPurchase += (Number(product.productPrice) * Number(product.quantity));
+                    }
+                }
+            }
+
+            return {
+                status: 'success',
+                message: 'Get total purchase each product successfully',
+                listProduct: listProduct,
+            }
+
+        } catch (error) {
+            return {
+                status: 'error',
+                message: error.message || "Internal Server Error",
+            }
+        }
+    }
+
+    async getAllOrders(query) {
+        try {
+            console.log(query);
+            const statusQuery = query.status ? { orderStatus: query.status } : {};
+            const orders = await Order.find(statusQuery).exec();
+
+            return {
+                status: 'success',
+                message: 'Get all orders successfully',
+                orders: orders,
+            }
+        }
+        catch (error) {
+            return {
+                status: 'error',
+                message: error.message || "Internal Server Error",
+            }
         }
     }
 }

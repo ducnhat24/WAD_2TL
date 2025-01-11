@@ -36,7 +36,6 @@ class OrderController {
     async getOrders(req, res) {
         try {
             const customerID = req.user.id;
-            console.log(req.user);
 
             // Gọi hàm trong service
             const orders = await OrderService.getOrders(customerID);
@@ -48,6 +47,45 @@ class OrderController {
             res.status(500).json({ message: error.message || "Internal Server Error" });
         }
     }
-}
 
+    async getTotalPurchase(req, res) {
+        try {
+            const totalPurchase = await OrderService.getTotalPurchase(req.query);
+
+            res.status(200).json(totalPurchase);
+        } catch (error) {
+            res.status(500).json({
+                status: 'error',
+                message: error.message || "Internal Server Error"
+            });
+        }
+    }
+
+    async getTotalPurchaseByEachProduct(req, res) {
+        try {
+            const totalPurchase = await OrderService.getTotalPurchaseByEachProduct(req.query);
+
+            res.status(200).json(totalPurchase);
+        } catch (error) {
+            res.status(500).json({
+                status: 'error',
+                message: error.message || "Internal Server Error"
+            });
+        }
+    }
+
+    async getAllOrders(req, res) {
+        try {
+            const orders = await OrderService.getAllOrders(req.query);
+
+            res.status(200).json(orders);
+        } catch (error) {
+            res.status(500).json({
+                status: 'error',
+                message: error.message || "Internal Server Error"
+            });
+
+        }
+    }
+}
 module.exports = new OrderController;

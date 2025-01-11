@@ -40,7 +40,6 @@ class UserController {
     async auth(req, res) {
         try {
             const user = await UserService.getUserByID(req.user.userID);
-            console.log(user);
             if (user.status === 'error') {
                 return res.status(404).json({
                     status: 'error',
