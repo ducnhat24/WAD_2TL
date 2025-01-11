@@ -28,6 +28,19 @@ customerAPIRoute.post('/authentication', verifyToken, CustomerController.auth);
 
 customerAPIRoute.use('/order', OrderAPIRoute);
 
+// Cập nhật avatar
+customerAPIRoute.post("/update-profile/avatar", CustomerController.updateAvatar);
+
+// Cập nhật name
+customerAPIRoute.post("/update-profile/name", CustomerController.updateName);
+
+// Bắt đầu cập nhật email (gửi mã xác thực)
+customerAPIRoute.post("/update-profile/email/start", CustomerController.startEmailUpdate);
+
+// Hoàn tất cập nhật email (xác thực mã OTP)
+customerAPIRoute.post("/update-profile/email/verify", CustomerController.verifyEmailUpdate);
+
+
 
 
 

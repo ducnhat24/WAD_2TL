@@ -5,6 +5,9 @@ const {
 
 const Customer = require("../schema/Customer.js");
 const bcrypt = require("bcrypt");
+const emailTransporter = require("../../../middleware/EmailTransporter.js")
+
+
 
 async function hashPassword(password) {
   try {
@@ -303,7 +306,136 @@ class CustomerService {
                 message: error.message,
             };
         }
+  }
+  
+  async getUserByID(id) {
+    try {
+      const user = await Customer.find({ _id: id });
+
+      if (!user) {
+        return {
+          status: "error",
+          message: "User not found",
+        };
+      }
+      return {
+        status: "success",
+        message: "User found",
+        data: user,
+      };
     }
+    catch (error) {
+      return {
+        status: "error",
+        message: error.message,
+      };
+    }
+  } 
+
+  async uploadAvatar(file) {
+    const result = await cloudinary.uploader.upload(file.path, {
+      folder: "avatars",
+    });
+    return result.secure_url;
+  }
+
+  // async updateCustomer (customerId, updateData) {
+  //   return await Customer.findByIdAndUpdate(customerId, updateData, { new: true });
+  // };
+
+  async updateEmail(customerId, newEmail) {
+    try {
+      console.log(customerId, newEmail);
+      // Kiểm tra nếu email mới đã tồn tại trong cơ sở dữ liệu
+      const existingCustomer = await Customer.findOne({ customerEmail: newEmail });
+      if (existingCustomer) {
+        throw new Error('Email already exists');
+      }
+
+      // Cập nhật email cho khách hàng
+      const updatedCustomer = await Customer.findByIdAndUpdate(
+        customerId,
+        { customerEmail: newEmail },
+        { new: true }
+      );
+
+      if (!updatedCustomer) {
+        throw new Error('Customer not found');
+      }
+
+      return updatedCustomer; // Trả về khách hàng đã cập nhật
+    } catch (error) {
+      throw new Error(error.message); // Ném lỗi nếu có vấn đề xảy ra
+    }
+  }
+
+  async updateAvatar(customerId, newAvatarUrl) {
+    try {
+      // Cập nhật avatar mới cho khách hàng
+      const updatedCustomer = await Customer.findByIdAndUpdate(
+        customerId,
+        { customerAvatar: newAvatarUrl },
+        { new: true }
+      );
+
+      if (!updatedCustomer) {
+        throw new Error('Customer not found');
+      }
+
+      return updatedCustomer; // Trả về khách hàng đã cập nhật
+    } catch (error) {
+      throw new Error(error.message); // Ném lỗi nếu có vấn đề xảy ra
+    }
+  }
+
+
+  async updateName(customerId, newName) {
+    try {
+      // Cập nhật tên mới cho khách hàng
+      const updatedCustomer = await Customer.findByIdAndUpdate(
+        customerId,
+        { customerName: newName },
+        { new: true }
+      );
+
+      if (!updatedCustomer) {
+        throw new Error('Customer not found');
+      }
+
+      return updatedCustomer; // Trả về khách hàng đã cập nhật
+    } catch (error) {
+      throw new Error(error.message); // Ném lỗi nếu có vấn đề xảy ra
+    }
+  }
+
+
+
+  async generateOtp() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
+
+
+  async sendOtpEmail(to, otp) {
+    if (!to || !otp) {
+      console.error("Missing email or OTP");
+      return;
+    }
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: to,
+      subject: "Your Verification Code",
+      text: `Your OTP code is ${otp}. It will expire in 10 minutes.`,
+    };
+
+    try {
+      console.log("Sending OTP:", otp, "to:", to);
+      const result = await emailTransporter.sendMail(mailOptions);
+      console.log('Email sent:', result);
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
+  }
 
 }
 

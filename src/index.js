@@ -9,6 +9,21 @@ const { route } = require('./routes/index');
 const cookieParser = require('cookie-parser');
 app.use(express.json());
 
+const session = require('express-session');
+
+
+require("dotenv").config();
+const cloudinary = require("cloudinary").v2;
+
+// Configure Cloudinary using variables from .env file
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+
+
 const allowedOrigins = ['http://localhost:5000', 'http://localhost:5173'];
 app.use(cors({
   // origin: 'https://wad-ga-06-a8w4.vercel.app',
@@ -22,6 +37,15 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true // Required for cookies
 }));
+
+// Cấu hình session middleware
+app.use(session({
+  secret: 'your-secret-key', // Chọn một secret key mạnh
+  resave: false,  // Không lưu lại session nếu không thay đổi
+  saveUninitialized: true, // Lưu lại session ngay cả khi không có gì thay đổi
+  cookie: { maxAge: 1000 * 60 * 60 }, // Giới hạn session tồn tại trong 1 giờ
+}));
+
 
 app.engine("handlebars", engine({
   layoutsDir: path.join(__dirname, ""), // Thư mục chứa layout

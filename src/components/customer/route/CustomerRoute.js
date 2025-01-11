@@ -10,7 +10,7 @@ customerRoute.get("/signup", CustomerController.showSignup);
 customerRoute.get("/login", CustomerController.showLogin);
 customerRoute.get("/cart", CartController.showCart);
 customerRoute.get("/order", OrderController.showOrder);
-customerRoute.get("/profile", CustomerController.showProfile);
+customerRoute.get("/profile", verifyToken, CustomerController.showProfile);
 
 
 module.exports = customerRoute;

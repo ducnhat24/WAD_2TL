@@ -1,175 +1,98 @@
-<div
-  class="profile-container mb-3 mt-5 light-style flex-grow-1 profile-container-p-y"
->
-  <div class="profile-card profile-edit-profile overflow-hidden">
-    <div class="row no-gutters row-bordered row-border-light">
-      <div class="col-md-3 pt-0">
-        <div class="list-group list-group-flush profile-account-settings-links">
-          <a
-            class="list-group-item list-group-item-action active"
-            data-toggle="list"
-            href="#account-general"
-          >General</a>
-          <a
-            class="list-group-item list-group-item-action"
-            data-toggle="list"
-            href="#account-change-password"
-          >Change password</a>
-          {{! <a
-            class="list-group-item list-group-item-action"
-            data-toggle="list"
-            href="#account-info"
-          >Info</a> }}
+<div class="profile-container">
+  <div class="profile-card">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="list-group">
+          <a class="list-group-item active" data-toggle="list" href="#account-general">General</a>
+          <a class="list-group-item" data-toggle="list" href="#account-update">Update Info</a>
         </div>
       </div>
+
       <div class="col-md-9">
         <div class="tab-content">
           <!-- General Tab -->
-          <form
-            action="/setting/update-profile/general"
-            enctype="multipart/form-data"
-            method="post"
-            class="tab-pane fade active show"
-            id="account-general"
-          >
-            <div class="profile-card-body media align-items-center">
-              <img
-                src="{{profile.customerAvatar}}"
-                alt=""
-                class="d-block profile-ui-w-80"
-              />
-              <div class="media-body ml-4">
-                <label class="btn btn-outline-primary">
-                  Upload new photo
-                  <input
-                    type="file"
-                    name="avatar"
-                    class="profile-account-settings-fileinput"
-                  />
-                </label>
-                &nbsp;
-                <button
-                  type="button"
-                  class="btn btn-default md-btn-flat"
-                >Reset</button>
-                <div class="text-light small mt-1">
-                  Allowed JPG, GIF or PNG. Max size of 800K
+          <div class="tab-pane fade show active" id="account-general">
+          <div class="text-center mb-4">
+            {{#if profile.customerAvatar}}
+              <img src="{{profile.customerAvatar}}" alt="Avatar" class="rounded-circle mb-2" style="width: 120px; height: 120px;">
+            {{else}}
+              <img src="https://avatar.iran.liara.run/public" alt="Default Avatar" class="rounded-circle mb-2" style="width: 120px; height: 120px;">
+            {{/if}}
+          </div>
+
+
+            <div class="form-group">
+              <strong>
+                <label>Username</label>
+              </strong>
+              <p>{{profile.customerName}}</p>
+            </div>
+
+            <div class="form-group">
+              <strong>
+                <label>Email</label>
+              </strong>
+              <p>{{profile.customerEmail}}</p>
+            </div>
+          </div>
+
+          <!-- Update Info Tab -->
+          <div class="tab-pane fade" id="account-update">
+            <!-- Update Avatar -->
+            <form action="/setting/update-profile/avatar" method="post" enctype="multipart/form-data" class="mb-4">
+              <div class="text-center">
+                {{#if profile.customerAvatar}}
+                  <img src="{{profile.customerAvatar}}" alt="Avatar" class="rounded-circle mb-2" style="width: 120px; height: 120px;">
+                {{else}}
+                  <img src="https://avatar.iran.liara.run/public" alt="Default Avatar" class="rounded-circle mb-2" style="width: 120px; height: 120px;">
+                {{/if}}
+                <div>
+                  <label class="btn btn-primary">
+                    Change Avatar
+                    <input type="file" name="avatar" style="display: none;">
+                  </label>
+                  <button type="submit" class="btn btn-success">Save Avatar</button>
                 </div>
               </div>
-            </div>
-            <hr class="border-light m-0" />
-            <div class="profile-card-body">
+            </form>
+
+            <!-- Update Name -->
+            <form action="/setting/update-profile/name" method="post" class="mb-4">
               <div class="form-group">
-                <label class="form-label">Username</label>
-                <input
-                  type="text"
-                  class="form-control mb-1"
-                  name="username"
-                  value="{{profile.customerName}}"
-                />
+                <label for="username">Name</label>
+                <input type="text" id="username" name="username" class="form-control" value="{{profile.customerName}}">
+              </div>
+              <button type="submit" class="btn btn-success">Save Name</button>
+            </form>
+
+            <!-- Update Email -->
+            {{!-- <form action="/setting/update-profile/email" method="post">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" value="{{profile.customerEmail}}">
+              </div>
+              <button type="submit" class="btn btn-success">Save Email</button>
+            </form> --}}
+            <form id="emailForm">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" value="{{profile.customerEmail}}">
+                <button type="button" id="saveEmail" class="btn btn-success">Save Email</button>
               </div>
 
-              <div class="form-group">
-                <label class="form-label">E-mail</label>
-                <input
-                  type="text"
-                  class="form-control mb-1"
-                  name="email"
-                  value="{{profile.customerEmail}}"
-                />
+              <div id="otpSection" style="display: none;">
+                <label for="otp">Enter OTP</label>
+                <input type="text" id="otp" class="form-control">
+                <button type="button" id="verifyOtp" class="btn btn-primary">Verify</button>
               </div>
-              <div class="form-group text-right mt-3">
-                <button type="submit" class="btn btn-primary">Save changes</button>&nbsp;
-                <button type="button" class="btn btn-default">Cancel</button>
-              </div>
-            </div>
-          </form>
+            </form>
 
-          <!-- Change Password Tab -->
-          <form
-            action="/setting/update-profile/password"
-            method="post"
-            class="tab-pane fade"
-            id="account-change-password"
-          >
-            <div class="profile-card-body">
-              <div class="form-group">
-                <label class="form-label">Current password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  name="current_password"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">New password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  name="new_password"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Confirm new password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  name="confirm_new_password"
-                  required
-                />
-              </div>
-              <div class="form-group text-right mt-3">
-                <button type="submit" class="btn btn-primary">Change password</button>&nbsp;
-                <button type="button" class="btn btn-default">Cancel</button>
-              </div>
-            </div>
-          </form>
-
-          <!-- Info Tab -->
-          {{!-- <form
-            action="/setting/update-profile/info"
-            method="post"
-            class="tab-pane fade"
-            id="account-info"
-          >
-            <div class="profile-card-body">
-              <div class="form-group">
-                <label class="form-label">Phone number</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="phone"
-                  value="{{profile.phone}}"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Address</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="address"
-                  value="{{profile.address}}"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Date of birth</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  name="dob"
-                  value="{{profile.dob}}"
-                />
-              </div>
-              <div class="form-group text-right mt-3">
-                <button type="submit" class="btn btn-primary">Save changes</button>&nbsp;
-                <button type="button" class="btn btn-default">Cancel</button>
-              </div>
-            </div>
-          </form> --}}
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script src="/apps/profile.js"></script>
+
