@@ -1,4 +1,6 @@
 const CustomerService = require("../model/CustomerService");
+const fs = require('fs');
+
 
 class CustomerController {
   // showProfile(req, res) {
@@ -161,18 +163,65 @@ class CustomerController {
         }
   }
 
-  async updateAvatar(req, res) {
-    try {
-      // Upload avatar lên máy chủ thứ ba (ví dụ Cloudinary)
-      const uploadedAvatarUrl = await CustomerService.uploadAvatar(req.file);
+  // async updateAvatar(req, res) {
+  //   try {
+  //     // Upload avatar lên máy chủ thứ ba (ví dụ Cloudinary)
+  //     console.log(req.body);
+  //     const uploadedAvatarUrl = await CustomerService.uploadAvatar(req.body.avatar);
+  //     console.log("hehe");
+  //     // Cập nhật avatar trong MongoDB
+  //     const updatedCustomer = await CustomerService.updateAvatar(req.body.customerID, {
+  //       customerAvatar: uploadedAvatarUrl,
+  //     });
 
-      // Cập nhật avatar trong MongoDB
-      const updatedCustomer = await CustomerService.updateAvatar(req.user.id, {
-        customerAvatar: uploadedAvatarUrl,
-      });
+  //     res.status(200).json({ message: "Avatar updated successfully", updatedCustomer });
+  //   } catch (error) {
+  //     res.status(500).json({ error: error.message });
+  //   }
+  // }
+
+  // async updateAvatar(req, res) {
+  //   try {
+  //     const { customerID } = req.body;
+
+  //     if (!req.file) {
+  //       return res.status(400).json({ message: "No file uploaded" });
+  //     }
+
+  //     // Upload file lên Cloudinary
+  //     const uploadedAvatarUrl = await CustomerService.uploadAvatar(req.file.path);
+
+  //     // Cập nhật avatar trong MongoDB
+  //     const updatedCustomer = await CustomerService.updateAvatar(customerID, uploadedAvatarUrl);
+
+  //     res.status(200).json({ message: "Avatar updated successfully", updatedCustomer });
+  //   } catch (error) {
+  //     console.error("Error updating avatar:", error);
+  //     res.status(500).json({ error: error.message });
+  //   }
+  // }
+  async  updateAvatar(req, res) {
+    try {
+      const { customerID } = req.body;
+
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      // Check if the file exists before uploading to Cloudinary
+      if (!fs.existsSync(req.file.path)) {
+        return res.status(400).json({ message: "File does not exist" });
+      }
+
+      // Upload file to Cloudinary
+      const uploadedAvatarUrl = await CustomerService.uploadAvatar(req.file.path);
+
+      // Update avatar in MongoDB
+      const updatedCustomer = await CustomerService.updateAvatar(customerID, uploadedAvatarUrl);
 
       res.status(200).json({ message: "Avatar updated successfully", updatedCustomer });
     } catch (error) {
+      console.error("Error updating avatar:", error);
       res.status(500).json({ error: error.message });
     }
   }

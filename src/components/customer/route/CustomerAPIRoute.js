@@ -6,6 +6,7 @@ const CartController = require('../controller/CartController');
 const { authenticateGoogle, handleGoogleCallback } = require('../../../middleware/GoogleOAuth');
 const OrderController = require('../controller/OrderController');
 const OrderAPIRoute = require('./OrderAPIRoute');
+const upload = require("../../../middleware/multer");   
 
 // route that return customer id
 customerAPIRoute.get("/id", verifyToken, CustomerController.getCustomerID);
@@ -29,7 +30,8 @@ customerAPIRoute.post('/authentication', verifyToken, CustomerController.auth);
 customerAPIRoute.use('/order', OrderAPIRoute);
 
 // Cập nhật avatar
-customerAPIRoute.post("/update-profile/avatar", CustomerController.updateAvatar);
+// customerAPIRoute.post("/update-profile/avatar", CustomerController.updateAvatar);
+customerAPIRoute.post("/update-profile/avatar", upload.single("avatar"), CustomerController.updateAvatar);
 
 // Cập nhật name
 customerAPIRoute.post("/update-profile/name", CustomerController.updateName);

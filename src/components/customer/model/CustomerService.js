@@ -6,6 +6,7 @@ const {
 const Customer = require("../schema/Customer.js");
 const bcrypt = require("bcrypt");
 const emailTransporter = require("../../../middleware/EmailTransporter.js")
+const cloudinary = require("../../../middleware/Cloudinary.js");
 
 
 
@@ -332,12 +333,13 @@ class CustomerService {
     }
   } 
 
-  async uploadAvatar(file) {
-    const result = await cloudinary.uploader.upload(file.path, {
-      folder: "avatars",
-    });
-    return result.secure_url;
-  }
+  // async uploadAvatar(file) {
+  //   console.log("file", file);
+  //   const result = await cloudinary.uploader.upload(file.path, {
+  //     folder: "avatars",
+  //   });
+  //   return result.secure_url;
+  // }
 
   // async updateCustomer (customerId, updateData) {
   //   return await Customer.findByIdAndUpdate(customerId, updateData, { new: true });
@@ -369,24 +371,25 @@ class CustomerService {
     }
   }
 
-  async updateAvatar(customerId, newAvatarUrl) {
-    try {
-      // Cập nhật avatar mới cho khách hàng
-      const updatedCustomer = await Customer.findByIdAndUpdate(
-        customerId,
-        { customerAvatar: newAvatarUrl },
-        { new: true }
-      );
+  // async updateAvatar(customerId, newAvatarUrl) {
+  //   try {
+  //     // Cập nhật avatar mới cho khách hàng
+  //     console.log("avatar", customerId, newAvatarUrl);
+  //     const updatedCustomer = await Customer.findByIdAndUpdate(
+  //       customerId,
+  //       { customerAvatar: newAvatarUrl },
+  //       { new: true }
+  //     );
 
-      if (!updatedCustomer) {
-        throw new Error('Customer not found');
-      }
+  //     if (!updatedCustomer) {
+  //       throw new Error('Customer not found');
+  //     }
 
-      return updatedCustomer; // Trả về khách hàng đã cập nhật
-    } catch (error) {
-      throw new Error(error.message); // Ném lỗi nếu có vấn đề xảy ra
-    }
-  }
+  //     return updatedCustomer; // Trả về khách hàng đã cập nhật
+  //   } catch (error) {
+  //     throw new Error(error.message); // Ném lỗi nếu có vấn đề xảy ra
+  //   }
+  // }
 
 
   async updateName(customerId, newName) {
@@ -438,6 +441,36 @@ class CustomerService {
     }
   }
 
+  async uploadAvatar(filePath) {
+    try {
+      const result = await cloudinary.uploader.upload(filePath, {
+        folder: "avatars",
+      });
+      return result.secure_url;
+    } catch (error) {
+      console.error("Error uploading to Cloudinary:", error);
+      throw new Error("Failed to upload avatar");
+    }
+  }
+
+  async updateAvatar(customerId, newAvatarUrl) {
+    try {
+      console.log("avatar", customerId, newAvatarUrl);
+      const updatedCustomer = await Customer.findByIdAndUpdate(
+        customerId,
+        { customerAvatar: newAvatarUrl },
+        { new: true }
+      );
+
+      if (!updatedCustomer) {
+        throw new Error("Customer not found");
+      }
+
+      return updatedCustomer;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 module.exports = new CustomerService();

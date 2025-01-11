@@ -132,3 +132,51 @@ saveNameButton.addEventListener('click', async (event) => {
     alert('Please enter a valid name');
   }
 });
+
+document.getElementById("avatarInput").addEventListener("change", function (event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById("avatarPreview").src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+document.getElementById("saveAvatar").addEventListener("click", async function (event) {
+  event.preventDefault(); // Ngăn hành vi mặc định của nút
+
+  const fileInput = document.getElementById("avatarInput");
+  const file = fileInput.files[0];
+
+  if (!file) {
+    alert("Please select an avatar to upload.");
+    return;
+  }
+
+  const formData = new FormData();
+  const customerID = await getCustomerID(); // Giả sử hàm này trả về ID hợp lệ
+  formData.append("avatar", file); // File avatar
+  formData.append("customerID", customerID); // Thay bằng ID thực tế của người dùng
+
+  try {
+    const response = await fetch("http://localhost:5000/api/customer/update-profile/avatar", {
+      method: "POST",
+      body: formData, // Gửi FormData
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert("Avatar updated successfully!");
+      document.getElementById("avatarPreview").src = result.updatedCustomer.customerAvatar; // Cập nhật ảnh mới
+      location.reload(); // Tải lại trang
+    } else {
+      alert(result.message || "Failed to update avatar.");
+    }
+  } catch (error) {
+    console.error("Error uploading avatar:", error);
+    alert("An error occurred while updating the avatar.");
+  }
+});

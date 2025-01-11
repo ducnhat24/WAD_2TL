@@ -39,7 +39,7 @@
           <!-- Update Info Tab -->
           <div class="tab-pane fade" id="account-update">
             <!-- Update Avatar -->
-            <form action="/setting/update-profile/avatar" method="post" enctype="multipart/form-data" class="mb-4">
+            {{!-- <form action="/setting/update-profile/avatar" method="post" enctype="multipart/form-data" class="mb-4">
               <div class="text-center">
                 {{#if profile.customerAvatar}}
                   <img src="{{profile.customerAvatar}}" alt="Avatar" class="rounded-circle mb-2" style="width: 120px; height: 120px;">
@@ -54,7 +54,32 @@
                   <button type="submit" class="btn btn-success">Save Avatar</button>
                 </div>
               </div>
+            </form> --}}
+            <form class="mb-4">
+              <div class="text-center">
+                <img 
+                  id="avatarPreview" 
+                  src="{{#if profile.customerAvatar}}{{profile.customerAvatar}}{{else}}https://avatar.iran.liara.run/public{{/if}}" 
+                  alt="Avatar" 
+                  class="rounded-circle mb-2" 
+                  style="width: 120px; height: 120px; object-fit: cover;"
+                >
+                <div>
+                  <label class="btn btn-primary">
+                    Change Avatar
+                    <input 
+                      type="file" 
+                      name="avatar" 
+                      id="avatarInput" 
+                      style="display: none;" 
+                      accept="image/*"
+                    >
+                  </label>
+                  <button id="saveAvatar" class="btn btn-success">Save Avatar</button>
+                </div>
+              </div>
             </form>
+
 
             <!-- Update Name -->
             <form class="mb-4">
