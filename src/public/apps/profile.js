@@ -172,6 +172,7 @@ document.getElementById("saveAvatar").addEventListener("click", async function (
       alert("Avatar updated successfully!");
       document.getElementById("avatarPreview").src = result.updatedCustomer.customerAvatar; // Cập nhật ảnh mới
       location.reload(); // Tải lại trang
+
     } else {
       alert(result.message || "Failed to update avatar.");
     }

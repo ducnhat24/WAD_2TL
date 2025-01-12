@@ -46,6 +46,10 @@ customerAPIRoute.post("/change-password", CustomerController.changePassword);
 
 customerAPIRoute.get("/profile", verifyToken, CustomerController.getUserProfile);
 
+customerAPIRoute.post('/send-otp', CustomerController.sendOtp);
+customerAPIRoute.post('/verify-otp', CustomerController.verifyOtp);
+customerAPIRoute.post('/reset-password', CustomerController.resetPassword);
+
 
 
 

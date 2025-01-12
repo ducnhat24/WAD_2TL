@@ -7,6 +7,8 @@ const Customer = require("../schema/Customer.js");
 const bcrypt = require("bcrypt");
 const emailTransporter = require("../../../middleware/EmailTransporter.js")
 const cloudinary = require("../../../middleware/Cloudinary.js");
+const { generateOtp, verifyOtpCode } = require('../../../helpers/otpHelper');
+
 
 
 
@@ -495,6 +497,27 @@ class CustomerService {
     };
   };
 
+  async sendOtp(email) {
+    const customer = await Customer.findOne({ customerEmail: email });
+    if (!customer) throw new Error('Email not found');
+
+    const otpId = await generateOtp(email);
+    return { otpId };
+  };
+
+  async verifyOtp(otp) {
+    return await verifyOtpCode(otp);
+  };
+
+  // async resetPassword(newPassword) {
+  //   const hashedPassword = await bcrypt.hash(newPassword, 10);
+  //   await Customer.findOneAndUpdate({ customerEmail }, { customerPassword: hashedPassword });
+  // };
+
+  async resetPassword(customerEmail, newPassword) {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await Customer.findOneAndUpdate({ customerEmail }, { customerPassword: hashedPassword });
+  }
 
 }
 

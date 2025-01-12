@@ -192,7 +192,7 @@ class CustomerController {
   //     // Upload file lên Cloudinary
   //     const uploadedAvatarUrl = await CustomerService.uploadAvatar(req.file.path);
 
-  //     // Cập nhật avatar trong MongoDB
+  //     // Cập nhật avatar trong MongoDBfsup
   //     const updatedCustomer = await CustomerService.updateAvatar(customerID, uploadedAvatarUrl);
 
   //     res.status(200).json({ message: "Avatar updated successfully", updatedCustomer });
@@ -219,8 +219,8 @@ class CustomerController {
 
       // Update avatar in MongoDB
       const updatedCustomer = await CustomerService.updateAvatar(customerID, uploadedAvatarUrl);
-
       res.status(200).json({ message: "Avatar updated successfully", updatedCustomer });
+
     } catch (error) {
       console.error("Error updating avatar:", error);
       res.status(500).json({ error: error.message });
@@ -316,19 +316,53 @@ class CustomerController {
 
 
   async getUserProfile(req, res) {
-  try {
-    const userId = req.user.userID; // Lấy user ID từ token/session
-    const userProfile = await CustomerService.getUserProfile(userId);
+    try {
+      const userId = req.user.userID; // Lấy user ID từ token/session
+      const userProfile = await CustomerService.getUserProfile(userId);
 
-    if (!userProfile) {
-      return res.status(404).json({ error: "User not found" });
+      if (!userProfile) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.status(200).json(userProfile);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
+  };
 
-    res.status(200).json(userProfile);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+  async sendOtp(req, res) {
+    try {
+        const { email } = req.body;
+        const result = await CustomerService.sendOtp(email);
+        res.status(200).json({ message: 'OTP sent successfully!', otpId: result.otpId });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+  };
+
+  async verifyOtp(req, res) {
+    try {
+        const { otp } = req.body;
+        const isValid = await CustomerService.verifyOtp(otp);
+        if (isValid) {
+            res.status(200).json({ message: 'OTP verified successfully!' });
+        } else {
+            res.status(400).json({ message: 'Invalid OTP' });
+        }
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+  };
+
+  async resetPassword(req, res){
+    try {
+        const { password, email } = req.body;
+        await CustomerService.resetPassword(email, password);
+        res.status(200).json({ message: 'Password reset successfully!' });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+  };
 }
 
 module.exports = new CustomerController();
