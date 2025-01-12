@@ -479,6 +479,44 @@ async function mergeCartsAfterLogin() {
     }
 }
 
+function isUserLoggedIn() {
+    const cookies = document.cookie.split(';');
+    return cookies.some(cookie => cookie.trim().startsWith('accessToken='));
+}
+
+
+function updateCartCount(increment = 1) {
+    const cartCountElement = document.getElementById('cart-count');
+    if (isUserLoggedIn()) {
+        // Get server cart count
+        fetch("http://localhost:5000/api/customer/cart", {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            let totalCount = 0;
+            for (const item of data.cart) {
+                if (item !== null) {
+                    totalCount += item.quantity;
+                }
+            }
+            cartCountElement.innerText = totalCount;
+        })
+        .catch(error => {
+            console.error('Error updating cart count:', error);
+        });
+    } else {
+        // Get local cart count
+        const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalCount = localCart.reduce((sum, item) => {
+            return sum + (item !== null ? item.quantity : 0);
+        }, 0);
+        cartCountElement.innerText = totalCount;
+    }
+}
+
 function handleGoogleLogin() {
   // Xử lý logic đăng nhập qua Google
   console.log("Google login clicked");
@@ -504,4 +542,21 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCartCount();
         history.replaceState(null, '', '/'); // Xóa query string khỏi URL
     }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Kiểm tra trạng thái đăng nhập thông qua Cookies
+    const isLoggedIn = !!Cookies.get("accessToken");
+
+    if (!isLoggedIn) {
+        // Ẩn icon profile và order nếu chưa đăng nhập
+        const userIcon = document.querySelector(".fa-user");
+        const orderIcon = document.querySelector(".fa-file-invoice");
+
+        if (userIcon) userIcon.style.display = "none";
+        if (orderIcon) orderIcon.style.display = "none";
+    }
+
+    // Cập nhật số lượng sản phẩm trong giỏ hàng
+    updateCartCount();
 });
