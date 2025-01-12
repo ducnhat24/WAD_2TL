@@ -88,5 +88,21 @@ class OrderController {
 
         }
     }
+
+    async updateOrder(req, res) {
+        try {
+            const orderID = req.params.id;
+            const updateInfo = req.body;
+
+            const updatedOrder = await OrderService.updateOrder(orderID, updateInfo);
+
+            res.status(200).json(updatedOrder);
+        } catch (error) {
+            res.status(500).json({
+                status: 'error',
+                message: error.message || "Internal Server Error"
+            });
+        }
+    }
 }
 module.exports = new OrderController;

@@ -9,9 +9,6 @@ const emailTransporter = require("../../../middleware/EmailTransporter.js")
 const cloudinary = require("../../../middleware/Cloudinary.js");
 const { generateOtp, verifyOtpCode } = require('../../../helpers/otpHelper');
 
-
-
-
 async function hashPassword(password) {
   try {
     const saltRounds = 1; // Độ mạnh của thuật toán (tốn tài nguyên hơn khi tăng số này)
@@ -197,7 +194,7 @@ class CustomerService {
   }
   async getUserById(id) {
     try {
-      const user = await Customer.find({ _id: id });
+      const user = await Customer.findOne({ _id: id });
       if (!user) {
         return {
           status: "error",
@@ -249,11 +246,11 @@ class CustomerService {
       const { sortBy, sortType, keySearch } = query;
       const querySearch = keySearch
         ? {
-            $or: [
-              { customerName: { $regex: keySearch, $options: "i" } },
-              { customerEmail: { $regex: keySearch, $options: "i" } },
-            ],
-          }
+          $or: [
+            { customerName: { $regex: keySearch, $options: "i" } },
+            { customerEmail: { $regex: keySearch, $options: "i" } },
+          ],
+        }
         : {};
       const customers = await Customer.find(querySearch);
 
@@ -275,42 +272,42 @@ class CustomerService {
         });
       }
 
-            return {
-                status: "success",
-                message: "Users found",
-                data: users,
-            };
-        } catch (error) {
-            return {
-                status: "error",
-                message: error.message,
-            };
-        }
+      return {
+        status: "success",
+        message: "Users found",
+        data: users,
+      };
+    } catch (error) {
+      return {
+        status: "error",
+        message: error.message,
+      };
     }
-
-    async getCustomerID(userID) {
-        try {
-            const customer = await Customer.findOne({ _id: userID });
-            if (!customer) {
-                return {
-                    status: "error",
-                    message: "User not found",
-                };
-            }
-            return {
-                status: "success",
-                message: "User found",
-                data: customer,
-            };
-        }
-        catch (error) {
-            return {
-                status: "error",
-                message: error.message,
-            };
-        }
   }
-  
+
+  async getCustomerID(userID) {
+    try {
+      const customer = await Customer.findOne({ _id: userID });
+      if (!customer) {
+        return {
+          status: "error",
+          message: "User not found",
+        };
+      }
+      return {
+        status: "success",
+        message: "User found",
+        data: customer,
+      };
+    }
+    catch (error) {
+      return {
+        status: "error",
+        message: error.message,
+      };
+    }
+  }
+
   async getUserByID(id) {
     try {
       const user = await Customer.find({ _id: id });
@@ -333,7 +330,7 @@ class CustomerService {
         message: error.message,
       };
     }
-  } 
+  }
 
   // async uploadAvatar(file) {
   //   console.log("file", file);

@@ -27,31 +27,31 @@ class ProductService {
     }
   }
 
-    async getProductById(id) {
-        try {
-            const product = await Product.find({ _id: id });
-            if (product) {
-                //populate productBrand
-                const productBrand = await Brand.findById(product[0].productBrand);
-                product[0].productBrand = productBrand;
-                return {
-                    status: "success",
-                    msg: "Product fetched successfully",
-                    data: product,
-                }
-            }
-            return {
-                status: "error",
-                msg: "Not found product",
-            }
-
-        } catch (error) {
-            return {
-                status: "error",
-                msg: error.message,
-            }
+  async getProductById(id) {
+    try {
+      const product = await Product.findOne({ _id: id });
+      if (product) {
+        //populate productBrand
+        const productBrand = await Brand.findById(product.productBrand);
+        product.productBrand = productBrand;
+        return {
+          status: "success",
+          msg: "Product fetched successfully",
+          data: product,
         }
+      }
+      return {
+        status: "error",
+        msg: "Not found product",
+      }
+
+    } catch (error) {
+      return {
+        status: "error",
+        msg: error.message,
+      }
     }
+  }
 
   // async searchProducts(keysearch, page, limit) {
   //     try {
@@ -378,75 +378,75 @@ class ProductService {
     }
   }
 
-    async discontinuedProduct(brandID) {
-        try {
-            const products = await Product.find({ productBrand: brandID });
-            if (products) {
-                products.forEach(async (product) => {
-                    product.productStatus = "Discontinued";
-                    await product.save();
-                });
-                return {
-                    status: "success",
-                    message: "Discontinued product successfully",
-                }
-            }
-            return {
-                status: "error",
-                message: "No product",
-            }
-        } catch (error) {
-            return {
-                status: "error",
-                message: error.message,
-            }
+  async discontinuedProduct(brandID) {
+    try {
+      const products = await Product.find({ productBrand: brandID });
+      if (products) {
+        products.forEach(async (product) => {
+          product.productStatus = "Discontinued";
+          await product.save();
+        });
+        return {
+          status: "success",
+          message: "Discontinued product successfully",
         }
+      }
+      return {
+        status: "error",
+        message: "No product",
+      }
+    } catch (error) {
+      return {
+        status: "error",
+        message: error.message,
+      }
     }
+  }
 
-    async getProductReviews(productId) {
-        try {
-            const product = await Product.findById(productId).select('productReviews');
-            if (product) {
-                //populate product productReviews customer
-                for (let i = 0; i < product.productReviews.length; i++) {
-                    const customer = await Customer.findById(product.productReviews[i].customerID);
-                    product.productReviews[i].customerID = customer;
-                }             
-
-                return {
-                    status: "success",
-                    data: product.productReviews,
-                };
-            }
-            return {
-                status: "error",
-                msg: "No reviews found",
-            };
-        } catch (error) {
-            console.error(error);
-            return {
-                status: "error",
-                msg: error.message,
-            };
+  async getProductReviews(productId) {
+    try {
+      const product = await Product.findById(productId).select('productReviews');
+      if (product) {
+        //populate product productReviews customer
+        for (let i = 0; i < product.productReviews.length; i++) {
+          const customer = await Customer.findById(product.productReviews[i].customerID);
+          product.productReviews[i].customerID = customer;
         }
-    }
 
-    async addReview(productId, reviewData) {
-        try {
-            const product = await Product.findById(productId);
-            if (!product) {
-                return null;
-            }
-
-            // Thêm review mới vào productReviews
-            product.productReviews.push(reviewData);
-            await product.save();
-            return true;
-        } catch (error) {
-            console.error('Error adding review:', error);
-            throw error;
-        }
+        return {
+          status: "success",
+          data: product.productReviews,
+        };
+      }
+      return {
+        status: "error",
+        msg: "No reviews found",
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        status: "error",
+        msg: error.message,
+      };
     }
+  }
+
+  async addReview(productId, reviewData) {
+    try {
+      const product = await Product.findById(productId);
+      if (!product) {
+        return null;
+      }
+
+      // Thêm review mới vào productReviews
+      product.productReviews.push(reviewData);
+      await product.save();
+      return true;
+    } catch (error) {
+      console.error('Error adding review:', error);
+      throw error;
+    }
+  }
 
 }
 

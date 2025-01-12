@@ -42,10 +42,14 @@ const UserSchema = new Schema({
 
     userListOrder: [
         {
-            oderID: {
+            orderID: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Order',
                 default: null
+            },
+            acceptanceDateTime: {
+                type: Date,
+                default: new Date()
             },
         }
     ],

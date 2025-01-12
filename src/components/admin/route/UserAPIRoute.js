@@ -7,6 +7,9 @@ const { verifyToken } = require('../../../middleware/JWTAction');
 userRouter.post('/edit', verifyToken, UserController.editUser);
 userRouter.post('/login', UserController.login);
 userRouter.get('/auth', verifyToken, UserController.auth);
+userRouter.get('/logout', verifyToken, UserController.logout);
+userRouter.get('/order', verifyToken, UserController.viewListOrder);
+userRouter.post('/order', verifyToken, UserController.acceptOrder);
 
 userRouter.put('/:id', verifyToken, UserController.editUserByAdmin);
 userRouter.delete('/:id', verifyToken, UserController.deleteUser);

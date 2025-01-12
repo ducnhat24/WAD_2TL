@@ -5,7 +5,9 @@ const Product = require('../../product/schema/Product.js');
 const Brand = require('../../brand/schema/Brand.js');
 
 const mongoose = require('mongoose');
-
+const CustomerService = require('./CustomerService.js');
+const ProductService = require('../../product/model/ProductService.js');
+const UserService = require('../../admin/model/UserService.js');
 class OrderService {
 
 
@@ -211,17 +213,172 @@ class OrderService {
 
     async getAllOrders(query) {
         try {
-            console.log(query);
             const statusQuery = query.status ? { orderStatus: query.status } : {};
             const orders = await Order.find(statusQuery).exec();
+
+            const newArray = await Promise.all(
+                orders.map(async (order) => {
+                    const customer = await CustomerService.getUserById(order.customerID);
+                    const newArrayListProduct = await Promise.all(order.orderListProduct.map(async (item) => {
+                        const product = await ProductService.getProductById(item.productId);
+                        return {
+                            product: {
+                                _id: product.data._id,
+                                productName: product.data.productName,
+                                productBrand: product.data.productBrand,
+                            },
+                            quantity: item.quantity,
+                            productPrice: item.productPrice,
+                        }
+                    }));
+
+                    let shipper = null;
+                    if (order.orderShipper) {
+                        const data = await UserService.getUserByID(order.orderShipper);
+                        shipper = {
+                            _id: data.data._id,
+                            userName: data.data.userName,
+                            userEmail: data.data.userEmail,
+                            userPhone: data.data.userPhone,
+                            userDateOfBirth: data.data.userDateOfBirth,
+                        };
+                    }
+
+                    let newOrder = {
+                        _id: order._id,
+                        orderCreatedDateTime: order.orderCreatedDateTime,
+                        orderListProduct: newArrayListProduct,
+                        orderShippingAddress: order.orderShippingAddress,
+                        orderShippingMethod: order.orderShippingMethod,
+                        orderShippingFee: order.orderShippingFee,
+                        orderTotalPrice: order.orderTotalPrice,
+                        orderStatus: order.orderStatus,
+                        shipper: shipper,
+                        customer: customer.data,
+                    };
+
+                    return newOrder;
+                })
+            );
 
             return {
                 status: 'success',
                 message: 'Get all orders successfully',
-                orders: orders,
+                data: newArray,
             }
         }
         catch (error) {
+            return {
+                status: 'error',
+                message: error.message || "Internal Server Error",
+            }
+        }
+    }
+
+    async getOrderByID(orderID) {
+        try {
+            const order = await Order.findById(orderID).exec();
+            console.log(order);
+            const customer = await CustomerService.getUserById(order.customerID);
+            const newArrayListProduct = await Promise.all(order.orderListProduct.map(async (item) => {
+                const theChosenProduct = await ProductService.getProductById(item.productId);
+                console.log(theChosenProduct);
+                return {
+                    product: {
+                        _id: theChosenProduct.data._id,
+                        productName: theChosenProduct.data.productName,
+                        productBrand: theChosenProduct.data.productBrand,
+                    },
+                    quantity: item.quantity,
+                    productPrice: item.productPrice,
+                }
+            }));
+
+
+            // let shipper = null;
+            // if (order.orderShipper) {
+            //     const data = await UserService.getUserByID(order.orderShipper);
+            //     shipper = data.data;
+            // }
+
+            const newOrder = {
+                _id: order._id,
+                orderCreatedDateTime: order.orderCreatedDateTime,
+                orderListProduct: newArrayListProduct,
+                orderShippingAddress: order.orderShippingAddress,
+                orderShippingMethod: order.orderShippingMethod,
+                orderShippingFee: order.orderShippingFee,
+                orderTotalPrice: order.orderTotalPrice,
+                orderStatus: order.orderStatus,
+                shipper: {},
+                customer: customer.data,
+            };
+
+            return {
+                status: 'success',
+                message: 'Get order successfully',
+                data: newOrder,
+            };
+        } catch (error) {
+            return {
+                status: 'error',
+                message: error.message || "Internal Server Error",
+            }
+        }
+    }
+
+    async updateOrder(orderID, updateInfo) {
+        try {
+            const status = updateInfo.orderStatus;
+            const shipperID = updateInfo.shipperID;
+            const order = await Order.findById(orderID).exec();
+            console.log(order);
+            if (!order) {
+                return {
+                    status: 'error',
+                    message: 'Order not found',
+                }
+            }
+
+            order.orderStatus = status;
+            if (shipperID) {
+                if (shipperID !== '') {
+                    order.orderShipper = shipperID;
+                }
+            }
+            await order.save();
+
+            return {
+                status: 'success',
+                message: 'Update order status successfully',
+            }
+        } catch (error) {
+            return {
+                status: 'error',
+                message: error.message || "Internal Server Error",
+            }
+        }
+    }
+
+    async addShipperOrder(orderID, shipperID) {
+        try {
+            const order = await Order.findById(orderID).exec();
+            if (!order) {
+                return {
+                    status: 'error',
+                    message: 'Order not found',
+                }
+            }
+
+            order.orderStatus = 'Pending';
+            order.orderShipper = shipperID;
+            await order.save();
+
+            return {
+                status: 'success',
+                message: 'Update order status successfully',
+            }
+        } catch (error) {
             return {
                 status: 'error',
                 message: error.message || "Internal Server Error",

@@ -135,6 +135,55 @@ class UserController {
         }
     }
 
+    async logout(req, res) {
+        try {
+            const user = req.user;
+            const status = await UserService.logout(user.userID);
+            if (status.status === 'error') {
+                return res.status(404).json(status);
+            }
+            res.clearCookie('accessToken');
+            res.clearCookie('refreshToken');
+            return res.status(200).json(status);
+        }
+        catch (err) {
+            res.status(500).json({
+                status: 'error',
+                message: err.message
+            });
+        }
+    }
+
+    async viewListOrder(req, res) {
+        try {
+            const user = req.user;
+            const orders = await UserService.viewListOrder(user.userID, req.query);
+            if (orders.status === 'error') {
+                return res.status(404).json(orders);
+            }
+            return res.status(200).json(orders);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                status: 'error',
+                message: error.message,
+            });
+        }
+    }
+
+    async acceptOrder(req, res) {
+        try {
+            const user = req.user;
+            const status = await UserService.acceptOrder(user.userID, req.body.orderID);
+            return res.status(200).json(status);
+        }
+        catch (err) {
+            res.status(500).json({
+                status: 'error',
+                message: err.message
+            });
+        }
+    }
 }
 
 module.exports = new UserController;

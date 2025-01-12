@@ -1,6 +1,8 @@
 const User = require('../schema/User');
 const bcrypt = require('bcrypt');
 const { generateAccessToken, generateRefreshToken } = require('../../../middleware/JWTAction');
+const OrderService = require('../../customer/model/OrderService');
+
 
 async function hashPassword(password) {
     try {
@@ -196,6 +198,111 @@ class UserService {
             status: 'success',
             message: `Update ${user.userName}'s ${type} user successfully`,
         };
+    }
+
+    async logout(userID) {
+        try {
+            const user = await User.findOne({ _id: userID });
+            if (!user) {
+                return {
+                    status: 'error',
+                    message: 'User not found'
+                }
+            }
+
+            user.refreshToken = null;
+
+            await user.save();
+            return {
+                status: 'success',
+                message: 'Logout successfully'
+            }
+
+        } catch (error) {
+            return {
+                status: 'error',
+                message: error.message
+            }
+        }
+    }
+
+    async viewListOrder(userID, query) {
+        try {
+            const user = await User.findOne({ _id: userID });
+            if (!user) {
+                return {
+                    status: 'error',
+                    message: 'User not found'
+                }
+            }
+
+            const orders = await Promise.all(user.userListOrder.map(async (item) => {
+                const data = await OrderService.getOrderByID(item.orderID);
+                let order = data.data;
+                order.shipper = {
+                    _id: user._id,
+                    userName: user.userName,
+                    userEmail: user.userEmail,
+                    userPhone: user.userPhone,
+                    userDateOfBirth: user.userDateOfBirth,
+                };
+                return order;
+            }));
+
+            return {
+                status: 'success',
+                message: 'Get list order successfully',
+                data: orders
+            }
+        } catch (error) {
+            return {
+                status: 'error',
+                message: error.message
+            }
+        }
+    }
+
+    async acceptOrder(userID, orderID) {
+        try {
+            const user = await User.findOne({ _id: userID });
+            if (!user) {
+                return {
+                    status: 'error',
+                    message: 'User not found'
+                }
+            }
+
+            const status = await OrderService.addShipperOrder(orderID, userID);
+
+            if (status.status !== 'success') {
+                return {
+                    status: 'error',
+                    message: status.message
+                }
+            }
+
+
+            const order = {
+                orderID,
+                acceptanceDateTime: new Date(),
+            }
+
+            user.userListOrder.push(order);
+            await user.save();
+
+
+            return {
+                status: 'success',
+                message: 'Accept order successfully'
+            }
+
+        }
+        catch (err) {
+            return {
+                status: 'error',
+                message: err.message
+            }
+        }
     }
 }
 
