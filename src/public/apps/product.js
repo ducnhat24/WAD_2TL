@@ -7,58 +7,290 @@ let selectedBrands = []; // Selected brands
 let selectedCategories = []; // Selected categories
 let selectedSort = ''; // Selected sort type
 
+function isUserLoggedIn() {
+    const cookies = document.cookie.split(';');
+    return cookies.some(cookie => cookie.trim().startsWith('accessToken='));
+}
+
 
 function addCart() {
-    // Add item to cart
     const idContainer = document.getElementById("hehe");
+    const productID = idContainer.innerText;
     let quantity = 1;
     const quantityContainer = document.getElementById("each-production-quanity");
+    
     if (quantityContainer.value === "") {
-        notify({type: "warning", msg: "Please fill in a number of product"})
+        notify({type: "warning", msg: "Please fill in a number of product"});
         return;
     }
+    
     if (!isNaN(quantityContainer.value) && Number(quantityContainer.value) > 0) {
         quantity = Number(quantityContainer.value);
     }
+
+    // Check if user is logged in by checking for accessToken cookie
+    const cookies = document.cookie.split(';');
+    const hasAccessToken = cookies.some(cookie => cookie.trim().startsWith('accessToken='));
+
+    if (!hasAccessToken) {
+        // Handle non-logged in user - use localStorage
+        addToLocalCart(productID, quantity);
+    } else {
+        // Handle logged in user - use server cart
+        addToServerCart(productID, quantity);
+    }
+}
+
+// Updated cart count function to handle both scenarios
+function updateCartCount(increment = 1) {
+    const cartCountElement = document.getElementById('cart-count');
+    if (isUserLoggedIn()) {
+        // Get server cart count
+        fetch("http://localhost:5000/api/customer/cart", {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            let totalCount = 0;
+            for (const item of data.cart) {
+                if (item !== null) {
+                    totalCount += item.quantity;
+                }
+            }
+            cartCountElement.innerText = totalCount;
+        })
+        .catch(error => {
+            console.error('Error updating cart count:', error);
+        });
+    } else {
+        // Get local cart count
+        const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalCount = localCart.reduce((sum, item) => {
+            return sum + (item !== null ? item.quantity : 0);
+        }, 0);
+        cartCountElement.innerText = totalCount;
+    }
+}
+
+
+// function addToLocalCart(productID, quantity) {
+//     // Get existing cart or initialize new one
+//     let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+//     // Check if product already exists in cart
+//     const existingProduct = cart.find(item => item.productId === productID);
+    
+//     if (existingProduct) {
+//         existingProduct.quantity += quantity;
+//     } else {
+//         cart.push({
+//             productId: productID,
+//             quantity: quantity
+//         });
+//     }
+    
+//     localStorage.setItem('cart', JSON.stringify(cart));
+//     notify({ type: 'success', msg: 'Added to cart successfully' });
+//     updateCartCount();
+// }
+
+// Function to add items to local cart with complete product info
+// function addToLocalCart(productID, quantity) {
+//     // Get existing cart or initialize new one
+//     let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+//     // First, get the complete product info from the current page
+//     const productInfo = {
+//         _id: productID,
+//         productName: document.querySelector('.product-detail__name')?.textContent,
+//         productPrice: parseFloat(document.querySelector('.product-detail__price')?.getAttribute('data-price')),
+//         productMainImage: document.querySelector('.product_detail_left img')?.src,
+//         productDescription: document.querySelector('.product-detail__description')?.textContent,
+//         productBrand: {
+//             brandName: document.querySelector('.product_detail_right .info')?.textContent
+//         },
+//         productDetailInformation: {
+//             productMaterial: document.querySelector('[data-material]')?.getAttribute('data-material'),
+//             productSize: document.querySelector('[data-size]')?.getAttribute('data-size')
+//         },
+//         productYear: document.querySelector('[data-year]')?.getAttribute('data-year'),
+//         quantity: quantity
+//     };
+    
+//     // Check if product already exists in cart
+//     const existingProductIndex = cart.findIndex(item => item._id === productID);
+    
+//     if (existingProductIndex !== -1) {
+//         // Update quantity if product exists
+//         cart[existingProductIndex].quantity += quantity;
+//     } else {
+//         // Add new product with full info
+//         cart.push(productInfo);
+//     }
+    
+//     localStorage.setItem('cart', JSON.stringify(cart));
+//     updateCartCount();
+//     notify({ type: 'success', msg: 'Added to cart successfully' });
+// }
+
+
+async function addToLocalCart(productID, quantity) {
+    try {
+        // Fetch complete product info from database
+        const response = await fetch(`http://localhost:5000/api/product/${productID}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch product details');
+        }
+
+        const res = await response.json();
+        const productData = res.data[0];
+
+
+        // Get existing cart or initialize new one
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Prepare product info from database data
+        const productInfo = {
+            _id: productData._id,
+            productName: productData.productName,
+            productPrice: productData.productPrice,
+            productMainImage: productData.productMainImage,
+            productDescription: productData.productDescription,
+            productBrand: productData.productBrand,
+            productDetailInformation: {
+                productMaterial: productData.productDetailInformation.productMaterial,
+                productSize: productData.productDetailInformation.productSize
+            },
+            productYear: productData.productYear,
+            productStatus: productData.productStatus,
+            productCategory: productData.productCategory,
+            quantity: quantity
+        };
+
+        // Check if product already exists in cart
+        const existingProductIndex = cart.findIndex(item => item._id === productID);
+
+        if (existingProductIndex !== -1) {
+            // Update quantity if product exists
+            cart[existingProductIndex].quantity += quantity;
+        } else {
+            // Add new product with full info
+            cart.push(productInfo);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        notify({ type: 'success', msg: 'Added to cart successfully' });
+
+    } catch (error) {
+        console.error('Error adding to local cart:', error);
+        notify({ type: 'error', msg: 'Failed to add item to cart' });
+    }
+}
+
+function addToServerCart(productID, quantity) {
     fetch("http://localhost:5000/api/customer/cart", {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            productID: idContainer.innerText,
+            productID: productID,
             quantity: quantity,
         })
     })
-        .then(response => response.json())
-        .then(data => {
-            // console.log(data);
-            notify({ type: data.status, msg: data.msg });
-        })
-        .then(() => {
-            updateCartCount();
-        })
-        .catch(error => console.error('Error adding to cart:', error));
-    
+    .then(response => response.json())
+    .then(data => {
+        notify({ type: data.status, msg: data.msg });
+    })
+    .then(() => {
+        updateCartCount();
+    })
+    .catch(error => console.error('Error adding to cart:', error));
 }
 
-function updateCartCount(increment = 1) {
-    fetch("http://localhost:5000/api/customer/cart", {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
-    })
-        .then(response => response.json())
-        .then(data => {
-            const cartCount = document.getElementById('cart-count');
-            var __cart_count = 0;
-            for (const item of data.cart) {
-              if (item !== null) {
-                __cart_count += item.quantity;
-                }
-            }
-            cartCount.innerText = __cart_count;
-        });
-}
+
+
+// // Function to merge local cart with server cart upon login
+// async function mergeCartsAfterLogin() {
+//     const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+//     if (localCart.length > 0) {
+//         try {
+//             const response = await fetch("http://localhost:5000/api/customer/cart/merge", {
+//                 method: 'POST',
+//                 credentials: 'include',
+//                 headers: { 'Content-Type': 'application/json' },
+//                 body: JSON.stringify({ localCart })
+//             });
+            
+//             const data = await response.json();
+//             if (data.status === 'success') {
+//                 localStorage.removeItem('cart'); // Clear local cart after successful merge
+//                 updateCartCount();
+//             }
+//         } catch (error) {
+//             console.error('Error merging carts:', error);
+//         }
+//     }
+// }
+
+// function addCart() {
+//     // Add item to cart
+//     const idContainer = document.getElementById("hehe");
+//     let quantity = 1;
+//     const quantityContainer = document.getElementById("each-production-quanity");
+//     if (quantityContainer.value === "") {
+//         notify({type: "warning", msg: "Please fill in a number of product"})
+//         return;
+//     }
+//     if (!isNaN(quantityContainer.value) && Number(quantityContainer.value) > 0) {
+//         quantity = Number(quantityContainer.value);
+//     }
+//     fetch("http://localhost:5000/api/customer/cart", {
+//         method: 'POST',
+//         credentials: 'include',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({
+//             productID: idContainer.innerText,
+//             quantity: quantity,
+//         })
+//     })
+//         .then(response => response.json())
+//         .then(data => {
+//             // console.log(data);
+//             notify({ type: data.status, msg: data.msg });
+//         })
+//         .then(() => {
+//             updateCartCount();
+//         })
+//         .catch(error => console.error('Error adding to cart:', error));
+    
+// }
+
+// function updateCartCount(increment = 1) {
+//     fetch("http://localhost:5000/api/customer/cart", {
+//         method: 'GET',
+//         headers: { 'Content-Type': 'application/json' },
+//         credentials: 'include'
+//     })
+//         .then(response => response.json())
+//         .then(data => {
+//             const cartCount = document.getElementById('cart-count');
+//             var __cart_count = 0;
+//             for (const item of data.cart) {
+//               if (item !== null) {
+//                 __cart_count += item.quantity;
+//                 }
+//             }
+//             cartCount.innerText = __cart_count;
+//         });
+// }
 
 
 function loadProducts() {

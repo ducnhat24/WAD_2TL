@@ -15,6 +15,7 @@ customerAPIRoute.put('/cart', verifyToken, CartController.updateProductInCart);
 customerAPIRoute.delete('/cart', CartController.removeProductFromCart);
 customerAPIRoute.post('/cart', CartController.addProductToCart);
 customerAPIRoute.get('/cart', CartController.getCart);
+customerAPIRoute.post('/cart/merge', CartController.mergeCartAfterLogin);
 
 customerAPIRoute.get('/filter', CustomerController.filterUser);
 customerAPIRoute.put('/:id', CustomerController.updateStatusAccountUser);

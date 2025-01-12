@@ -34,6 +34,36 @@ class CartService {
     }
     // Kiểm tra xem sản phẩm đã tồn tại trong giỏ chưa
 
+    async mergeCart({ userID, localCart }) {
+        try {
+            const user = await Customer.findOne({ _id: userID });
+            if (!user) {
+                return { status: 'error', message: "Customer not found" };
+            }
+
+            // Process each item from local cart
+            for (const item of localCart) {
+                const existingItem = user.customerCart.find(
+                    cartItem => cartItem.productId.toString() === item.productId
+                );
+
+                if (existingItem) {
+                    existingItem.quantity += item.quantity;
+                } else {
+                    user.customerCart.push({
+                        productId: item.productId,
+                        quantity: item.quantity
+                    });
+                }
+            }
+
+            await user.save();
+            return { status: 'success', message: "Carts merged successfully" };
+        } catch (error) {
+            return { status: 'error', message: error.message };
+        }
+    }
+
     async removeProductFromCart({ userID, productID }) {
         try {
             // Tìm người dùng

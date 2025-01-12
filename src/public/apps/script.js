@@ -244,6 +244,7 @@ function handleSubmitLogin() {
     .then((data) => {
       console.log(data);
       if (data.status === "success") {
+        mergeCartsAfterLogin();
         localStorage.setItem(
           "notify",
           JSON.stringify({
@@ -449,24 +450,71 @@ if (storedNotify) {
   // Clear the stored notification
   localStorage.removeItem("notify");
 }
-function updateCartCount(increment = 1) {
-  fetch("http://localhost:5000/api/customer/cart", {
-    credentials: "include",
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const cartCount = document.getElementById("cart-count");
-      var __cart_count = 0;
-      for (const item of data.cart) {
-        if (item !== null) {
-          __cart_count += item.quantity;
+
+async function mergeCartsAfterLogin() {
+    const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    if (localCart.length > 0) {
+        try {
+            const response = await fetch("http://localhost:5000/api/customer/cart/merge", {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    localCart: localCart.map(item => ({
+                        productId: item._id,
+                        quantity: item.quantity
+                    }))
+                })
+            });
+            
+            const data = await response.json();
+            if (data.status === 'success') {
+                localStorage.removeItem('cart');
+                updateCartCount();
+            }
+        } catch (error) {
+            console.error('Error merging carts:', error);
         }
-      }
-      cartCount.innerText = __cart_count;
-    });
+    }
+}
+
+function isUserLoggedIn() {
+    const cookies = document.cookie.split(';');
+    return cookies.some(cookie => cookie.trim().startsWith('accessToken='));
+}
+
+
+function updateCartCount(increment = 1) {
+    const cartCountElement = document.getElementById('cart-count');
+    if (isUserLoggedIn()) {
+        // Get server cart count
+        fetch("http://localhost:5000/api/customer/cart", {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            let totalCount = 0;
+            for (const item of data.cart) {
+                if (item !== null) {
+                    totalCount += item.quantity;
+                }
+            }
+            cartCountElement.innerText = totalCount;
+        })
+        .catch(error => {
+            console.error('Error updating cart count:', error);
+        });
+    } else {
+        // Get local cart count
+        const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalCount = localCart.reduce((sum, item) => {
+            return sum + (item !== null ? item.quantity : 0);
+        }, 0);
+        cartCountElement.innerText = totalCount;
+    }
 }
 
 function handleGoogleLogin() {
@@ -476,4 +524,39 @@ function handleGoogleLogin() {
   window.location.href = "http://localhost:5000/api/customer/auth/google"; // Điều hướng đến endpoint xử lý Google OAuth
 }
 
-updateCartCount(0);
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const loginSuccess = urlParams.get('loginSuccess');
+
+    if (loginSuccess === 'true') {
+        mergeCartsAfterLogin(); // Merge cart khi đăng nhập Google thành công
+        localStorage.setItem(
+            "notify",
+            JSON.stringify({
+                type: "success",
+                msg: "Google login successful!",
+            })
+        );
+        updateCartCount();
+        history.replaceState(null, '', '/'); // Xóa query string khỏi URL
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Kiểm tra trạng thái đăng nhập thông qua Cookies
+    const isLoggedIn = !!Cookies.get("accessToken");
+
+    if (!isLoggedIn) {
+        // Ẩn icon profile và order nếu chưa đăng nhập
+        const userIcon = document.querySelector(".fa-user");
+        const orderIcon = document.querySelector(".fa-file-invoice");
+
+        if (userIcon) userIcon.style.display = "none";
+        if (orderIcon) orderIcon.style.display = "none";
+    }
+
+    // Cập nhật số lượng sản phẩm trong giỏ hàng
+    updateCartCount();
+});

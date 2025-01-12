@@ -57,25 +57,6 @@ const productSchema = new mongoose.Schema({
         ref: 'Category',
         required: true,
     },
-    // productReviews: {
-    //     customerID: {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'Customer',
-    //         required: false,
-    //         default: null,
-    //     },
-    //     productReviewContent: {
-    //         type: String,
-    //         required: false,
-    //         default: "",
-    //     },
-    //     productReviewRating: {
-    //         type: Number,
-    //         required: false,
-    //         default: 0,
-    //     },
-    // }
-    
     productReviews: [
         {
             customerID: {
