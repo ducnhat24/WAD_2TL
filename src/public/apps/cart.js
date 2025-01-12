@@ -3,20 +3,6 @@ function isUserLoggedIn() {
     return cookies.some(cookie => cookie.trim().startsWith('accessToken='));
 }
 
-// function handleDeleteCard(id) {
-//     const productId = id;
-//     fetch("http://localhost:5000/api/customer/cart", {
-//         method: 'DELETE',
-//         headers: { 'Content-Type': 'application/json' },
-//         credentials: 'include',
-//         body: JSON.stringify({ productId })
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             location.reload();
-//             // showCart();
-//         })
-// }
 
 function handleDeleteCard(id) {
     if (isUserLoggedIn()) {
@@ -40,47 +26,19 @@ function handleDeleteCard(id) {
     }
 }
 
-// function increaseQuantity(quantity) {
-//     quantity = Number(quantity) + 1;
-//     return quantity;
-// }
 
-// function decreaseQuantity(quantity) {
-//     quantity = Number(quantity) - 1;
-//     if (quantity < 0) {
-//         quantity = 0;
-//     }
-//     return quantity;
-// }
-
-// Modified increase/decrease quantity functions
-function increaseQuantity(id, currentQuantity) {
-    const newQuantity = Number(currentQuantity) + 1;
-    handleQuantityChange(id, newQuantity);
+function increaseQuantity(currentQuantity) {
+    const newQuantity = Math.max(0, parseInt(currentQuantity, 10) + 1);
     return newQuantity;
 }
 
-function decreaseQuantity(id, currentQuantity) {
-    const newQuantity = Math.max(0, Number(currentQuantity) - 1);
-    handleQuantityChange(id, newQuantity);
+function decreaseQuantity(currentQuantity) {
+    const newQuantity = Math.max(0, parseInt(currentQuantity, 10) - 1);
     return newQuantity;
 }
 
-// function handleUpdateQuantity(id, quantity) {
-//     const productId = id;
 
-//     fetch("http://localhost:5000/api/customer/cart", {
-//         method: 'PUT',
-//         headers: { 'Content-Type': 'application/json' },
-//         credentials: 'include',
-//         body: JSON.stringify({ productId, quantity })
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             location.reload();
-//             // showCart();
-//         })
-// }
+
 
 // Function to update quantity in local storage
 function updateLocalCartQuantity(productId, newQuantity) {
@@ -106,7 +64,7 @@ function handleUpdateQuantity(id, quantity) {
         })
         .then(response => response.json())
         .then(data => {
-            location.reload();
+            // location.reload();
         });
     } else {
         // Update localStorage cart
@@ -121,15 +79,27 @@ function handleUpdateQuantity(id, quantity) {
 }
 
 
-// Handle quantity changes
+
 function handleQuantityChange(id, newQuantity) {
-    if (isUserLoggedIn()) {
-        handleUpdateQuantity(id, newQuantity);
-    } else {
-        updateLocalCartQuantity(id, newQuantity);
-        location.reload();
+    const validQuantity = parseInt(newQuantity, 10) || 0;
+
+    // Update product in productOrdered array
+    const product = productOrdered.find((p) => p._id === id);
+    if (product) {
+        product.quantity = validQuantity;
     }
+
+    // Update storage (either server or local)
+    if (isUserLoggedIn()) {
+        handleUpdateQuantity(id, validQuantity);
+    } else {
+        updateLocalCartQuantity(id, validQuantity);
+    }
+
+    // Update UI
+    updateCartSummary();
 }
+
 function createCartItem(item) {
     const cartItemDiv = document.createElement("label");
     cartItemDiv.htmlFor = item._id;
@@ -173,99 +143,83 @@ function createCartItem(item) {
         handleUpdateQuantity(isUserLoggedIn() ? item._id : item.productId, item.quantity)
     );
 
-    cartItemDiv.querySelector('.increase-quantity').addEventListener("click", () => {
-        item.quantity = increaseQuantity(item.quantity);
-        const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
-        quantitySpan.textContent = item.quantity;
-        updateCartSummary();
-    });
+    // cartItemDiv.querySelector('.increase-quantity').addEventListener("click", () => {
+    //     item.quantity = increaseQuantity(item.quantity);
+    //     const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
+    //     quantitySpan.textContent = item.quantity;
+    //     updateCartSummary();
+    // });
     
-    cartItemDiv.querySelector('.decrease-quantity').addEventListener("click", () => {
-        item.quantity = decreaseQuantity(item.quantity);
+    // cartItemDiv.querySelector('.decrease-quantity').addEventListener("click", () => {
+    //     item.quantity = decreaseQuantity(item.quantity);
+    //     const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
+    //     quantitySpan.textContent = item.quantity;
+    //     updateCartSummary();
+    // });
+
+    // cartItemDiv.querySelector('.increase-quantity').addEventListener("click", () => {
+    //     const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
+    //     const currentQuantity = parseInt(quantitySpan.textContent, 10) || 0;
+
+    //     const newQuantity = increaseQuantity(currentQuantity);
+    //     quantitySpan.textContent = newQuantity;
+        
+
+    //     handleQuantityChange(item._id, newQuantity);
+    //     updateCartSummary();
+    // });
+
+    // cartItemDiv.querySelector('.decrease-quantity').addEventListener("click", () => {
+    //     const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
+    //     const currentQuantity = parseInt(quantitySpan.textContent, 10) || 0;
+
+    //     const newQuantity = decreaseQuantity(currentQuantity);
+    //     quantitySpan.textContent = newQuantity;
+
+    //     handleQuantityChange(item._id, newQuantity);
+    //     updateCartSummary();
+    // });
+
+
+    // cartItemDiv.querySelector('.increase-quantity').addEventListener("click", () => {
+    //     const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
+    //     const currentQuantity = parseInt(quantitySpan.textContent, 10) || 0;
+
+    //     const newQuantity = increaseQuantity(currentQuantity);
+    //     quantitySpan.textContent = newQuantity;
+
+    //     item.quantity = newQuantity; // Cập nhật số lượng sản phẩm
+    //     handleQuantityChange(item._id, newQuantity);
+    //     updateCartSummary(); // Gọi cập nhật tổng giá trị
+    // });
+
+    cartItemDiv.querySelector('.increase-quantity').addEventListener("click", () => {
         const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
-        quantitySpan.textContent = item.quantity;
-        updateCartSummary();
+        const currentQuantity = parseInt(quantitySpan.textContent, 10) || 0;
+        const newQuantity = increaseQuantity(currentQuantity);
+        
+        // Update UI
+        quantitySpan.textContent = newQuantity;
+        
+        // Update data and handle changes in one place
+        handleQuantityChange(item._id, newQuantity);
     });
 
+    cartItemDiv.querySelector('.decrease-quantity').addEventListener("click", () => {
+        const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
+        const currentQuantity = parseInt(quantitySpan.textContent, 10) || 0;
+
+        const newQuantity = decreaseQuantity(currentQuantity);
+        quantitySpan.textContent = newQuantity;
+
+        item.quantity = newQuantity; // Cập nhật số lượng sản phẩm
+        handleQuantityChange(item._id, newQuantity);
+        updateCartSummary(); // Gọi cập nhật tổng giá trị
+    });
     return cartItemDiv;
 }
 
-// function createCartItem(item) {
-//     // Create container div
-//     const cartItemDiv = document.createElement("label");
-//     cartItemDiv.htmlFor = item._id;
-//     cartItemDiv.classList.add("cart__item");
-//     // cartItemDiv.id = item._id;
 
-//     cartItemDiv.innerHTML = `
-//             <div class="cart__left" >
-//                 <img src="${item.productMainImage}" class="card-img-top" alt="${item.productName}">
-//             </div>
-
-//             <div class="card__right">
-//                 <div class="cart__item__title">
-//                     <div class="cart__product__name">
-//                         <span>${item.productName}</span>
-//                     </div>
-//                 </div>
-
-//                 <div class="card__item__footer">
-//                     <div class="card__product__price">
-//                         <span>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.productPrice,)}</span>
-//                     </div>
-
-//                     <div class="cart__item__btn">
-//                         <button class="decrease-quantity">-</button>
-//                         <span>${item.quantity}</span>
-//                         <button class="increase-quantity">+</button>
-//                     </div>
-//                 </div>
-
-//             </div>
-        
-            
-//             <button class="delete-product">X</button>
-//             <button class="edit-quantity">?</button>
-//     `;
-
-//     cartItemDiv.querySelector('.delete-product').addEventListener("click", () => handleDeleteCard(item._id));
-//     cartItemDiv.querySelector('.edit-quantity').addEventListener("click", () => handleUpdateQuantity(item._id, item.quantity));
-
-//     cartItemDiv.querySelector('.increase-quantity').addEventListener("click", () => {
-//         item.quantity = increaseQuantity(item.quantity);
-//         const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
-//         quantitySpan.textContent = item.quantity;
-//         updateCartSummary();
-//     });
-//     cartItemDiv.querySelector('.decrease-quantity').addEventListener("click", () => {
-//         item.quantity = decreaseQuantity(item.quantity);
-//         const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
-//         quantitySpan.textContent = item.quantity;
-//         updateCartSummary();
-//     });
-
-//     return cartItemDiv;
-// }
-
-// function renderDetailUser(user) {
-//     const customerDetailContainer = document.querySelector(".cart__customer__detail");
-//     customerDetailContainer.innerHTML = `
-//         <div class="cart__customer__detail__title">
-//                 <span>Customer Details</span>
-//             </div>
-//             <div class="cart__customer__detail__content">
-            
-//                 <div class="cart__customer__detail__item">
-//                     <span>Name:</span>
-//                     <span>${user.username}</span>
-//                 </div>
-//                 <div class="cart__customer__detail__item">
-//                     <span>Email:</span>
-//                     <span>${user.useremail}</span>
-//                 </div>
-//             </div>
-//     `;
-// }
 
 function renderDetailUser(user) {
     const customerDetailContainer = document.querySelector(".cart__customer__detail");
@@ -339,101 +293,7 @@ function renderProductsInCart(productList) {
         }
     });
 }
-// function renderProductsInCart(productList) {
-//     const cartContainer = document.querySelector(".cart .cart__body"); // Replace with your container selector
 
-//     cartContainer.innerHTML = ""; // Clear existing content
-//     productList.forEach((product) => {
-//         if (product !== null) {
-//             const checkbox = document.createElement("input");
-//             checkbox.id = product._id;
-//             checkbox.type = "checkbox";
-//             checkbox.onclick = () => {
-//                 if (checkbox.checked) {
-//                     productOrdered.push(product);
-//                 } else {
-//                     productOrdered = productOrdered.filter((item) => item._id !== product._id);
-//                 }
-//                 updateCartSummary();
-//                 console.log(productOrdered);
-//             }
-
-//             const cartElement = createCartItem(product);
-
-//             cartContainer.appendChild(checkbox);
-//             cartContainer.appendChild(cartElement);
-//         }
-//     });
-// }
-
-// function showCart() {
-//     // Show cart
-//     location.href = "/user/cart";
-// }
-
-// function showCart() {
-//     // Show cart
-//     fetch("http://localhost:5000/api/customer/cart", {
-//         method: 'GET',
-//         headers: { 'Content-Type': 'application/json' },
-//         credentials: 'include'
-
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             console.log(data);
-//             renderProductsInCart(data.cart);
-//             renderDetailUser(data.user);
-
-//             userInfor = data.user;
-//             renderProductsDetail(data.cart);
-//             fetchShippingMethodsInCart();
-//         })
-// }
-
-// async function showCart() {
-//     if (isUserLoggedIn()) {
-//         // Fetch cart from server
-//         try {
-//             const response = await fetch("http://localhost:5000/api/customer/cart", {
-//                 method: 'GET',
-//                 headers: { 'Content-Type': 'application/json' },
-//                 credentials: 'include'
-//             });
-//             const data = await response.json();
-//             renderProductsInCart(data.cart);
-//             renderDetailUser(data.user);
-//             userInfor = data.user;
-//             renderProductsDetail(data.cart);
-//             fetchShippingMethodsInCart();
-//         } catch (error) {
-//             console.error('Error fetching cart:', error);
-//         }
-//     } else {
-//         // Get cart from localStorage and fetch product details
-//         try {
-//             const localCart = JSON.parse(localStorage.getItem('cart')) || [];
-//             const productsPromises = localCart.map(async (item) => {
-//                 const response = await fetch(`http://localhost:5000/api/product/${item.productId}`);
-//                 const product = await response.json();
-//                 return {
-//                     ...product,
-//                     quantity: item.quantity
-//                 };
-//             });
-            
-//             const products = await Promise.all(productsPromises);
-            
-//             // Render cart with local storage data
-//             renderProductsInCart(products);
-//             renderDetailUser({ username: 'Guest User', useremail: 'Not logged in' });
-//             renderProductsDetail(products);
-//             fetchShippingMethodsInCart();
-//         } catch (error) {
-//             console.error('Error fetching product details:', error);
-//         }
-//     }
-// }
 
 
 // Function to show cart contents with complete product info
@@ -473,25 +333,72 @@ let cartData = {
     total: 0,
 };
 
+// function updateCartSummary() {
+//     let subtotal = 0;
+//     productOrdered.forEach((product) => {
+//         subtotal += Number(product.productPrice) * Number(product.quantity);
+//     });
+
+//     let total = subtotal;
+
+//     cartData.numberOfItems = productOrdered.length;
+//     cartData.subtotal = subtotal;
+//     cartData.total = total + cartData.shipping;
+
+
+//     document.getElementById("numberOfItems").textContent = cartData.numberOfItems;
+//     document.getElementById("subtotal").textContent = `${cartData.subtotal.toLocaleString('vi-VN')} ₫`;
+//     document.getElementById("shipping").textContent = `${cartData.shipping.toLocaleString('vi-VN')} ₫`;
+//     document.getElementById("total").textContent = `${cartData.total.toLocaleString('vi-VN')} ₫`;
+
+// }
+
+// function updateCartSummary() {
+//     let subtotal = 0;
+
+//     // Tính toán tổng giá trị dựa trên các sản phẩm đã chọn
+//     productOrdered.forEach((product) => {
+//         subtotal += Number(product.productPrice) * Number(product.quantity);
+//     });
+
+//     let total = subtotal + cartData.shipping;
+
+//     // Cập nhật dữ liệu giỏ hàng
+//     cartData.numberOfItems = productOrdered.length;
+//     cartData.subtotal = subtotal;
+//     cartData.total = total;
+
+//     // Hiển thị giá trị trên giao diện
+//     document.getElementById("numberOfItems").textContent = cartData.numberOfItems;
+//     document.getElementById("subtotal").textContent = `${cartData.subtotal.toLocaleString('vi-VN')} ₫`;
+//     document.getElementById("shipping").textContent = `${cartData.shipping.toLocaleString('vi-VN')} ₫`;
+//     document.getElementById("total").textContent = `${cartData.total.toLocaleString('vi-VN')} ₫`;
+// }
+
 function updateCartSummary() {
     let subtotal = 0;
+    let totalItems = 0;
+
+    // Tính toán tổng giá trị và tổng số lượng sản phẩm
     productOrdered.forEach((product) => {
         subtotal += Number(product.productPrice) * Number(product.quantity);
+        totalItems += Number(product.quantity); // Tính tổng số lượng sản phẩm
     });
 
-    let total = subtotal;
+    let total = subtotal + cartData.shipping;
 
-    cartData.numberOfItems = productOrdered.length;
+    // Cập nhật dữ liệu giỏ hàng
+    cartData.numberOfItems = totalItems;
     cartData.subtotal = subtotal;
-    cartData.total = total + cartData.shipping;
+    cartData.total = total;
 
-
+    // Hiển thị giá trị trên giao diện
     document.getElementById("numberOfItems").textContent = cartData.numberOfItems;
     document.getElementById("subtotal").textContent = `${cartData.subtotal.toLocaleString('vi-VN')} ₫`;
     document.getElementById("shipping").textContent = `${cartData.shipping.toLocaleString('vi-VN')} ₫`;
     document.getElementById("total").textContent = `${cartData.total.toLocaleString('vi-VN')} ₫`;
-
 }
+
 
 function fetchShippingMethodsInCart() {
     fetch("http://localhost:5000/api/shipping", {
@@ -615,3 +522,18 @@ document.getElementById('pay-button').addEventListener('click', async () => {
 });
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    // Kiểm tra trạng thái đăng nhập thông qua Cookies
+    const isLoggedIn = !!Cookies.get("accessToken");
+
+    if (!isLoggedIn) {
+        // Ẩn phần cart checkout nếu chưa đăng nhập
+        const cartCheckout = document.querySelector(".cart__checkout");
+        if (cartCheckout) {
+            cartCheckout.style.display = "none";
+        }
+    }
+
+    // Cập nhật số lượng sản phẩm trong giỏ hàng (nếu cần)
+    updateCartCount();
+});
