@@ -16,7 +16,7 @@ class CartController {
             }
 
             const token = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET)
-            const result = await CartService.addProductToCart({ userID: token.id, productID, quantity });
+            const result = await CartService.addProductToCart({ userID: token.userID, productID, quantity });
             if (result.status === 'success') {
                 return res.status(200).json({ status: 'success', msg: 'Add succesfully' });
             }
@@ -32,7 +32,7 @@ class CartController {
         const accessToken = req.cookies.accessToken;
         const token = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET)
         try {
-            const result = await CartService.removeProductFromCart({ userID: token.id, productID: productId });
+            const result = await CartService.removeProductFromCart({ userID: token.userID, productID: productId });
             if (result.status === 'success') {
                 return res.status(200).json({ message: "Product removed from cart" });
             }
@@ -48,7 +48,7 @@ class CartController {
         const accessToken = req.cookies.accessToken;
         const token = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET)
         try {
-            const result = await CartService.updateProductInCart({ userID: token.id, productID: productId, quantity });
+            const result = await CartService.updateProductInCart({ userID: token.userID, productID: productId, quantity });
             if (result.status === 'success') {
                 return res.status(200).json({ status: 'success', message: "Product updated in cart" });
             }
@@ -65,8 +65,7 @@ class CartController {
         try {
             const accessToken = req.cookies.accessToken;
             const token = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET)
-
-            const result = await CartService.getCart(token.id);
+            const result = await CartService.getCart(token.userID);
             if (result.status === 'success') {
                 return res.status(200).json({ cart: result.cart, user: result.user });
             }

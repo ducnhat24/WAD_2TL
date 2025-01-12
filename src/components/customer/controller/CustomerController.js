@@ -1,5 +1,6 @@
 const CustomerService = require("../model/CustomerService");
 const fs = require('fs');
+const bcrypt = require("bcrypt");
 
 
 class CustomerController {
@@ -17,7 +18,7 @@ class CustomerController {
   async showProfile(req, res) {
     try {
       // Lấy userID từ req.user
-      const userID = req.user.id;
+      const userID = req.user.userID;
 
       // Gọi service để lấy thông tin user
       const response = await CustomerService.getUserByID(userID);
@@ -148,12 +149,12 @@ class CustomerController {
   }
 
   async getCustomerID(req, res) {
-        try {
-            const customerID = await CustomerService.getCustomerID(req.user);
+    try {
+            console.log(req.user.userID);
+            const customerID = await CustomerService.getCustomerID(req.user.userID);
             if (customerID.status === 'success') {
                 return res.status(200).json(customerID);
             }
-
             return res.status(400).json(customerID);
         } catch (error) {
             return res.status(500).json({
@@ -228,6 +229,7 @@ class CustomerController {
   
   async updateName(req, res) {
     try {
+      console.log(req.body);
       const updatedCustomer = await CustomerService.updateName(req.body.customerID, {
         customerName: req.body.customerName,
       });
@@ -279,6 +281,54 @@ class CustomerController {
     }
   }
     
+  async changePassword(req, res) {
+    try {
+      const { newPassword, customerID, currentPassword } = req.body;
+
+      // Tìm khách hàng theo ID
+      const customer = await CustomerService.findCustomerById(customerID);
+      if (!customer) {
+        return res.status(404).json({ message: "Customer not found" });
+      }
+
+      // Nếu tài khoản có mật khẩu, kiểm tra mật khẩu hiện tại
+      if (customer.customerPassword) {
+        if (!currentPassword) {
+          return res.status(400).json({ message: "Current password is required." });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, customer.customerPassword);
+        if (!isMatch) {
+          return res.status(400).json({ message: "Current password is incorrect." });
+        }
+      }
+
+      // Hash mật khẩu mới và cập nhật
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await CustomerService.updatePassword(customerID, hashedPassword);
+
+      res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+
+  async getUserProfile(req, res) {
+  try {
+    const userId = req.user.userID; // Lấy user ID từ token/session
+    const userProfile = await CustomerService.getUserProfile(userId);
+
+    if (!userProfile) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(userProfile);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 }
 
 module.exports = new CustomerController();

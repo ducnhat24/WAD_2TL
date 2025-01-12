@@ -35,7 +35,8 @@ class OrderController {
 
     async getOrders(req, res) {
         try {
-            const customerID = req.user.id;
+            const customerID = req.user.userID;
+            console.log(req.user);
 
             // Gọi hàm trong service
             const orders = await OrderService.getOrders(customerID);

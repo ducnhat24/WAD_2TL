@@ -25,7 +25,7 @@ async function getCustomerID() {
             alert("Please login first to write a review!");
             return null;
         }
-        const data = await response.json();
+      const data = await response.json();
         return data.data._id; // Trả về dữ liệu customer ID từ API
     }
     catch (error) {
@@ -180,3 +180,98 @@ document.getElementById("saveAvatar").addEventListener("click", async function (
     alert("An error occurred while updating the avatar.");
   }
 });
+
+// document.getElementById("savePasswordButton").addEventListener("click", async function () {
+//   const currentPassword = document.getElementById("currentPassword").value;
+//   const newPassword = document.getElementById("newPassword").value;
+//   const confirmPassword = document.getElementById("confirmPassword").value;
+
+//   if (newPassword !== confirmPassword) {
+//     alert("New passwords do not match!");
+//     return;
+//   }
+
+//   try {
+//     const response = await fetch("http://localhost:5000/api/customer/change-password", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ currentPassword, newPassword }),
+//     });
+
+//     const result = await response.json();
+//     if (response.ok) {
+//       alert("Password updated successfully!");
+//     } else {
+//       alert(result.message || "Failed to update password.");
+//     }
+//   } catch (error) {
+//     console.error("Error updating password:", error);
+//     alert("An error occurred while updating the password.");
+//   }
+// });
+
+document.addEventListener("DOMContentLoaded", async function () {
+  try {
+    const response = await fetch("http://localhost:5000/api/customer/profile", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (response.ok) {
+      const user = await response.json();
+
+      // Kiểm tra nếu người dùng không có mật khẩu
+      if (!user.hasPassword) {
+        // Ẩn trường Current Password nếu người dùng chưa có mật khẩu
+        document.getElementById("currentPasswordGroup").style.display = "none";
+      }
+    } else {
+      console.error("Failed to fetch user profile");
+    }
+  } catch (error) {
+    console.error("Error loading user profile:", error);
+  }
+});
+
+document.getElementById("savePasswordButton").addEventListener("click", async function () {
+  const currentPasswordField = document.getElementById("currentPassword");
+  const newPassword = document.getElementById("newPassword").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (newPassword !== confirmPassword) {
+    alert("New Password and Confirm Password do not match!");
+    return;
+  }
+
+  const customerID = await getCustomerID();
+  const payload = {
+    newPassword: newPassword,
+    customerID: customerID,
+  };
+
+
+  if (currentPasswordField && currentPasswordField.offsetParent !== null) {
+    payload.currentPassword = currentPasswordField.value;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/api/customer/change-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert(result.message || "Password updated successfully!");
+      location.reload();
+    } else {
+      alert(result.error || "Failed to update password.");
+    }
+  } catch (error) {
+    console.error("Error changing password:", error);
+    alert("An error occurred. Please try again later.");
+  }
+});
+

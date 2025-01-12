@@ -53,35 +53,64 @@ function renewAccessToken(req, res) {
     }
 }
 
+// function verifyToken(req, res, next) {
+//     try {
+//         const token = req.cookies.accessToken;
+//         if (token == null) {
+//             return renewAccessToken(req, res);
+//         }
+
+
+//         jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
+//             if (err) {
+//                 req.isAuthenticated = false;
+//                 res.clearCookie('accessToken');
+//                 return res.json({
+//                     status: 'error',
+//                     message: 'Access token is invalid',
+//                 });
+//             }
+
+//             req.user = user;
+//             req.isAuthenticated = true;
+//             next()
+//         })
+//     }
+//     catch (err) {
+//         if (err.name === 'TokenExpiredError') {
+//             return renewAccessToken(req, res);
+//         }
+//     }
+// }
+
+//Cải tiến để xử lý cả token đã hết hạn:
 function verifyToken(req, res, next) {
-    try {
-        const token = req.cookies.accessToken;
-        if (token == null) {
-            return renewAccessToken(req, res);
-        }
+  const token = req.cookies.accessToken;
 
+  if (!token) {
+    return renewAccessToken(req, res); // Xử lý nếu không có token
+  }
 
-        jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
-            if (err) {
-                req.isAuthenticated = false;
-                res.clearCookie('accessToken');
-                return res.json({
-                    status: 'error',
-                    message: 'Access token is invalid',
-                });
-            }
+  jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
+    if (err) {
+      if (err.name === 'TokenExpiredError') {
+        return renewAccessToken(req, res); // Xử lý token hết hạn
+      }
 
-            req.user = user;
-            req.isAuthenticated = true;
-            next()
-        })
+      req.isAuthenticated = false;
+      res.clearCookie('accessToken');
+      return res.status(401).json({
+        status: 'error',
+        message: 'Access token is invalid',
+      });
     }
-    catch (err) {
-        if (err.name === 'TokenExpiredError') {
-            return renewAccessToken(req, res);
-        }
-    }
+
+    req.user = user;
+    req.isAuthenticated = true;
+    next();
+  });
 }
+
 
 module.exports = {
     generateAccessToken,

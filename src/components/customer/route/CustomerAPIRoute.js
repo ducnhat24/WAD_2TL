@@ -42,6 +42,11 @@ customerAPIRoute.post("/update-profile/email/start", CustomerController.startEma
 // Hoàn tất cập nhật email (xác thực mã OTP)
 customerAPIRoute.post("/update-profile/email/verify", CustomerController.verifyEmailUpdate);
 
+customerAPIRoute.post("/change-password", CustomerController.changePassword);
+
+customerAPIRoute.get("/profile", verifyToken, CustomerController.getUserProfile);
+
+
 
 
 

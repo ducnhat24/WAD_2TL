@@ -4,7 +4,9 @@ let ordersData = []; // Biến toàn cục lưu trữ danh sách đơn hàng
 
 async function fetchOrders() {
     try {
-        const response = await fetch(`http://localhost:5000/api/customer/order`);
+        const response = await fetch(`http://localhost:5000/api/customer/order`, {
+            credentials: 'include', // Gửi cookie cùng yêu cầu
+        });
         if (!response.ok) {
             throw new Error('Failed to fetch orders');
         }

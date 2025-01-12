@@ -127,7 +127,7 @@ class CustomerService {
         }
       }
 
-      const payload = { id: user._id };
+      const payload = { userID: user._id, userRole: "Customer" };
 
       // Tạo accessToken và refreshToken
       const accessToken = generateAccessToken(payload);
@@ -286,9 +286,9 @@ class CustomerService {
         }
     }
 
-    async getCustomerID(user) {
+    async getCustomerID(userID) {
         try {
-            const customer = await Customer.findOne({ _id: user.id });
+            const customer = await Customer.findOne({ _id: userID });
             if (!customer) {
                 return {
                     status: "error",
@@ -471,6 +471,31 @@ class CustomerService {
       throw new Error(error.message);
     }
   }
+
+  async findCustomerById(customerID) {
+    return await Customer.findById(customerID);
+  }
+
+  async updatePassword(customerID, hashedPassword) {
+    return await Customer.findByIdAndUpdate(customerID, { customerPassword: hashedPassword }, { new: true });
+  }
+
+  async getUserProfile(userId) {
+    const user = await Customer.findById(userId, "customerName customerEmail customerAvatar customerPassword");
+
+    if (!user) {
+      return null;
+    }
+
+    return {
+      customerName: user.customerName,
+      customerEmail: user.customerEmail,
+      customerAvatar: user.customerAvatar,
+      hasPassword: !!user.customerPassword, // Trả về true nếu người dùng có mật khẩu
+    };
+  };
+
+
 }
 
 module.exports = new CustomerService();
