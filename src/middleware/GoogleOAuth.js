@@ -68,7 +68,7 @@ function handleGoogleCallback(req, res, next) {
         // Gửi token về client
         res.cookie('accessToken', result.accessToken, { sameSite: 'none', secure: true });
         res.cookie('refreshToken', result.refreshToken, { sameSite: 'none', secure: true });
-        res.redirect('http://localhost:5000/'); // Redirect về trang chính hoặc client-side xử lý token
+        res.redirect('http://localhost:5000/?loginSuccess=true'); // Redirect về trang chính hoặc client-side xử lý token
     })(req, res, next);
 }
 
