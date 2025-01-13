@@ -372,7 +372,9 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
         const selectedOption = shippingMethodSelect.options[shippingMethodSelect.selectedIndex];
 
         // Lấy giá trị data-shipping-id từ option được chọn
-        const shippingMethod = selectedOption.value;
+        const shippingMethod = selectedOption.getAttribute('data-shipping-id');
+
+        const shippingFee = selectedOption.value;
 
 
         const shippingAddress = document.querySelector('textarea').value;
@@ -396,7 +398,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
             orderListProduct: listProduct, // Dữ liệu sản phẩm từ giỏ hàng
             orderShippingAddress: shippingAddress,
             orderShippingMethod: shippingMethod,
-            orderShippingFee: parseFloat(shippingMethod), // Lấy từ value của option
+            orderShippingFee: shippingFee, // Lấy từ value của option
             orderTotalPrice: cartData.total,
             orderPayment: 1, // 1 = Paid, 0 = Unpaid
             orderStatus: "Processing",

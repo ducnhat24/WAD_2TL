@@ -23,12 +23,12 @@ class OrderService {
                 orderPayment,
                 orderStatus,
             } = orderData;
-
             // Kiểm tra và chuyển đổi ObjectId
             if (!mongoose.Types.ObjectId.isValid(customerID)) {
                 throw new Error("Invalid customerID.");
             }
             console.log(orderShippingMethod);
+            // console.log(orderShippingFee);
             if (!mongoose.Types.ObjectId.isValid(orderShippingMethod)) {
                 throw new Error("Invalid orderShippingMethod.");
             }
