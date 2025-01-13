@@ -1,160 +1,103 @@
-<div class="profile-container">
-  <div class="profile-card">
-    <div class="row">
-      <div class="col-md-3">
-        <div class="list-group">
-          <a class="list-group-item active" data-toggle="list" href="#account-general">General</a>
-          <a class="list-group-item" data-toggle="list" href="#account-update">Update Info</a>
-          <a class="list-group-item" data-toggle="list" href="#account-password">Change Password</a>
-        </div>
+<div class="profile-container container">
+  <div class="profile-card row">
+    <div class="col-12 col-md-3 mb-3">
+      <div class="list-group">
+        <a class="list-group-item active" data-toggle="list" href="#account-general">General</a>
+        <a class="list-group-item" data-toggle="list" href="#account-update">Update Info</a>
+        <a class="list-group-item" data-toggle="list" href="#account-password">Change Password</a>
       </div>
+    </div>
 
-      <div class="col-md-9">
-        <div class="tab-content">
-          <!-- General Tab -->
-          <div class="tab-pane fade show active" id="account-general">
+    <div class="col-12 col-md-9">
+      <div class="tab-content">
+        <!-- General Tab -->
+        <div class="tab-pane fade show active" id="account-general">
           <div class="text-center mb-4">
             {{#if profile.customerAvatar}}
-              <img src="{{profile.customerAvatar}}" alt="Avatar" class="rounded-circle mb-2" style="width: 120px; height: 120px;">
+              <img src="{{profile.customerAvatar}}" alt="Avatar" class="rounded-circle mb-2 avatar-img">
             {{else}}
-              <img src="https://avatar.iran.liara.run/public" alt="Default Avatar" class="rounded-circle mb-2" style="width: 120px; height: 120px;">
+              <img src="https://avatar.iran.liara.run/public" alt="Default Avatar" class="rounded-circle mb-2 avatar-img">
             {{/if}}
           </div>
 
+          <div class="form-group">
+            <strong>
+              <label>Username</label>
+            </strong>
+            <p>{{profile.customerName}}</p>
+          </div>
 
+          <div class="form-group">
+            <strong>
+              <label>Email</label>
+            </strong>
+            <p>{{profile.customerEmail}}</p>
+          </div>
+        </div>
+
+        <!-- Update Info Tab -->
+        <div class="tab-pane fade" id="account-update">
+          <form class="mb-4">
+            <div class="text-center">
+              <img id="avatarPreview" src="{{#if profile.customerAvatar}}{{profile.customerAvatar}}{{else}}https://avatar.iran.liara.run/public{{/if}}" alt="Avatar" class="rounded-circle mb-2 avatar-img">
+              <div>
+                <label class="btn btn-primary">
+                  Change Avatar
+                  <input type="file" name="avatar" id="avatarInput" style="display: none;" accept="image/*">
+                </label>
+                <button id="saveAvatar" class="btn btn-success">Save Avatar</button>
+              </div>
+            </div>
+          </form>
+
+          <form class="mb-4">
             <div class="form-group">
-              <strong>
-                <label>Username</label>
-              </strong>
+              <label for="username">Name</label>
+              <input type="text" id="nameInput" name="username" class="form-control" value="{{profile.customerName}}">
+            </div>
+            <button id="saveNameButton" class="btn btn-success">Save Name</button>
+          </form>
+
+          <form id="emailForm">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" class="form-control" value="{{profile.customerEmail}}">
+              <button type="button" id="saveEmail" class="btn btn-success">Save Email</button>
+            </div>
+
+            <div id="otpSection" style="display: none;">
+              <label for="otp">Enter OTP</label>
+              <input type="text" id="otp" class="form-control">
+              <button type="button" id="verifyOtp" class="btn btn-primary">Verify</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="tab-pane fade" id="account-password">
+          <form id="changePasswordForm" class="mb-4">
+            <div class="text-center">
+              <img src="{{#if profile.customerAvatar}}{{profile.customerAvatar}}{{else}}https://avatar.iran.liara.run/public{{/if}}" alt="Avatar" class="rounded-circle mb-2 avatar-img">
               <p>{{profile.customerName}}</p>
             </div>
 
             <div class="form-group">
-              <strong>
-                <label>Email</label>
-              </strong>
-              <p>{{profile.customerEmail}}</p>
+              <label for="currentPassword">Current Password</label>
+              <input type="password" id="currentPassword" name="currentPassword" class="form-control">
             </div>
-          </div>
 
-          <!-- Update Info Tab -->
-          <div class="tab-pane fade" id="account-update">
-            <form class="mb-4">
-              <div class="text-center">
-                <img 
-                  id="avatarPreview" 
-                  src="{{#if profile.customerAvatar}}{{profile.customerAvatar}}{{else}}https://avatar.iran.liara.run/public{{/if}}" 
-                  alt="Avatar" 
-                  class="rounded-circle mb-2" 
-                  style="width: 120px; height: 120px; object-fit: cover;"
-                >
-                <div>
-                  <label class="btn btn-primary">
-                    Change Avatar
-                    <input 
-                      type="file" 
-                      name="avatar" 
-                      id="avatarInput" 
-                      style="display: none;" 
-                      accept="image/*"
-                    >
-                  </label>
-                  <button id="saveAvatar" class="btn btn-success">Save Avatar</button>
-                </div>
-              </div>
-            </form>
-
-
-            <!-- Update Name -->
-            <form class="mb-4">
-              <div class="form-group">
-                <label for="username">Name</label>
-                <input type="text" id="nameInput" name="username" class="form-control" value="{{profile.customerName}}">
-              </div>
-              <button id="saveNameButton" class="btn btn-success">Save Name</button>
-            </form>
-
-            <form id="emailForm">
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" class="form-control" value="{{profile.customerEmail}}">
-                <button type="button" id="saveEmail" class="btn btn-success">Save Email</button>
-              </div>
-
-              <div id="otpSection" style="display: none;">
-                <label for="otp">Enter OTP</label>
-                <input type="text" id="otp" class="form-control">
-                <button type="button" id="verifyOtp" class="btn btn-primary">Verify</button>
-              </div>
-            </form>
-          </div>
-
-          <div class="tab-pane fade" id="account-password">
-            {{!-- <form id="changePasswordForm" class="mb-4">
-              <div class="text-center">
-                <img 
-                  src="{{#if profile.customerAvatar}}{{profile.customerAvatar}}{{else}}https://avatar.iran.liara.run/public{{/if}}" 
-                  alt="Avatar" 
-                  class="rounded-circle mb-2" 
-                  style="width: 120px; height: 120px; object-fit: cover;"
-                >
-                <p>{{profile.customerName}}</p>
-              </div>
-
-              <div class="form-group">
-                <label for="currentPassword">Current Password</label>
-                <input type="password" id="currentPassword" name="currentPassword" class="form-control">
-              </div>
-
-              <div class="form-group">
-                <label for="newPassword">New Password</label>
-                <input type="password" id="newPassword" name="newPassword" class="form-control">
-              </div>
-
-              <div class="form-group">
-                <label for="confirmPassword">Confirm New Password</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control">
-              </div>
-              <button type="button" id="savePasswordButton" class="btn btn-success">Save Password</button>
-            </form> --}}
-            <div id="changePasswordForm">
-              <form>
-                <div class="text-center">
-                  <img 
-                    src="{{#if profile.customerAvatar}}{{profile.customerAvatar}}{{else}}https://avatar.iran.liara.run/public{{/if}}" 
-                    alt="Avatar" 
-                    class="rounded-circle mb-2" 
-                    style="width: 120px; height: 120px; object-fit: cover;"
-                  >
-                  <p>{{profile.customerName}}</p>
-                </div>
-
-                <!-- Current Password Field -->
-                <div id="currentPasswordGroup" class="form-group">
-                  <label for="currentPassword">Current Password</label>
-                  <input type="password" id="currentPassword" name="currentPassword" class="form-control">
-                </div>
-
-                <!-- New Password Fields -->
-                <div class="form-group">
-                  <label for="newPassword">New Password</label>
-                  <input type="password" id="newPassword" name="newPassword" class="form-control">
-                </div>
-
-                <div class="form-group">
-                  <label for="confirmPassword">Confirm New Password</label>
-                  <input type="password" id="confirmPassword" name="confirmPassword" class="form-control">
-                </div>
-
-                <button type="button" id="savePasswordButton" class="btn btn-success">Save Password</button>
-              </form>
+            <div class="form-group">
+              <label for="newPassword">New Password</label>
+              <input type="password" id="newPassword" name="newPassword" class="form-control">
             </div>
-          </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">Confirm New Password</label>
+              <input type="password" id="confirmPassword" name="confirmPassword" class="form-control">
+            </div>
+            <button type="button" id="savePasswordButton" class="btn btn-success">Save Password</button>
+          </form>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<script src="/apps/profile.js"></script>
-

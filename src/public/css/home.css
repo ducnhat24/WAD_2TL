@@ -132,11 +132,13 @@
 .owl-carousel .owl-nav button.owl-next {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  /* transform: translateY(-10%)   */
   background: #fffffe;
   border: none;
   padding: 10px;
-  border-radius: 50%;
+  border-radius: 100%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   background-color: #ff9800 !important;
 }
@@ -178,4 +180,8 @@
 
 .customer {
   margin: 0 auto;
+}
+
+.active {
+  margin-right: 0 !important;
 }
