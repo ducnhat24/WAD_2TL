@@ -372,7 +372,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
         const selectedOption = shippingMethodSelect.options[shippingMethodSelect.selectedIndex];
 
         // Lấy giá trị data-shipping-id từ option được chọn
-        const shippingMethod = selectedOption.getAttribute('data-shipping-id');
+        const shippingMethod = selectedOption.value;
 
 
         const shippingAddress = document.querySelector('textarea').value;
