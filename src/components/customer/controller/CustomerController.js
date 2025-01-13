@@ -363,6 +363,34 @@ class CustomerController {
         res.status(400).json({ message: error.message });
     }
   };
+
+   async createPayment (req, res) {
+        try {
+            const reqData = req.body;
+            console.log(reqData);
+
+            // Lưu địa chỉ giao hàng vào session
+            req.session.shippingAddress = reqData.shippingAddress;
+
+            // Lấy IP của client
+            const clientIp =
+                req.headers['x-forwarded-for'] ||
+                req.connection.remoteAddress ||
+                req.socket.remoteAddress ||
+                req.connection.socket.remoteAddress;
+
+            // Lấy URL trang thanh toán từ service
+            const paymentUrl = await CustomerService.createPayment(clientIp, reqData);
+            res.json({ paymentUrl }); // Trả URL thanh toán cho client
+        } catch (error) {
+            console.error('Error creating VNPay payment:', error.message);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+  };
+
+  
+
+
 }
 
 module.exports = new CustomerController();

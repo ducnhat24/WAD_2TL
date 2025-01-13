@@ -8,6 +8,11 @@ const bcrypt = require("bcrypt");
 const emailTransporter = require("../../../middleware/EmailTransporter.js")
 const cloudinary = require("../../../middleware/Cloudinary.js");
 const { generateOtp, verifyOtpCode } = require('../../../helpers/otpHelper');
+const crypto = require("crypto");
+const moment = require('moment-timezone');
+const querystring = require('qs');
+
+
 
 async function hashPassword(password) {
   try {
@@ -514,8 +519,85 @@ class CustomerService {
   async resetPassword(customerEmail, newPassword) {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await Customer.findOneAndUpdate({ customerEmail }, { customerPassword: hashedPassword });
-  }
+  };
+
+    async createPayment(clientIp, reqData) {
+
+        const date = new Date();
+        const orderId = moment.tz(date, 'Asia/Ho_Chi_Minh').format('DDHHmmss'); // Định dạng orderId
+        const ipv4Address = clientIp.includes(':') ? '127.0.0.1' : clientIp;
+        let createDate = moment.tz(date, 'Asia/Ho_Chi_Minh').format('YYYYMMDDHHmmss');
+        let expiredDate = moment.tz(date, 'Asia/Ho_Chi_Minh').add(5, 'minutes').format('YYYYMMDDHHmmss');
+
+        let amountNumber = reqData.amount.replace(/[^\d]/g, '');  // Loại bỏ mọi ký tự không phải số
+        let amount = parseInt(amountNumber, 10);
+
+        const vnpParams = {
+            vnp_Version: '2.1.1',
+            vnp_Command: 'pay',
+            vnp_TmnCode: process.env.VNP_TMNCODE,
+            vnp_Amount: amount * 100, // VNPay yêu cầu đơn vị là đồng
+            vnp_CurrCode: 'VND',
+            vnp_TxnRef: orderId,
+            vnp_OrderInfo: reqData.paymentDescription, // Mô tả đơn hàng
+            vnp_Locale: reqData.language,
+            vnp_OrderType: 'topup',
+            vnp_ReturnUrl: process.env.VNP_RETURNURL,
+            vnp_IpAddr: ipv4Address,
+            vnp_CreateDate: createDate,
+            vnp_ExpireDate: expiredDate,
+        };   
+        if(reqData.paymentMethod !== null && reqData.paymentMethod !== ''){
+            vnpParams['vnp_BankCode'] = reqData.paymentMethod;
+        }
+    
+        // Sắp xếp tham số
+        const sortedParams = sortObject(vnpParams);
+    
+        // Tạo chuỗi ký hiệu
+        const signData = querystring.stringify(sortedParams, { encode: false });
+    
+        // Tạo chữ ký bảo mật
+        const hmac = crypto.createHmac('sha512', process.env.VNP_HASHSECRET);
+        const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+        sortedParams.vnp_SecureHash = signed;
+
+        console.log("sent");
+        console.log(sortedParams);
+
+        let vnpUrl = process.env.VNP_URL;
+        vnpUrl += '?' + querystring.stringify(sortedParams, { encode: false });
+        // console.log(vnpUrl);
+        
+        return vnpUrl;
+  };
+
 
 }
 
 module.exports = new CustomerService();
+
+
+function sortObject(obj) {
+    let sorted = {};
+    let str = [];
+    let key;
+
+    // Lấy tất cả các khóa của đối tượng
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            str.push(key); // Lưu trữ khóa chưa mã hóa
+        }
+    }
+
+    // Sắp xếp các khóa
+    str.sort();
+
+    // Tạo đối tượng đã sắp xếp với giá trị đã mã hóa
+    for (key = 0; key < str.length; key++) {
+        // Mã hóa giá trị của tham số, thay %20 bằng dấu cộng
+        sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+    }
+
+    return sorted;
+}

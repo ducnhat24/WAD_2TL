@@ -52,7 +52,7 @@ customerAPIRoute.post('/verify-otp', CustomerController.verifyOtp);
 customerAPIRoute.post('/reset-password', CustomerController.resetPassword);
 
 
-
+customerAPIRoute.post('/create-payment-url', CustomerController.createPayment);
 
 
 

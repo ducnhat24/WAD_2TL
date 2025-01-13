@@ -15,17 +15,17 @@ class ProductController {
     try {
       const id = req.params.id;
       const value = await ProductService.getProductById(id);
+      console.log(value.data);
       const sameProducts = await ProductService.getSameProduct({
-        brand: value.data[0].productBrand,
-        category: value.data[0].productCategory,
-        _id: value.data[0]._id, // Pass the original product's ID to exclude it
+        brand: value.data.productBrand,
+        category: value.data.productCategory,
+        _id: value.data._id, // Pass the original product's ID to exclude it
       });
-
       if (value.status === "success") {
         // console.log(sameProducts);
         // res.render('product_details', { product: value.data[0] });
         res.render("product_details", {
-          product: value.data[0],
+          product: value.data,
           sameProducts: sameProducts,
         });
       } else {

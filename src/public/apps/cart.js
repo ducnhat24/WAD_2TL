@@ -143,55 +143,6 @@ function createCartItem(item) {
         handleUpdateQuantity(isUserLoggedIn() ? item._id : item.productId, item.quantity)
     );
 
-    // cartItemDiv.querySelector('.increase-quantity').addEventListener("click", () => {
-    //     item.quantity = increaseQuantity(item.quantity);
-    //     const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
-    //     quantitySpan.textContent = item.quantity;
-    //     updateCartSummary();
-    // });
-    
-    // cartItemDiv.querySelector('.decrease-quantity').addEventListener("click", () => {
-    //     item.quantity = decreaseQuantity(item.quantity);
-    //     const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
-    //     quantitySpan.textContent = item.quantity;
-    //     updateCartSummary();
-    // });
-
-    // cartItemDiv.querySelector('.increase-quantity').addEventListener("click", () => {
-    //     const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
-    //     const currentQuantity = parseInt(quantitySpan.textContent, 10) || 0;
-
-    //     const newQuantity = increaseQuantity(currentQuantity);
-    //     quantitySpan.textContent = newQuantity;
-        
-
-    //     handleQuantityChange(item._id, newQuantity);
-    //     updateCartSummary();
-    // });
-
-    // cartItemDiv.querySelector('.decrease-quantity').addEventListener("click", () => {
-    //     const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
-    //     const currentQuantity = parseInt(quantitySpan.textContent, 10) || 0;
-
-    //     const newQuantity = decreaseQuantity(currentQuantity);
-    //     quantitySpan.textContent = newQuantity;
-
-    //     handleQuantityChange(item._id, newQuantity);
-    //     updateCartSummary();
-    // });
-
-
-    // cartItemDiv.querySelector('.increase-quantity').addEventListener("click", () => {
-    //     const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
-    //     const currentQuantity = parseInt(quantitySpan.textContent, 10) || 0;
-
-    //     const newQuantity = increaseQuantity(currentQuantity);
-    //     quantitySpan.textContent = newQuantity;
-
-    //     item.quantity = newQuantity; // Cập nhật số lượng sản phẩm
-    //     handleQuantityChange(item._id, newQuantity);
-    //     updateCartSummary(); // Gọi cập nhật tổng giá trị
-    // });
 
     cartItemDiv.querySelector('.increase-quantity').addEventListener("click", () => {
         const quantitySpan = cartItemDiv.querySelector('.cart__item__btn span');
@@ -333,48 +284,6 @@ let cartData = {
     total: 0,
 };
 
-// function updateCartSummary() {
-//     let subtotal = 0;
-//     productOrdered.forEach((product) => {
-//         subtotal += Number(product.productPrice) * Number(product.quantity);
-//     });
-
-//     let total = subtotal;
-
-//     cartData.numberOfItems = productOrdered.length;
-//     cartData.subtotal = subtotal;
-//     cartData.total = total + cartData.shipping;
-
-
-//     document.getElementById("numberOfItems").textContent = cartData.numberOfItems;
-//     document.getElementById("subtotal").textContent = `${cartData.subtotal.toLocaleString('vi-VN')} ₫`;
-//     document.getElementById("shipping").textContent = `${cartData.shipping.toLocaleString('vi-VN')} ₫`;
-//     document.getElementById("total").textContent = `${cartData.total.toLocaleString('vi-VN')} ₫`;
-
-// }
-
-// function updateCartSummary() {
-//     let subtotal = 0;
-
-//     // Tính toán tổng giá trị dựa trên các sản phẩm đã chọn
-//     productOrdered.forEach((product) => {
-//         subtotal += Number(product.productPrice) * Number(product.quantity);
-//     });
-
-//     let total = subtotal + cartData.shipping;
-
-//     // Cập nhật dữ liệu giỏ hàng
-//     cartData.numberOfItems = productOrdered.length;
-//     cartData.subtotal = subtotal;
-//     cartData.total = total;
-
-//     // Hiển thị giá trị trên giao diện
-//     document.getElementById("numberOfItems").textContent = cartData.numberOfItems;
-//     document.getElementById("subtotal").textContent = `${cartData.subtotal.toLocaleString('vi-VN')} ₫`;
-//     document.getElementById("shipping").textContent = `${cartData.shipping.toLocaleString('vi-VN')} ₫`;
-//     document.getElementById("total").textContent = `${cartData.total.toLocaleString('vi-VN')} ₫`;
-// }
-
 function updateCartSummary() {
     let subtotal = 0;
     let totalItems = 0;
@@ -451,7 +360,7 @@ document.getElementById('shipping-method').addEventListener('change', (event) =>
     updateCartSummary();
 });
 
-document.getElementById('pay-button').addEventListener('click', async () => {
+document.getElementById('checkout-button').addEventListener('click', async () => {
     try {
         // Thu thập thông tin từ giao diện
         // const shippingMethod = document.getElementById('shipping-method').getAttribute('data-shipping-id');
@@ -537,3 +446,62 @@ document.addEventListener("DOMContentLoaded", function () {
     // Cập nhật số lượng sản phẩm trong giỏ hàng (nếu cần)
     updateCartCount();
 });
+
+
+document.getElementById('pay-button').addEventListener('click', async () => {
+        const selectedProducts = productOrdered.map(product => ({
+            productId: product._id,
+            quantity: product.quantity,
+            productPrice: product.productPrice,
+        }));
+        localStorage.setItem('selectedProducts', JSON.stringify(selectedProducts));
+
+
+        // Lấy giá trị Total từ DOM
+        const totalElement = document.getElementById('total');
+        // Lấy giá trị và loại bỏ ký tự không phải số
+        const totalString = totalElement.textContent.trim().replace(/\D/g, '');
+        // Chuyển giá trị chuỗi thành số nguyên
+        const total = parseInt(totalString, 10);
+
+
+        if (!total || isNaN(total)) {
+            alert("Invalid total amount");
+            return;
+        }
+
+        // Cấu hình body để gửi đến API
+        const body = {
+            paymentDescription: "Thanhtoan",
+            amount: total.toString(),
+            paymentMethod: "VNBANK",
+            language: "vn"
+        };
+
+        try {
+            // Gửi yêu cầu POST đến API
+            const response = await fetch('http://localhost:5000/api/customer/create-payment-url', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // Chuyển hướng người dùng đến URL thanh toán
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl;
+            } else {
+                alert("Failed to get payment URL");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("There was an error processing your payment. Please try again.");
+        }
+    });
