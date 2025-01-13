@@ -149,7 +149,7 @@ async function addToLocalCart(productID, quantity) {
         }
 
         const res = await response.json();
-        const productData = res.data[0];
+        const productData = res.data;
 
 
         // Get existing cart or initialize new one

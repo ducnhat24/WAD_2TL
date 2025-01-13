@@ -54,6 +54,10 @@ customerAPIRoute.post('/reset-password', CustomerController.resetPassword);
 
 customerAPIRoute.post('/create-payment-url', CustomerController.createPayment);
 
+customerAPIRoute.get('/return-after-payment', CustomerController.showReturnAfterPayment); 
+
+customerAPIRoute.post('/create-order-after-payment', CustomerController.createOrderAfterPayment);
+
 
 
 module.exports = customerAPIRoute;

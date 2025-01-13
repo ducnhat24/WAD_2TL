@@ -391,6 +391,9 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
                 productPrice: product.productPrice,
             };
         });
+        const totalElement = document.getElementById('total');
+        const totalString = totalElement.textContent.trim().replace(/\D/g, '');
+        const total = parseInt(totalString, 10);
 
         // Tạo dữ liệu order
         const orderData = {
@@ -399,8 +402,8 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
             orderShippingAddress: shippingAddress,
             orderShippingMethod: shippingMethod,
             orderShippingFee: shippingFee, // Lấy từ value của option
-            orderTotalPrice: cartData.total,
-            orderPayment: 1, // 1 = Paid, 0 = Unpaid
+            orderTotalPrice: total, // Tổng tiền
+            orderPayment: 0, // 1 = Paid, 0 = Unpaid
             orderStatus: "Processing",
         };
 
@@ -450,60 +453,141 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
+// document.getElementById('pay-button').addEventListener('click', async () => {
+//     // Lấy danh sách sản phẩm đã chọn
+//     const selectedProducts = productOrdered.map(product => ({
+//         productId: product._id,
+//         quantity: product.quantity,
+//         productPrice: product.productPrice,
+//     }));
+    
+//     // Lưu sản phẩm đã chọn vào localStorage
+//     localStorage.setItem('selectedProducts', JSON.stringify(selectedProducts));
+
+//     // Lấy giá trị tổng tiền từ DOM
+//     const totalElement = document.getElementById('total');
+//     const totalString = totalElement.textContent.trim().replace(/\D/g, '');
+//     const total = parseInt(totalString, 10);
+
+//     if (!total || isNaN(total)) {
+//         alert("Invalid total amount");
+//         return;
+//     }
+
+//     // Cấu hình body để gửi đến API
+//     const body = {
+//         paymentDescription: "Thanh toán giỏ hàng",
+//         amount: total.toString(),
+//         paymentMethod: "VNBANK",
+//         language: "vn"
+//     };
+
+//     try {
+//         // Gửi yêu cầu đến API để lấy URL thanh toán
+//         const response = await fetch('http://localhost:5000/api/customer/create-payment-url', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify(body)
+//         });
+
+//         if (!response.ok) {
+//             throw new Error(`Error: ${response.status}`);
+//         }
+
+//         const data = await response.json();
+
+//         // Chuyển hướng đến URL thanh toán VNPay
+//         if (data.paymentUrl) {
+//             window.location.href = data.paymentUrl;
+//         } else {
+//             alert("Failed to get payment URL");
+//         }
+//     } catch (error) {
+//         console.error("Error:", error);
+//         alert("There was an error processing your payment. Please try again.");
+//     }
+// });
+
+
 document.getElementById('pay-button').addEventListener('click', async () => {
-        const selectedProducts = productOrdered.map(product => ({
-            productId: product._id,
-            quantity: product.quantity,
-            productPrice: product.productPrice,
-        }));
-        localStorage.setItem('selectedProducts', JSON.stringify(selectedProducts));
+    // Lấy danh sách sản phẩm đã chọn
+    const selectedProducts = productOrdered.map(product => ({
+        productId: product._id,
+        quantity: product.quantity,
+        productPrice: product.productPrice,
+    }));
 
+    // Lấy các thông tin khác từ form
+    const shippingAddress = document.querySelector('textarea').value;
+    const shippingMethodSelect = document.getElementById('shipping-method');
 
-        // Lấy giá trị Total từ DOM
-        const totalElement = document.getElementById('total');
-        // Lấy giá trị và loại bỏ ký tự không phải số
-        const totalString = totalElement.textContent.trim().replace(/\D/g, '');
-        // Chuyển giá trị chuỗi thành số nguyên
-        const total = parseInt(totalString, 10);
+    const shippingMethod = shippingMethodSelect.options[shippingMethodSelect.selectedIndex].getAttribute('data-shipping-id');
 
+    // Lấy option được chọn
+    const selectedOption = shippingMethodSelect.options[shippingMethodSelect.selectedIndex];
+    const shippingFee = selectedOption.value;
 
-        if (!total || isNaN(total)) {
-            alert("Invalid total amount");
-            return;
+    // Lấy giá trị tổng tiền từ DOM
+    const totalElement = document.getElementById('total');
+    const totalString = totalElement.textContent.trim().replace(/\D/g, '');
+    const total = parseInt(totalString, 10);
+
+    // Kiểm tra tổng tiền hợp lệ
+    if (!total || isNaN(total)) {
+        alert("Invalid total amount");
+        return;
+    }
+
+    // Kiểm tra nếu các thông tin bắt buộc chưa được điền
+    if (!shippingMethod || !shippingAddress || shippingFee === NaN) {
+        alert("Please fill in all shipping details.");
+        return;
+    }
+
+    // Lưu sản phẩm đã chọn và các thông tin khác vào localStorage
+    const orderData = {
+        selectedProducts,
+        orderShippingAddress: shippingAddress,
+        orderShippingMethod: shippingMethod,
+        orderShippingFee: shippingFee,
+        orderTotalPrice: total,
+        orderPayment: 0, // 1 = Paid, 0 = Unpaid
+        orderStatus: "Processing",
+    };
+
+    localStorage.setItem('orderData', JSON.stringify(orderData));
+
+    // Cấu hình body để gửi đến API
+    const body = {
+        paymentDescription: "Thanh toán giỏ hàng",
+        amount: total.toString(),
+        paymentMethod: "VNBANK",
+        language: "vn"
+    };
+
+    try {
+        // Gửi yêu cầu đến API để lấy URL thanh toán
+        const response = await fetch('http://localhost:5000/api/customer/create-payment-url', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
         }
 
-        // Cấu hình body để gửi đến API
-        const body = {
-            paymentDescription: "Thanhtoan",
-            amount: total.toString(),
-            paymentMethod: "VNBANK",
-            language: "vn"
-        };
+        const data = await response.json();
 
-        try {
-            // Gửi yêu cầu POST đến API
-            const response = await fetch('http://localhost:5000/api/customer/create-payment-url', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body)
-            });
-
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            // Chuyển hướng người dùng đến URL thanh toán
-            if (data.paymentUrl) {
-                window.location.href = data.paymentUrl;
-            } else {
-                alert("Failed to get payment URL");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("There was an error processing your payment. Please try again.");
+        // Chuyển hướng đến URL thanh toán VNPay
+        if (data.paymentUrl) {
+            window.location.href = data.paymentUrl;
+        } else {
+            alert("Failed to get payment URL");
         }
-    });
+    } catch (error) {
+        console.error("Error:", error);
+        alert("There was an error processing your payment. Please try again.");
+    }
+});

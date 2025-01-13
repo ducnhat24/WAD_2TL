@@ -388,9 +388,145 @@ class CustomerController {
         }
   };
 
+  async showReturnAfterPayment(req, res){
+      // Render trang return.hbs
+      res.render('return');
+  };
+  // async createOrderAfterPayment(req, res) {
+  //     const {
+  //         customerID, 
+  //         orderShippingAddress, 
+  //         orderShippingMethod, 
+  //         orderShippingFee, 
+  //         orderTotalPrice, 
+  //         orderStatus, 
+  //         selectedProducts
+  //     } = req.body;
+
+  //     try {
+  //         // Gọi service để tạo đơn hàng
+  //         const newOrder = await CustomerService.createOrder(
+  //             customerID, 
+  //             orderShippingAddress, 
+  //             orderShippingMethod, 
+  //             orderShippingFee, 
+  //             orderTotalPrice, 
+  //             orderStatus, 
+  //             selectedProducts
+  //         );
+
+  //         // Trả về thông tin đơn hàng vừa tạo
+  //         res.status(201).json({ message: "Order created successfully", order: newOrder });
+  //     } catch (error) {
+  //         console.error("Error creating order:", error);
+  //         res.status(500).json({ message: "Failed to create order" });
+  //     }
+  // }
   
+//   async createOrderAfterPayment(req, res) {
+//     const {
+//         customerID, 
+//         orderShippingAddress, 
+//         orderShippingMethod, 
+//         orderShippingFee, 
+//         orderTotalPrice, 
+//         orderStatus, 
+//         selectedProducts
+//     } = req.body;
 
+//     try {
+//         // Tạo orderData từ request body
+//         const orderData = {
+//             customerID,
+//             orderListProduct: selectedProducts,  // Gắn danh sách sản phẩm vào orderListProduct
+//             orderShippingAddress,
+//             orderShippingMethod,
+//             orderShippingFee,
+//             orderTotalPrice,
+//             orderPayment: 'Paid',  // Nếu đã thanh toán, có thể gán "Paid" cho payment status
+//             orderStatus,
+//         };
 
+//         // Gọi service để tạo đơn hàng
+//         const newOrder = await CustomerService.createOrder(orderData);
+
+//         // Trả về thông tin đơn hàng vừa tạo
+//         res.status(201).json({
+//             message: "Order created successfully",
+//             order: newOrder,
+//         });
+//     } catch (error) {
+//         console.error("Error creating order:", error);
+//         res.status(500).json({ message: "Failed to create order" });
+//     }
+// }
+
+  //  async createOrderAfterPayment(req, res) {
+  //       const {
+  //           customerID, 
+  //           orderShippingAddress, 
+  //           orderShippingMethod, 
+  //           orderShippingFee, 
+  //           orderTotalPrice, 
+  //           selectedProducts,
+  //           orderPayment,
+  //           orderStatus,
+            
+  //       } = req.body;
+
+  //       try {
+  //           // Gọi service để tạo đơn hàng
+  //           const newOrder = await CustomerService.createOrderAfterPayment({
+  //               customerID, 
+  //               orderShippingAddress, 
+  //               orderShippingMethod, 
+  //               orderShippingFee, 
+  //               orderTotalPrice, 
+  //               selectedProducts,
+  //               orderPayment,
+  //               orderStatus,
+  //           });
+
+  //           // Trả về thông tin đơn hàng vừa tạo
+  //           res.status(201).json({ message: "Order created successfully", order: newOrder });
+  //       } catch (error) {
+  //           console.error("Error creating order:", error);
+  //           res.status(500).json({ message: "Failed to create order", error: error.message });
+  //       }
+  //   }
+  
+   async createOrderAfterPayment(req, res) {
+        const {
+            customerID, 
+            orderShippingAddress, 
+            orderShippingMethod, 
+            orderShippingFee, 
+            orderTotalPrice, 
+            selectedProducts,
+            orderPayment,
+            orderStatus,
+        } = req.body;
+
+        try {
+            // Gọi service để tạo đơn hàng
+            const newOrder = await CustomerService.createOrderAfterPayment({
+                customerID, 
+                orderShippingAddress, 
+                orderShippingMethod, 
+                orderShippingFee, 
+                orderTotalPrice, 
+                selectedProducts,
+                orderPayment,
+                orderStatus,
+            });
+
+            // Trả về thông tin đơn hàng vừa tạo
+            res.status(201).json({ message: "Order created successfully", order: newOrder });
+        } catch (error) {
+            console.error("Error creating order:", error);
+            res.status(500).json({ message: "Failed to create order", error: error.message });
+        }
+    }
 }
 
 module.exports = new CustomerController();

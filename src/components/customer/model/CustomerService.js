@@ -11,6 +11,9 @@ const { generateOtp, verifyOtpCode } = require('../../../helpers/otpHelper');
 const crypto = require("crypto");
 const moment = require('moment-timezone');
 const querystring = require('qs');
+const Order = require('../schema/Order');
+const Product = require('../../product/schema/Product.js');  // Nếu cần validate thông tin sản phẩm
+const mongoose = require('mongoose');
 
 
 
@@ -572,7 +575,285 @@ class CustomerService {
         return vnpUrl;
   };
 
+  // async createOrder(orderData) {
+  //   try {
+  //     const {
+  //       customerID,
+  //       orderListProduct,
+  //       orderShippingAddress,
+  //       orderShippingMethod,
+  //       orderShippingFee,
+  //       orderTotalPrice,
+  //       orderPayment,
+  //       orderStatus,
+  //     } = orderData;
 
+  //     // Kiểm tra và chuyển đổi ObjectId cho customerID và orderShippingMethod
+  //     if (!mongoose.Types.ObjectId.isValid(customerID)) {
+  //       throw new Error("Invalid customerID.");
+  //     }
+
+  //     if (!mongoose.Types.ObjectId.isValid(orderShippingMethod)) {
+  //       throw new Error("Invalid orderShippingMethod.");
+  //     }
+
+  //     // Kiểm tra sự tồn tại của sản phẩm trong orderListProduct
+  //     const productIds = orderListProduct.map(item => item.productId);
+  //     const products = await Product.find({ '_id': { $in: productIds } });
+
+  //     if (products.length !== orderListProduct.length) {
+  //       throw new Error("One or more products are invalid or not found.");
+  //     }
+
+  //     // Kiểm tra nếu số lượng sản phẩm là hợp lệ (có thể bạn sẽ cần kiểm tra thêm các quy tắc khác)
+  //     const invalidProductQuantities = orderListProduct.filter(item => {
+  //       const product = products.find(p => p._id.toString() === item.productId.toString());
+  //       return product && item.quantity > product.stock;  // Kiểm tra số lượng vượt quá số lượng trong kho
+  //     });
+
+  //     if (invalidProductQuantities.length > 0) {
+  //       throw new Error("Some products have insufficient stock.");
+  //     }
+
+  //     // Tạo đơn hàng mới
+  //     const newOrder = new Order({
+  //       customerID,
+  //       orderListProduct,
+  //       orderShippingAddress,
+  //       orderShippingMethod,
+  //       orderShippingFee,
+  //       orderTotalPrice,
+  //       orderPayment,
+  //       orderStatus,
+  //     });
+
+  //     // Lưu đơn hàng vào MongoDB
+  //     return await newOrder.save();
+  //   } catch (error) {
+  //     console.error("Error creating order:", error);
+  //     throw error;  // Ném lỗi lên controller để xử lý
+  //   }
+  // }
+
+// async createOrder(orderData) {
+//     try {
+//         const {
+//             customerID,
+//             orderListProduct,
+//             orderShippingAddress,
+//             orderShippingMethod,
+//             orderShippingFee,
+//             orderTotalPrice,
+//             orderPayment,
+//             orderStatus,
+//         } = orderData;
+
+//         // Kiểm tra và chuyển đổi ObjectId cho customerID và orderShippingMethod
+//         if (!mongoose.Types.ObjectId.isValid(customerID)) {
+//             throw new Error("Invalid customerID.");
+//         }
+
+//         if (!mongoose.Types.ObjectId.isValid(orderShippingMethod)) {
+//             throw new Error("Invalid orderShippingMethod.");
+//         }
+
+//         // Kiểm tra sự tồn tại của sản phẩm trong orderListProduct
+//         const productIds = orderListProduct.map(item => item.productId);
+//         const products = await Product.find({ '_id': { $in: productIds } });
+
+//         if (products.length !== orderListProduct.length) {
+//             throw new Error("One or more products are invalid or not found.");
+//         }
+
+//         // Kiểm tra nếu số lượng sản phẩm là hợp lệ (có thể bạn sẽ cần kiểm tra thêm các quy tắc khác)
+//         const invalidProductQuantities = orderListProduct.filter(item => {
+//             const product = products.find(p => p._id.toString() === item.productId.toString());
+//             return product && item.quantity > product.stock;  // Kiểm tra số lượng vượt quá số lượng trong kho
+//         });
+
+//         if (invalidProductQuantities.length > 0) {
+//             throw new Error("Some products have insufficient stock.");
+//         }
+
+//         // Tạo đơn hàng mới
+//         const newOrder = new Order({
+//             customerID,
+//             orderListProduct,
+//             orderShippingAddress,
+//             orderShippingMethod,
+//             orderShippingFee,
+//             orderTotalPrice,
+//             orderPayment,
+//             orderStatus,
+//         });
+
+//         // Lưu đơn hàng vào MongoDB
+//         return await newOrder.save();
+//     } catch (error) {
+//         console.error("Error creating order:", error);
+//         throw error;  // Ném lỗi lên controller để xử lý
+//     }
+  // }
+  
+  // async createOrderAfterPayment(orderData) {
+  //       try {
+  //           const {
+  //               customerID,
+  //               orderShippingAddress,
+  //               orderShippingMethod,
+  //               orderShippingFee,
+  //               orderTotalPrice,
+  //               selectedProducts,
+  //               orderPayment,
+  //               orderStatus,
+  //           } = orderData;
+
+  //           // Kiểm tra tính hợp lệ của customerID
+  //           if (!mongoose.Types.ObjectId.isValid(customerID)) {
+  //               throw new Error("Invalid customerID.");
+  //           }
+
+  //           // Kiểm tra sự tồn tại của các sản phẩm trong order
+  //           const productIds = selectedProducts.map(item => item.productId);
+  //           const products = await Product.find({ '_id': { $in: productIds } });
+
+  //           if (products.length !== selectedProducts.length) {
+  //               throw new Error("Some products are invalid or not found.");
+  //           }
+
+  //           // Kiểm tra số lượng sản phẩm (nếu cần)
+  //           const invalidProductQuantities = selectedProducts.filter(item => {
+  //               const product = products.find(p => p._id.toString() === item.productId.toString());
+  //               return product && item.quantity > product.stock;
+  //           });
+
+  //           if (invalidProductQuantities.length > 0) {
+  //               throw new Error("Some products have insufficient stock.");
+  //           }
+
+  //           // Tạo đơn hàng mới
+  //           const newOrder = new Order({
+  //               customerID,
+  //               orderShippingAddress,
+  //               orderShippingMethod,
+  //               orderShippingFee,
+  //               orderTotalPrice,
+  //               selectedProducts,
+  //               orderPayment,
+  //               orderStatus,
+  //           });
+
+  //           // Lưu vào MongoDB
+  //           return await newOrder.save();
+  //       } catch (error) {
+  //           console.error("Error creating order after payment:", error);
+  //           throw error; // Ném lỗi lên controller để xử lý
+  //       }
+  //   }
+  async createOrderAfterPayment(orderData) {
+        try {
+            const {
+                customerID,
+                orderShippingAddress,
+                orderShippingMethod,
+                orderShippingFee,
+                orderTotalPrice,
+                selectedProducts,
+                orderPayment,
+                orderStatus,
+          } = orderData;
+          console.log(orderData);
+
+            // Kiểm tra tính hợp lệ của customerID
+            if (!mongoose.Types.ObjectId.isValid(customerID)) {
+                throw new Error("Invalid customerID.");
+            }
+
+            // Kiểm tra sự tồn tại của các sản phẩm trong order
+            const productIds = selectedProducts.map(item => item.productId);
+            const products = await Product.find({ '_id': { $in: productIds } });
+
+            if (products.length !== selectedProducts.length) {
+                throw new Error("Some products are invalid or not found.");
+            }
+
+            // Kiểm tra số lượng sản phẩm (nếu cần)
+            const invalidProductQuantities = selectedProducts.filter(item => {
+                const product = products.find(p => p._id.toString() === item.productId.toString());
+                return product && item.quantity > product.stock;
+            });
+
+            if (invalidProductQuantities.length > 0) {
+                throw new Error("Some products have insufficient stock.");
+          }
+          
+          // let orderListProduct = [];
+          // for (let i = 0; i < selectedProducts.length; i++) {
+          //   const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
+          //   orderListProduct.push({
+          //     product_id: product._id,
+          //     quantity: selectedProducts[i].quantity,
+          //     price: product.price,
+          //   });
+          // }
+
+          // let orderListProduct = [];
+          // for (let i = 0; i < selectedProducts.length; i++) {
+          //     const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
+          //     orderListProduct.push({
+          //         productId: product.productId,        // Đổi từ product_id thành productId
+          //         quantity: selectedProducts[i].quantity,
+          //         productPrice: product.productPrice,   // Đổi từ price thành productPrice
+          //     });
+          // }
+          // let orderListProduct = [];
+          // for (let i = 0; i < selectedProducts.length; i++) {
+          //     const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
+          //     if (product) {
+          //         orderListProduct.push({
+          //             productId: product._id,        // Đảm bảo sử dụng product._id thay vì product.productId
+          //             quantity: selectedProducts[i].quantity,
+          //             productPrice: product.price,   // Đảm bảo sử dụng product.price thay vì product.productPrice
+          //         });
+          //     } else {
+          //         console.error(`Product not found for id: ${selectedProducts[i].productId}`);
+          //     }
+          // }
+          let orderListProduct = [];
+          for (let i = 0; i < selectedProducts.length; i++) {
+              const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
+              if (product) {
+                  orderListProduct.push({
+                      productId: product._id,         // Đảm bảo sử dụng product._id thay vì product.productId
+                      quantity: selectedProducts[i].quantity,
+                      productPrice: product.productPrice,   // Đảm bảo sử dụng product.productPrice thay vì product.price
+                  });
+              } else {
+                  console.error(`Product not found for id: ${selectedProducts[i].productId}`);
+              }
+          }
+
+
+
+            // Tạo đơn hàng mới
+            const newOrder = new Order({
+                customerID,
+                orderShippingAddress,
+                orderShippingMethod,
+                orderShippingFee,
+                orderTotalPrice,
+                orderListProduct,
+                orderPayment,
+                orderStatus,
+            });
+            console.log(newOrder);
+            // Lưu vào MongoDB
+            return await newOrder.save();
+        } catch (error) {
+            console.error("Error creating order after payment:", error);
+            throw error; // Ném lỗi lên controller để xử lý
+        }
+    }
 }
 
 module.exports = new CustomerService();
