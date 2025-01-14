@@ -1,5 +1,5 @@
 const otpCache = new Map();
-const emailTransporter = require('../middleware/emailTransporter.js'); // Đường dẫn đúng đến file config
+const emailTransporter = require('../middleware/EmailTransporter.js'); // Đường dẫn đúng đến file config
 
 exports.generateOtp = async (email) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();

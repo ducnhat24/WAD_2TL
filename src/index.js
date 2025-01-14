@@ -36,7 +36,7 @@ app.use(session({
 
 
 app.engine("handlebars", engine({
-  layoutsDir: path.join(__dirname, ""), // Thư mục chứa layout
+  layoutsDir: path.join(__dirname, "layouts"), // Thư mục chứa layout
   defaultLayout: "main", // Layout mặc định
   extname: ".handlebars", // Sử dụng phần mở rộng .handlebars
   runtimeOptions: {
