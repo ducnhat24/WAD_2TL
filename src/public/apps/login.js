@@ -7,7 +7,8 @@
     document.getElementById("popupOverlay").classList.remove("active");
     document.getElementById("forgotPasswordPopup").classList.remove("active");
   });
-  let email = document.getElementById("emailInput").value;
+let email = document.getElementById("emailInput").value;
+  
   document.getElementById("sendOtpButton").addEventListener("click", async function () {
     email = document.getElementById("emailInput").value;
     if (!email) {

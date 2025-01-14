@@ -787,38 +787,6 @@ class CustomerService {
                 throw new Error("Some products have insufficient stock.");
           }
           
-          // let orderListProduct = [];
-          // for (let i = 0; i < selectedProducts.length; i++) {
-          //   const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
-          //   orderListProduct.push({
-          //     product_id: product._id,
-          //     quantity: selectedProducts[i].quantity,
-          //     price: product.price,
-          //   });
-          // }
-
-          // let orderListProduct = [];
-          // for (let i = 0; i < selectedProducts.length; i++) {
-          //     const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
-          //     orderListProduct.push({
-          //         productId: product.productId,        // Đổi từ product_id thành productId
-          //         quantity: selectedProducts[i].quantity,
-          //         productPrice: product.productPrice,   // Đổi từ price thành productPrice
-          //     });
-          // }
-          // let orderListProduct = [];
-          // for (let i = 0; i < selectedProducts.length; i++) {
-          //     const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
-          //     if (product) {
-          //         orderListProduct.push({
-          //             productId: product._id,        // Đảm bảo sử dụng product._id thay vì product.productId
-          //             quantity: selectedProducts[i].quantity,
-          //             productPrice: product.price,   // Đảm bảo sử dụng product.price thay vì product.productPrice
-          //         });
-          //     } else {
-          //         console.error(`Product not found for id: ${selectedProducts[i].productId}`);
-          //     }
-          // }
           let orderListProduct = [];
           for (let i = 0; i < selectedProducts.length; i++) {
               const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
@@ -853,7 +821,35 @@ class CustomerService {
             console.error("Error creating order after payment:", error);
             throw error; // Ném lỗi lên controller để xử lý
         }
-    }
+  }
+  
+  async sendOtpSignup(email) {
+    const customer = await Customer.findOne({ customerEmail: email });
+    if (customer) throw new Error('This email has been used');
+
+    const otpId = await generateOtp(email);
+    return { otpId };
+  };
+
+  async verifyOtpSignup(otp, username, customerEmail, customerPassword) {
+    // const isawait verifyOtpCode(otp);
+    const isCorrectOTP = await verifyOtpCode(otp);
+    if (!isCorrectOTP) throw new Error('Invalid OTP');
+
+    const hashedPassword = await hashPassword(customerPassword);
+
+    // create new customer
+    const newCustomer = new Customer({
+      customerName: username,
+      customerEmail: customerEmail,
+      customerPassword: hashedPassword,
+    });
+
+    await newCustomer.save();
+
+
+    return newCustomer;
+  };
 }
 
 module.exports = new CustomerService();

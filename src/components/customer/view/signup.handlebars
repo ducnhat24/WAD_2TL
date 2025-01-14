@@ -49,3 +49,18 @@
     </div>
   </div>
 </div>
+
+<!-- Overlay for OTP Verification -->
+<div class="popup-overlay" id="otpOverlay"></div>
+<div class="popup" id="otpPopup">
+  <h5>Verify Your Account</h5>
+  <div id="otpStep">
+    <p>Enter the OTP sent to your email to verify your account.</p>
+    <input type="text" id="otpInput" class="form-control mb-2" placeholder="Enter OTP">
+    <button class="btn btn-primary" id="verifyOtpButton">Verify OTP</button>
+  </div>
+  <button class="btn btn-secondary mt-3" id="closeOtpPopupButton">Close</button>
+</div>
+
+
+<script src="/apps/signup.js"></script>

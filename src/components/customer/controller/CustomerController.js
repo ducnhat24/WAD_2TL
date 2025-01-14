@@ -526,7 +526,31 @@ class CustomerController {
             console.error("Error creating order:", error);
             res.status(500).json({ message: "Failed to create order", error: error.message });
         }
+  }
+  
+  async sendOtpSignup(req, res) {
+    try {
+        const { email } = req.body;
+        const result = await CustomerService.sendOtpSignup(email);
+        res.status(200).json({ message: 'OTP sent successfully!', otpId: result.otpId });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
+  };
+
+  async verifyOtpSignup(req, res) {
+    try {
+        const { otp, username, customerEmail, customerPassword } = req.body;
+        const isValid = await CustomerService.verifyOtpSignup(otp, username, customerEmail, customerPassword);
+        if (isValid) {
+            res.status(200).json({ message: 'OTP verified successfully!' });
+        } else {
+            res.status(400).json({ message: 'Invalid OTP' });
+        }
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+  };
 }
 
 module.exports = new CustomerController();

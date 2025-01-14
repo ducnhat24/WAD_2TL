@@ -49,6 +49,10 @@ customerAPIRoute.get("/profile", verifyToken, CustomerController.getUserProfile)
 
 customerAPIRoute.post('/send-otp', CustomerController.sendOtp);
 customerAPIRoute.post('/verify-otp', CustomerController.verifyOtp);
+
+customerAPIRoute.post('/send-otp-signup', CustomerController.sendOtpSignup);
+customerAPIRoute.post('/verify-otp-signup', CustomerController.verifyOtpSignup); 
+
 customerAPIRoute.post('/reset-password', CustomerController.resetPassword);
 
 

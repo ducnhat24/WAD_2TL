@@ -326,6 +326,7 @@
 .rating-stars label:hover,
 .rating-stars label:hover ~ label {
   color: #ffcc00;
+  background-color: transparent;
 }
 
 /* Button */

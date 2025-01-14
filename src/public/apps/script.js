@@ -166,53 +166,53 @@ function validatePassword() {
     errorSpan.style.display = "none";
   }
 }
-function handleSubmitSignup() {
-  //console.log("Signup form submitted");
-  const username = document.querySelector("#signup__username").value;
-  const email = document.querySelector("#signup__email").value;
-  const password = document.querySelector("#signup__password").value;
-  if (!email || !password || !username) {
-    notify({
-      type: "warning",
-      msg: "Please fill all fields",
-    });
-    return;
-  }
+// function handleSubmitSignup() {
+//   //console.log("Signup form submitted");
+//   const username = document.querySelector("#signup__username").value;
+//   const email = document.querySelector("#signup__email").value;
+//   const password = document.querySelector("#signup__password").value;
+//   if (!email || !password || !username) {
+//     notify({
+//       type: "warning",
+//       msg: "Please fill all fields",
+//     });
+//     return;
+//   }
 
-  // Send data to server
-  fetch(url + "/api/customer/signup", {
-    credentials: "include",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, email, password }),
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return res.json();
-    })
-    .then((data) => {
-      if (data.status === "success") {
-        localStorage.setItem(
-          "notify",
-          JSON.stringify({
-            type: data.status,
-            msg: data.msg,
-          })
-        );
-        location.href = "login";
-      }
-    })
-    .catch((error) => {
-      notify({
-        type: "error",
-        msg: error.message,
-      });
-    });
-}
+//   // Send data to server
+//   fetch(url + "/api/customer/signup", {
+//     credentials: "include",
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({ username, email, password }),
+//   })
+//     .then((res) => {
+//       if (!res.ok) {
+//         throw new Error("Network response was not ok");
+//       }
+//       return res.json();
+//     })
+//     .then((data) => {
+//       if (data.status === "success") {
+//         localStorage.setItem(
+//           "notify",
+//           JSON.stringify({
+//             type: data.status,
+//             msg: data.msg,
+//           })
+//         );
+//         location.href = "login";
+//       }
+//     })
+//     .catch((error) => {
+//       notify({
+//         type: "error",
+//         msg: error.message,
+//       });
+//     });
+// }
 
 function handleSubmitLogin() {
   const useraccount = document.querySelector("#login__useraccount").value;
