@@ -14,6 +14,20 @@
   overflow: auto;
 }
 
+.method .container {
+  width: 100%;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.method .container .row {
+  margin: 0 !important;
+}
+
+.method .container .row .col-lg-6 {
+  padding: 0 !important;
+}
+
 @media (max-width: 900px) {
   .method {
     margin: 50px 10px;
@@ -35,7 +49,7 @@
 } */
 
 .method__form .method__form__title {
-  margin: 20px 0;
+  margin-bottom: 10px;
 }
 
 .method__form .method__form__title span {
@@ -53,8 +67,8 @@
 }
 
 .method__form .method__form__input {
-  padding: 10px;
-  margin: 10px 0;
+  padding: 5px 10px;
+  margin: 5px 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,7 +115,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px 0;
+  margin: 5px 0;
 }
 
 .method__form .method__form__signup a {
@@ -109,9 +123,6 @@
   font-weight: 700;
 }
 
-.method__image {
-  height: 400px;
-}
 
 .method--login {
   background: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
@@ -128,6 +139,11 @@
   background-size: cover;
   background-repeat: no-repeat;
 }
+
+.method__form__oauth p {
+  margin: 0 !important;
+}
+
 #password-error,
 #email-error {
   color: red;

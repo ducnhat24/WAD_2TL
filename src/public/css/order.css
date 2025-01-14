@@ -43,12 +43,14 @@
 /* Order Table */
 .order__body {
     width: 100%;
-    overflow-x: auto; /* Enable horizontal scroll */
+    overflow-x: auto;
+    /* Enable horizontal scroll */
 }
 
 .order__body .order__table {
     width: 100%;
-    min-width: 800px; /* Ensure the table has a minimum width */
+    min-width: 800px;
+    /* Ensure the table has a minimum width */
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     overflow: hidden;
@@ -140,6 +142,27 @@
     overflow-y: auto;
 }
 
+#modal-btn {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#modal-btn button {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: var(--navy-color);
+    color: white;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+/* #confirm-modal {
+    display: none;
+} */
+
 /* Table inside modal */
 table {
     width: 100%;
@@ -147,7 +170,8 @@ table {
     margin-top: 20px;
 }
 
-table th, table td {
+table th,
+table td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: center;
@@ -191,7 +215,9 @@ table th {
         padding: 7px;
     }
 
-    #search-order, #page-size, #status-options {
+    #search-order,
+    #page-size,
+    #status-options {
         width: 100%;
     }
 }

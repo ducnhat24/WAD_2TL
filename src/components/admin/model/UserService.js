@@ -1,7 +1,6 @@
 const User = require('../schema/User');
 const bcrypt = require('bcrypt');
 const { generateAccessToken, generateRefreshToken } = require('../../../middleware/JWTAction');
-const OrderService = require('../../customer/model/OrderService');
 
 
 async function hashPassword(password) {
@@ -237,7 +236,7 @@ class UserService {
             }
 
             const orders = await Promise.all(user.userListOrder.map(async (item) => {
-                const data = await OrderService.getOrderByID(item.orderID);
+                const data = await require('../../customer/model/OrderService').getOrderByID(item.orderID);
                 let order = data.data;
                 order.shipper = {
                     _id: user._id,
@@ -272,7 +271,7 @@ class UserService {
                 }
             }
 
-            const status = await OrderService.addShipperOrder(orderID, userID);
+            const status = await require('../../customer/model/OrderService').addShipperOrder(orderID, userID);
 
             if (status.status !== 'success') {
                 return {

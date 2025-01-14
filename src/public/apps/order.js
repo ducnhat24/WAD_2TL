@@ -120,7 +120,7 @@ const sortStates = {
 
 function sortAndRender(column) {
     let isAscending = sortStates[column] === 'asc';
-    
+
     // Sắp xếp dữ liệu
     ordersData.sort((a, b) => {
         switch (column) {
@@ -308,6 +308,7 @@ document.getElementById('page-size').addEventListener('change', (event) => {
 // Lấy modal và các nút điều khiển
 const modal = document.getElementById("order-details-modal");
 const closeModalButton = document.getElementById("close-modal");
+const confirmModalButton = document.getElementById("confirm-modal");
 
 // Hàm hiển thị modal
 // function openOrderDetails(order) {
@@ -379,13 +380,58 @@ const closeModalButton = document.getElementById("close-modal");
 //     // Disable scrolling
 //     openModal();
 // }
+async function changeStatusOrder(orderId, status) {
+    try {
+        const res = await fetch(`http://localhost:5000/api/customer/order/${orderId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                orderStatus: status,
+            }),
+        });
+
+        const data = await res.json();
+        notify({ type: data.status, msg: data.message });
+
+        if (data.status !== 'success') {
+            return;
+        }
+
+        window.location.reload();
+
+    } catch (error) {
+        console.log(error);
+        notify({ type: 'error', msg: error.message });
+    }
+}
+
 
 async function openOrderDetails(order) {
-
+    if (order) {
+        const button = document.getElementById("modal-btn");
+        if (order.orderStatus === "Delivered") {
+            const confirmModal = document.createElement("button");
+            confirmModal.innerHTML = "Confirm";
+            confirmModal.id = "confirm-modal";
+            confirmModal.onclick = () => confirmOrder(order._id, "Completed");
+            button.appendChild(confirmModal);
+        } else {
+            if (order.orderStatus === "Processing") {
+                const cancelButton = document.createElement("button");
+                cancelButton.innerHTML = "Cancel";
+                cancelButton.id = "cancel-modal";
+                cancelButton.onclick = () => confirmOrder(order._id, "Cancelled");
+                button.appendChild(cancelButton);
+            }
+        }
+    }
 
     // Gán dữ liệu cho các phần tử trong modal
     document.getElementById("customer-name").textContent = order.customerID.customerName;
-    document.getElementById("customer-email").textContent =  order.customerID.customerEmail; // Trường hợp không có số điện thoại
+    document.getElementById("customer-email").textContent = order.customerID.customerEmail; // Trường hợp không có số điện thoại
     document.getElementById("customer-address").textContent = "Schema chưa có address"; // Trường hợp không có địa chỉ
     document.getElementById("order-id").textContent = order._id;
     document.getElementById("order-time").textContent = new Date(order.orderCreatedDateTime).toLocaleString();
@@ -413,7 +459,7 @@ async function openOrderDetails(order) {
     });
 
     // Hiển thị modal
-    modal.style.display = "block";
+    modal.style.display = "flex";
 
     // Disable scrolling
     document.body.classList.add("no-scroll");
@@ -442,7 +488,7 @@ window.addEventListener("click", (event) => {
     if (event.target === modal) {
         modal.style.display = "none";
     }
-}); 
+});
 
 const orderData = {
     id: 1,
@@ -463,9 +509,9 @@ const orderData = {
 
 
 document.getElementById('testpopup').addEventListener('click', () => {
-                openOrderDetails(orderData); // Hiển thị modal với thông tin chi tiết của đơn hàng
+    openOrderDetails(orderData); // Hiển thị modal với thông tin chi tiết của đơn hàng
 });
-            
+
 document.getElementById('close-button').addEventListener('click', () => {
     modal.style.display = "none"; // Đóng modal
     closeModal();
@@ -473,15 +519,15 @@ document.getElementById('close-button').addEventListener('click', () => {
 );
 
 function openModal() {
-  const modal = document.querySelector('.modal');
-  modal.style.display = 'flex'; // Hiển thị modal
-  document.body.classList.add('no-scroll'); // Thêm lớp để vô hiệu hóa cuộn
+    const modal = document.querySelector('.modal');
+    modal.style.display = 'flex'; // Hiển thị modal
+    document.body.classList.add('no-scroll'); // Thêm lớp để vô hiệu hóa cuộn
 }
 
 function closeModal() {
-  const modal = document.querySelector('.modal');
-  modal.style.display = 'none'; // Ẩn modal
-  document.body.classList.remove('no-scroll'); // Xóa lớp để khôi phục cuộn
+    const modal = document.querySelector('.modal');
+    modal.style.display = 'none'; // Ẩn modal
+    document.body.classList.remove('no-scroll'); // Xóa lớp để khôi phục cuộn
 }
 
 
