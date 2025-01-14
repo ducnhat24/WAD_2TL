@@ -303,6 +303,41 @@ class UserService {
             }
         }
     }
+
+    async changePassword(userID, data) {
+        try {
+            const user = await User.findOne({ _id: userID });
+
+            if (!user) {
+                return {
+                    status: 'error',
+                    message: 'User not found'
+                }
+            }
+
+            if (!await bcrypt.compare(data.oldPassword, user.userPassword)) {
+                return {
+                    status: 'error',
+                    message: 'Old password incorrect'
+                }
+            }
+
+            user.userPassword = await hashPassword(data.newPassword);
+
+            await user.save();
+
+            return {
+                status: 'success',
+                message: 'Change password successfully'
+            }
+
+        } catch (error) {
+            return {
+                status: 'error',
+                message: error.message
+            }
+        }
+    }
 }
 
 module.exports = new UserService;
