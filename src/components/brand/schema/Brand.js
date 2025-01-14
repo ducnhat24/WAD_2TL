@@ -20,7 +20,11 @@ const brandSchema = new mongoose.Schema({
     brandWebsite: {
         type: String,
         required: false,
-    }
+    },
+    brandActive: {
+        type: String,
+        default: "Visible",
+    },
 });
 
 const Brand = mongoose.model("Brand", brandSchema);

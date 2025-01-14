@@ -85,30 +85,29 @@ function renewAccessToken(req, res) {
 
 //Cải tiến để xử lý cả token đã hết hạn:
 function verifyToken(req, res, next) {
-  const token = req.cookies.accessToken;
-
-  if (!token) {
-    return renewAccessToken(req, res); // Xử lý nếu không có token
-  }
-
-  jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
-    if (err) {
-      if (err.name === 'TokenExpiredError') {
-        return renewAccessToken(req, res); // Xử lý token hết hạn
-      }
-
-      req.isAuthenticated = false;
-      res.clearCookie('accessToken');
-      return res.status(401).json({
-        status: 'error',
-        message: 'Access token is invalid',
-      });
+    const token = req.cookies.accessToken;
+    if (!token) {
+        return renewAccessToken(req, res); // Xử lý nếu không có token
     }
 
-    req.user = user;
-    req.isAuthenticated = true;
-    next();
-  });
+    jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
+        if (err) {
+            if (err.name === 'TokenExpiredError') {
+                return renewAccessToken(req, res);
+            }
+
+            req.isAuthenticated = false;
+            res.clearCookie('accessToken');
+            return res.status(401).json({
+                status: 'error',
+                message: 'Access token is invalid',
+            });
+        }
+
+        req.user = user;
+        req.isAuthenticated = true;
+        next();
+    });
 }
 
 

@@ -21,6 +21,10 @@ const categorySchema = new mongoose.Schema({
         required: false,
         default: '',
     },
+    categoryActive: {
+        type: String,
+        default: "Visible",
+    },
 });
 
 const Category = mongoose.model("Category", categorySchema);

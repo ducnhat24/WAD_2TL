@@ -82,6 +82,42 @@ class BrandService {
             }
         }
     }
+
+    async updateActivation(id) {
+        try {
+            const brand = await Brand.findById(id);
+            if (!brand) {
+                return {
+                    status: 'error',
+                    message: 'Brand not found',
+                }
+            }
+
+            if (brand.brandActive === "Visible") {
+                brand.brandActive = "Hidden";
+            }
+            else {
+                brand.brandActive = "Visible";
+            }
+
+            const result = await brand.save();
+            if (!result) {
+                return {
+                    status: 'error',
+                    message: 'Failed to update activation',
+                }
+            }
+            return {
+                status: 'success',
+                message: 'Activation updated successfully',
+            }
+        } catch (error) {
+            return {
+                status: 'error',
+                message: error.message,
+            }
+        }
+    }
 }
 
 module.exports = new BrandService;

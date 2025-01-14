@@ -44,6 +44,21 @@ class CategoryController {
             res.status(500).json({ message: error.message });
         }
     }
+
+    async updateActivation(req, res) {
+        try {
+            const { id } = req.params;
+            const category = await CategoryService.updateActivation(id);
+            if (category.status === 'success') {
+                res.status(200).json(category);
+                return;
+            }
+            res.status(400).json(category);
+            return;
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = new CategoryController;

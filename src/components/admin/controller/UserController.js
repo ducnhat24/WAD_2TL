@@ -20,7 +20,6 @@ class UserController {
     async login(req, res) {
         try {
             const { userAccount, userPassword } = req.body;
-            console.log(userAccount, userPassword);
             const user = await UserService.login(userAccount, userPassword);
             if (user.status === 'error') {
                 return res.status(404).json(user);
@@ -175,6 +174,48 @@ class UserController {
         try {
             const user = req.user;
             const status = await UserService.acceptOrder(user.userID, req.body.orderID);
+            return res.status(200).json(status);
+        }
+        catch (err) {
+            res.status(500).json({
+                status: 'error',
+                message: err.message
+            });
+        }
+    }
+
+    async changePassword(req, res) {
+        try {
+            const user = req.user;
+            const status = await UserService.changePassword(user.userID, req.body);
+            return res.status(200).json(status);
+        }
+        catch (err) {
+            res.status(500).json({
+                status: 'error',
+                message: err.message
+            });
+        }
+    }
+
+    async updateActivation(req, res) {
+        try {
+            const user = req.user;
+            if (user.userRole.toLowerCase() !== 'admin') {
+                return res.status(403).json({
+                    status: 'error',
+                    message: 'You do not have permission to access this resource'
+                });
+            }
+
+            if (req.params.id === user.userID) {
+                return res.status(403).json({
+                    status: 'error',
+                    message: 'You can not deactivate your own account'
+                });
+            }
+
+            const status = await UserService.updateActivation(req.params.id);
             return res.status(200).json(status);
         }
         catch (err) {

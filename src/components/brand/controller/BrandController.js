@@ -44,6 +44,21 @@ class BrandController {
             res.status(500).json({ message: error.message });
         }
     }
+
+    async updateActivation(req, res) {
+        try {
+            const id = req.params.id;
+            const result = await BrandService.updateActivation(id);
+            if (result.status === 'success') {
+                res.status(200).json(result);
+                return;
+            }
+            res.status(404).json(result);
+            return;
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = new BrandController;

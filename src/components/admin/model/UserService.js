@@ -53,6 +53,13 @@ class UserService {
                 };
             }
 
+            if (user.userAccountStatus === 'INACTIVE') {
+                return {
+                    status: 'error',
+                    message: 'Account is inactive',
+                };
+            }
+
             return {
                 status: 'success',
                 message: 'User logged in',
@@ -295,6 +302,67 @@ class UserService {
                 message: 'Accept order successfully'
             }
 
+        }
+        catch (err) {
+            return {
+                status: 'error',
+                message: err.message
+            }
+        }
+    }
+
+    async changePassword(userID, data) {
+        try {
+            const user = await User.findOne({ _id: userID });
+
+            if (!user) {
+                return {
+                    status: 'error',
+                    message: 'User not found'
+                }
+            }
+
+            if (!await bcrypt.compare(data.oldPassword, user.userPassword)) {
+                return {
+                    status: 'error',
+                    message: 'Old password incorrect'
+                }
+            }
+
+            user.userPassword = await hashPassword(data.newPassword);
+
+            await user.save();
+
+            return {
+                status: 'success',
+                message: 'Change password successfully'
+            }
+
+        } catch (error) {
+            return {
+                status: 'error',
+                message: error.message
+            }
+        }
+    }
+
+    async updateActivation(userID) {
+        try {
+            const user = await User.findOne({ _id: userID });
+            if (!user) {
+                return {
+                    status: 'error',
+                    message: 'User not found'
+                }
+            }
+
+            user.userAccountStatus = user.userAccountStatus === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+            await user.save();
+
+            return {
+                status: 'success',
+                message: 'Update activation successfully'
+            }
         }
         catch (err) {
             return {
