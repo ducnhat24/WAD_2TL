@@ -6,7 +6,7 @@ const CartController = require('../controller/CartController');
 const { authenticateGoogle, handleGoogleCallback } = require('../../../middleware/GoogleOAuth');
 const OrderController = require('../controller/OrderController');
 const OrderAPIRoute = require('./OrderAPIRoute');
-const upload = require("../../../middleware/multer");   
+const upload = require("../../../middleware/Multer");   
 
 // route that return customer id
 customerAPIRoute.get("/id", verifyToken, CustomerController.getCustomerID);
