@@ -53,6 +53,13 @@ class UserService {
                 };
             }
 
+            if (user.userAccountStatus === 'INACTIVE') {
+                return {
+                    status: 'error',
+                    message: 'Account is inactive',
+                };
+            }
+
             return {
                 status: 'success',
                 message: 'User logged in',
@@ -335,6 +342,32 @@ class UserService {
             return {
                 status: 'error',
                 message: error.message
+            }
+        }
+    }
+
+    async updateActivation(userID) {
+        try {
+            const user = await User.findOne({ _id: userID });
+            if (!user) {
+                return {
+                    status: 'error',
+                    message: 'User not found'
+                }
+            }
+
+            user.userAccountStatus = user.userAccountStatus === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+            await user.save();
+
+            return {
+                status: 'success',
+                message: 'Update activation successfully'
+            }
+        }
+        catch (err) {
+            return {
+                status: 'error',
+                message: err.message
             }
         }
     }

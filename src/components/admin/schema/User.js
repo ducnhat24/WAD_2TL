@@ -57,6 +57,10 @@ const UserSchema = new Schema({
     userCreatedDateTime: {
         type: Date,
         default: new Date()
+    },
+    userAccountStatus: {
+        type: String,
+        default: 'ACTIVE'
     }
 });
 

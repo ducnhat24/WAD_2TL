@@ -11,6 +11,7 @@ userRouter.put('/password', verifyToken, UserController.changePassword);
 userRouter.get('/logout', verifyToken, UserController.logout);
 userRouter.get('/order', verifyToken, UserController.viewListOrder);
 userRouter.post('/order', verifyToken, UserController.acceptOrder);
+userRouter.put('/activation/:id', verifyToken, UserController.updateActivation);
 
 userRouter.put('/:id', verifyToken, UserController.editUserByAdmin);
 userRouter.delete('/:id', verifyToken, UserController.deleteUser);

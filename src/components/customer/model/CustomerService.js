@@ -67,13 +67,13 @@ class CustomerService {
       const existingUser = await Customer.findOne({
         $or: [{ customerEmail: useraccount }, { customerName: useraccount }],
       });
-      console.log("Existing user:", existingUser);
       if (!existingUser) {
         return {
           status: "error",
           msg: "Invalid credentials",
         };
       }
+
       const checkPassword = await bcrypt.compare(
         password,
         existingUser.customerPassword
@@ -84,6 +84,14 @@ class CustomerService {
           msg: "Wrong password",
         };
       }
+
+      if (existingUser.customerAccountStatus === "INACTIVE") {
+        return {
+          status: "error",
+          msg: "Account is inactive",
+        };
+      }
+
       const payload = {
         userID: existingUser._id,
         userRole: "Customer",
@@ -524,55 +532,55 @@ class CustomerService {
     await Customer.findOneAndUpdate({ customerEmail }, { customerPassword: hashedPassword });
   };
 
-    async createPayment(clientIp, reqData) {
+  async createPayment(clientIp, reqData) {
 
-        const date = new Date();
-        const orderId = moment.tz(date, 'Asia/Ho_Chi_Minh').format('DDHHmmss'); // Định dạng orderId
-        const ipv4Address = clientIp.includes(':') ? '127.0.0.1' : clientIp;
-        let createDate = moment.tz(date, 'Asia/Ho_Chi_Minh').format('YYYYMMDDHHmmss');
-        let expiredDate = moment.tz(date, 'Asia/Ho_Chi_Minh').add(5, 'minutes').format('YYYYMMDDHHmmss');
+    const date = new Date();
+    const orderId = moment.tz(date, 'Asia/Ho_Chi_Minh').format('DDHHmmss'); // Định dạng orderId
+    const ipv4Address = clientIp.includes(':') ? '127.0.0.1' : clientIp;
+    let createDate = moment.tz(date, 'Asia/Ho_Chi_Minh').format('YYYYMMDDHHmmss');
+    let expiredDate = moment.tz(date, 'Asia/Ho_Chi_Minh').add(5, 'minutes').format('YYYYMMDDHHmmss');
 
-        let amountNumber = reqData.amount.replace(/[^\d]/g, '');  // Loại bỏ mọi ký tự không phải số
-        let amount = parseInt(amountNumber, 10);
+    let amountNumber = reqData.amount.replace(/[^\d]/g, '');  // Loại bỏ mọi ký tự không phải số
+    let amount = parseInt(amountNumber, 10);
 
-        const vnpParams = {
-            vnp_Version: '2.1.1',
-            vnp_Command: 'pay',
-            vnp_TmnCode: process.env.VNP_TMNCODE,
-            vnp_Amount: amount * 100, // VNPay yêu cầu đơn vị là đồng
-            vnp_CurrCode: 'VND',
-            vnp_TxnRef: orderId,
-            vnp_OrderInfo: reqData.paymentDescription, // Mô tả đơn hàng
-            vnp_Locale: reqData.language,
-            vnp_OrderType: 'topup',
-            vnp_ReturnUrl: process.env.VNP_RETURNURL,
-            vnp_IpAddr: ipv4Address,
-            vnp_CreateDate: createDate,
-            vnp_ExpireDate: expiredDate,
-        };   
-        if(reqData.paymentMethod !== null && reqData.paymentMethod !== ''){
-            vnpParams['vnp_BankCode'] = reqData.paymentMethod;
-        }
-    
-        // Sắp xếp tham số
-        const sortedParams = sortObject(vnpParams);
-    
-        // Tạo chuỗi ký hiệu
-        const signData = querystring.stringify(sortedParams, { encode: false });
-    
-        // Tạo chữ ký bảo mật
-        const hmac = crypto.createHmac('sha512', process.env.VNP_HASHSECRET);
-        const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
-        sortedParams.vnp_SecureHash = signed;
+    const vnpParams = {
+      vnp_Version: '2.1.1',
+      vnp_Command: 'pay',
+      vnp_TmnCode: process.env.VNP_TMNCODE,
+      vnp_Amount: amount * 100, // VNPay yêu cầu đơn vị là đồng
+      vnp_CurrCode: 'VND',
+      vnp_TxnRef: orderId,
+      vnp_OrderInfo: reqData.paymentDescription, // Mô tả đơn hàng
+      vnp_Locale: reqData.language,
+      vnp_OrderType: 'topup',
+      vnp_ReturnUrl: process.env.VNP_RETURNURL,
+      vnp_IpAddr: ipv4Address,
+      vnp_CreateDate: createDate,
+      vnp_ExpireDate: expiredDate,
+    };
+    if (reqData.paymentMethod !== null && reqData.paymentMethod !== '') {
+      vnpParams['vnp_BankCode'] = reqData.paymentMethod;
+    }
 
-        console.log("sent");
-        console.log(sortedParams);
+    // Sắp xếp tham số
+    const sortedParams = sortObject(vnpParams);
 
-        let vnpUrl = process.env.VNP_URL;
-        vnpUrl += '?' + querystring.stringify(sortedParams, { encode: false });
-        // console.log(vnpUrl);
-        
-        return vnpUrl;
+    // Tạo chuỗi ký hiệu
+    const signData = querystring.stringify(sortedParams, { encode: false });
+
+    // Tạo chữ ký bảo mật
+    const hmac = crypto.createHmac('sha512', process.env.VNP_HASHSECRET);
+    const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+    sortedParams.vnp_SecureHash = signed;
+
+    console.log("sent");
+    console.log(sortedParams);
+
+    let vnpUrl = process.env.VNP_URL;
+    vnpUrl += '?' + querystring.stringify(sortedParams, { encode: false });
+    // console.log(vnpUrl);
+
+    return vnpUrl;
   };
 
   // async createOrder(orderData) {
@@ -635,66 +643,66 @@ class CustomerService {
   //   }
   // }
 
-// async createOrder(orderData) {
-//     try {
-//         const {
-//             customerID,
-//             orderListProduct,
-//             orderShippingAddress,
-//             orderShippingMethod,
-//             orderShippingFee,
-//             orderTotalPrice,
-//             orderPayment,
-//             orderStatus,
-//         } = orderData;
+  // async createOrder(orderData) {
+  //     try {
+  //         const {
+  //             customerID,
+  //             orderListProduct,
+  //             orderShippingAddress,
+  //             orderShippingMethod,
+  //             orderShippingFee,
+  //             orderTotalPrice,
+  //             orderPayment,
+  //             orderStatus,
+  //         } = orderData;
 
-//         // Kiểm tra và chuyển đổi ObjectId cho customerID và orderShippingMethod
-//         if (!mongoose.Types.ObjectId.isValid(customerID)) {
-//             throw new Error("Invalid customerID.");
-//         }
+  //         // Kiểm tra và chuyển đổi ObjectId cho customerID và orderShippingMethod
+  //         if (!mongoose.Types.ObjectId.isValid(customerID)) {
+  //             throw new Error("Invalid customerID.");
+  //         }
 
-//         if (!mongoose.Types.ObjectId.isValid(orderShippingMethod)) {
-//             throw new Error("Invalid orderShippingMethod.");
-//         }
+  //         if (!mongoose.Types.ObjectId.isValid(orderShippingMethod)) {
+  //             throw new Error("Invalid orderShippingMethod.");
+  //         }
 
-//         // Kiểm tra sự tồn tại của sản phẩm trong orderListProduct
-//         const productIds = orderListProduct.map(item => item.productId);
-//         const products = await Product.find({ '_id': { $in: productIds } });
+  //         // Kiểm tra sự tồn tại của sản phẩm trong orderListProduct
+  //         const productIds = orderListProduct.map(item => item.productId);
+  //         const products = await Product.find({ '_id': { $in: productIds } });
 
-//         if (products.length !== orderListProduct.length) {
-//             throw new Error("One or more products are invalid or not found.");
-//         }
+  //         if (products.length !== orderListProduct.length) {
+  //             throw new Error("One or more products are invalid or not found.");
+  //         }
 
-//         // Kiểm tra nếu số lượng sản phẩm là hợp lệ (có thể bạn sẽ cần kiểm tra thêm các quy tắc khác)
-//         const invalidProductQuantities = orderListProduct.filter(item => {
-//             const product = products.find(p => p._id.toString() === item.productId.toString());
-//             return product && item.quantity > product.stock;  // Kiểm tra số lượng vượt quá số lượng trong kho
-//         });
+  //         // Kiểm tra nếu số lượng sản phẩm là hợp lệ (có thể bạn sẽ cần kiểm tra thêm các quy tắc khác)
+  //         const invalidProductQuantities = orderListProduct.filter(item => {
+  //             const product = products.find(p => p._id.toString() === item.productId.toString());
+  //             return product && item.quantity > product.stock;  // Kiểm tra số lượng vượt quá số lượng trong kho
+  //         });
 
-//         if (invalidProductQuantities.length > 0) {
-//             throw new Error("Some products have insufficient stock.");
-//         }
+  //         if (invalidProductQuantities.length > 0) {
+  //             throw new Error("Some products have insufficient stock.");
+  //         }
 
-//         // Tạo đơn hàng mới
-//         const newOrder = new Order({
-//             customerID,
-//             orderListProduct,
-//             orderShippingAddress,
-//             orderShippingMethod,
-//             orderShippingFee,
-//             orderTotalPrice,
-//             orderPayment,
-//             orderStatus,
-//         });
+  //         // Tạo đơn hàng mới
+  //         const newOrder = new Order({
+  //             customerID,
+  //             orderListProduct,
+  //             orderShippingAddress,
+  //             orderShippingMethod,
+  //             orderShippingFee,
+  //             orderTotalPrice,
+  //             orderPayment,
+  //             orderStatus,
+  //         });
 
-//         // Lưu đơn hàng vào MongoDB
-//         return await newOrder.save();
-//     } catch (error) {
-//         console.error("Error creating order:", error);
-//         throw error;  // Ném lỗi lên controller để xử lý
-//     }
+  //         // Lưu đơn hàng vào MongoDB
+  //         return await newOrder.save();
+  //     } catch (error) {
+  //         console.error("Error creating order:", error);
+  //         throw error;  // Ném lỗi lên controller để xử lý
+  //     }
   // }
-  
+
   // async createOrderAfterPayment(orderData) {
   //       try {
   //           const {
@@ -751,134 +759,134 @@ class CustomerService {
   //       }
   //   }
   async createOrderAfterPayment(orderData) {
-        try {
-            const {
-                customerID,
-                orderShippingAddress,
-                orderShippingMethod,
-                orderShippingFee,
-                orderTotalPrice,
-                selectedProducts,
-                orderPayment,
-                orderStatus,
-          } = orderData;
-          console.log(orderData);
+    try {
+      const {
+        customerID,
+        orderShippingAddress,
+        orderShippingMethod,
+        orderShippingFee,
+        orderTotalPrice,
+        selectedProducts,
+        orderPayment,
+        orderStatus,
+      } = orderData;
+      console.log(orderData);
 
-            // Kiểm tra tính hợp lệ của customerID
-            if (!mongoose.Types.ObjectId.isValid(customerID)) {
-                throw new Error("Invalid customerID.");
-            }
+      // Kiểm tra tính hợp lệ của customerID
+      if (!mongoose.Types.ObjectId.isValid(customerID)) {
+        throw new Error("Invalid customerID.");
+      }
 
-            // Kiểm tra sự tồn tại của các sản phẩm trong order
-            const productIds = selectedProducts.map(item => item.productId);
-            const products = await Product.find({ '_id': { $in: productIds } });
+      // Kiểm tra sự tồn tại của các sản phẩm trong order
+      const productIds = selectedProducts.map(item => item.productId);
+      const products = await Product.find({ '_id': { $in: productIds } });
 
-            if (products.length !== selectedProducts.length) {
-                throw new Error("Some products are invalid or not found.");
-            }
+      if (products.length !== selectedProducts.length) {
+        throw new Error("Some products are invalid or not found.");
+      }
 
-            // Kiểm tra số lượng sản phẩm (nếu cần)
-            const invalidProductQuantities = selectedProducts.filter(item => {
-                const product = products.find(p => p._id.toString() === item.productId.toString());
-                return product && item.quantity > product.stock;
-            });
+      // Kiểm tra số lượng sản phẩm (nếu cần)
+      const invalidProductQuantities = selectedProducts.filter(item => {
+        const product = products.find(p => p._id.toString() === item.productId.toString());
+        return product && item.quantity > product.stock;
+      });
 
-            if (invalidProductQuantities.length > 0) {
-                throw new Error("Some products have insufficient stock.");
-          }
-          
-          // let orderListProduct = [];
-          // for (let i = 0; i < selectedProducts.length; i++) {
-          //   const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
-          //   orderListProduct.push({
-          //     product_id: product._id,
-          //     quantity: selectedProducts[i].quantity,
-          //     price: product.price,
-          //   });
-          // }
+      if (invalidProductQuantities.length > 0) {
+        throw new Error("Some products have insufficient stock.");
+      }
 
-          // let orderListProduct = [];
-          // for (let i = 0; i < selectedProducts.length; i++) {
-          //     const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
-          //     orderListProduct.push({
-          //         productId: product.productId,        // Đổi từ product_id thành productId
-          //         quantity: selectedProducts[i].quantity,
-          //         productPrice: product.productPrice,   // Đổi từ price thành productPrice
-          //     });
-          // }
-          // let orderListProduct = [];
-          // for (let i = 0; i < selectedProducts.length; i++) {
-          //     const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
-          //     if (product) {
-          //         orderListProduct.push({
-          //             productId: product._id,        // Đảm bảo sử dụng product._id thay vì product.productId
-          //             quantity: selectedProducts[i].quantity,
-          //             productPrice: product.price,   // Đảm bảo sử dụng product.price thay vì product.productPrice
-          //         });
-          //     } else {
-          //         console.error(`Product not found for id: ${selectedProducts[i].productId}`);
-          //     }
-          // }
-          let orderListProduct = [];
-          for (let i = 0; i < selectedProducts.length; i++) {
-              const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
-              if (product) {
-                  orderListProduct.push({
-                      productId: product._id,         // Đảm bảo sử dụng product._id thay vì product.productId
-                      quantity: selectedProducts[i].quantity,
-                      productPrice: product.productPrice,   // Đảm bảo sử dụng product.productPrice thay vì product.price
-                  });
-              } else {
-                  console.error(`Product not found for id: ${selectedProducts[i].productId}`);
-              }
-          }
+      // let orderListProduct = [];
+      // for (let i = 0; i < selectedProducts.length; i++) {
+      //   const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
+      //   orderListProduct.push({
+      //     product_id: product._id,
+      //     quantity: selectedProducts[i].quantity,
+      //     price: product.price,
+      //   });
+      // }
 
-
-
-            // Tạo đơn hàng mới
-            const newOrder = new Order({
-                customerID,
-                orderShippingAddress,
-                orderShippingMethod,
-                orderShippingFee,
-                orderTotalPrice,
-                orderListProduct,
-                orderPayment,
-                orderStatus,
-            });
-            console.log(newOrder);
-            // Lưu vào MongoDB
-            return await newOrder.save();
-        } catch (error) {
-            console.error("Error creating order after payment:", error);
-            throw error; // Ném lỗi lên controller để xử lý
+      // let orderListProduct = [];
+      // for (let i = 0; i < selectedProducts.length; i++) {
+      //     const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
+      //     orderListProduct.push({
+      //         productId: product.productId,        // Đổi từ product_id thành productId
+      //         quantity: selectedProducts[i].quantity,
+      //         productPrice: product.productPrice,   // Đổi từ price thành productPrice
+      //     });
+      // }
+      // let orderListProduct = [];
+      // for (let i = 0; i < selectedProducts.length; i++) {
+      //     const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
+      //     if (product) {
+      //         orderListProduct.push({
+      //             productId: product._id,        // Đảm bảo sử dụng product._id thay vì product.productId
+      //             quantity: selectedProducts[i].quantity,
+      //             productPrice: product.price,   // Đảm bảo sử dụng product.price thay vì product.productPrice
+      //         });
+      //     } else {
+      //         console.error(`Product not found for id: ${selectedProducts[i].productId}`);
+      //     }
+      // }
+      let orderListProduct = [];
+      for (let i = 0; i < selectedProducts.length; i++) {
+        const product = products.find(p => p._id.toString() === selectedProducts[i].productId.toString());
+        if (product) {
+          orderListProduct.push({
+            productId: product._id,         // Đảm bảo sử dụng product._id thay vì product.productId
+            quantity: selectedProducts[i].quantity,
+            productPrice: product.productPrice,   // Đảm bảo sử dụng product.productPrice thay vì product.price
+          });
+        } else {
+          console.error(`Product not found for id: ${selectedProducts[i].productId}`);
         }
+      }
+
+
+
+      // Tạo đơn hàng mới
+      const newOrder = new Order({
+        customerID,
+        orderShippingAddress,
+        orderShippingMethod,
+        orderShippingFee,
+        orderTotalPrice,
+        orderListProduct,
+        orderPayment,
+        orderStatus,
+      });
+      console.log(newOrder);
+      // Lưu vào MongoDB
+      return await newOrder.save();
+    } catch (error) {
+      console.error("Error creating order after payment:", error);
+      throw error; // Ném lỗi lên controller để xử lý
     }
+  }
 }
 
 module.exports = new CustomerService();
 
 
 function sortObject(obj) {
-    let sorted = {};
-    let str = [];
-    let key;
+  let sorted = {};
+  let str = [];
+  let key;
 
-    // Lấy tất cả các khóa của đối tượng
-    for (key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            str.push(key); // Lưu trữ khóa chưa mã hóa
-        }
+  // Lấy tất cả các khóa của đối tượng
+  for (key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      str.push(key); // Lưu trữ khóa chưa mã hóa
     }
+  }
 
-    // Sắp xếp các khóa
-    str.sort();
+  // Sắp xếp các khóa
+  str.sort();
 
-    // Tạo đối tượng đã sắp xếp với giá trị đã mã hóa
-    for (key = 0; key < str.length; key++) {
-        // Mã hóa giá trị của tham số, thay %20 bằng dấu cộng
-        sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
-    }
+  // Tạo đối tượng đã sắp xếp với giá trị đã mã hóa
+  for (key = 0; key < str.length; key++) {
+    // Mã hóa giá trị của tham số, thay %20 bằng dấu cộng
+    sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+  }
 
-    return sorted;
+  return sorted;
 }

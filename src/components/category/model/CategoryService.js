@@ -60,6 +60,35 @@ class CategoryService {
             }
         }
     }
+
+    async updateActivation(id) {
+        try {
+            const category = await Category.findOne({ _id: id });
+            if (!category) {
+                return {
+                    status: 'error',
+                    message: 'Category not found',
+                }
+            }
+
+            if (category.categoryActive === 'Visible') {
+                category.categoryActive = 'Hidden';
+            } else {
+                category.categoryActive = 'Visible';
+            }
+            await category.save();
+            return {
+                status: 'success',
+                message: 'Category updated successfully',
+                data: category,
+            }
+        } catch (error) {
+            return {
+                status: 'error',
+                message: error.message
+            }
+        }
+    }
 }
 
 module.exports = new CategoryService;
