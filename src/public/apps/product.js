@@ -74,68 +74,6 @@ function updateCartCount(increment = 1) {
     }
 }
 
-
-// function addToLocalCart(productID, quantity) {
-//     // Get existing cart or initialize new one
-//     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-//     // Check if product already exists in cart
-//     const existingProduct = cart.find(item => item.productId === productID);
-    
-//     if (existingProduct) {
-//         existingProduct.quantity += quantity;
-//     } else {
-//         cart.push({
-//             productId: productID,
-//             quantity: quantity
-//         });
-//     }
-    
-//     localStorage.setItem('cart', JSON.stringify(cart));
-//     notify({ type: 'success', msg: 'Added to cart successfully' });
-//     updateCartCount();
-// }
-
-// Function to add items to local cart with complete product info
-// function addToLocalCart(productID, quantity) {
-//     // Get existing cart or initialize new one
-//     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-//     // First, get the complete product info from the current page
-//     const productInfo = {
-//         _id: productID,
-//         productName: document.querySelector('.product-detail__name')?.textContent,
-//         productPrice: parseFloat(document.querySelector('.product-detail__price')?.getAttribute('data-price')),
-//         productMainImage: document.querySelector('.product_detail_left img')?.src,
-//         productDescription: document.querySelector('.product-detail__description')?.textContent,
-//         productBrand: {
-//             brandName: document.querySelector('.product_detail_right .info')?.textContent
-//         },
-//         productDetailInformation: {
-//             productMaterial: document.querySelector('[data-material]')?.getAttribute('data-material'),
-//             productSize: document.querySelector('[data-size]')?.getAttribute('data-size')
-//         },
-//         productYear: document.querySelector('[data-year]')?.getAttribute('data-year'),
-//         quantity: quantity
-//     };
-    
-//     // Check if product already exists in cart
-//     const existingProductIndex = cart.findIndex(item => item._id === productID);
-    
-//     if (existingProductIndex !== -1) {
-//         // Update quantity if product exists
-//         cart[existingProductIndex].quantity += quantity;
-//     } else {
-//         // Add new product with full info
-//         cart.push(productInfo);
-//     }
-    
-//     localStorage.setItem('cart', JSON.stringify(cart));
-//     updateCartCount();
-//     notify({ type: 'success', msg: 'Added to cart successfully' });
-// }
-
-
 async function addToLocalCart(productID, quantity) {
     try {
         // Fetch complete product info from database
@@ -213,84 +151,6 @@ function addToServerCart(productID, quantity) {
     })
     .catch(error => console.error('Error adding to cart:', error));
 }
-
-
-
-// // Function to merge local cart with server cart upon login
-// async function mergeCartsAfterLogin() {
-//     const localCart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-//     if (localCart.length > 0) {
-//         try {
-//             const response = await fetch("http://localhost:5000/api/customer/cart/merge", {
-//                 method: 'POST',
-//                 credentials: 'include',
-//                 headers: { 'Content-Type': 'application/json' },
-//                 body: JSON.stringify({ localCart })
-//             });
-            
-//             const data = await response.json();
-//             if (data.status === 'success') {
-//                 localStorage.removeItem('cart'); // Clear local cart after successful merge
-//                 updateCartCount();
-//             }
-//         } catch (error) {
-//             console.error('Error merging carts:', error);
-//         }
-//     }
-// }
-
-// function addCart() {
-//     // Add item to cart
-//     const idContainer = document.getElementById("hehe");
-//     let quantity = 1;
-//     const quantityContainer = document.getElementById("each-production-quanity");
-//     if (quantityContainer.value === "") {
-//         notify({type: "warning", msg: "Please fill in a number of product"})
-//         return;
-//     }
-//     if (!isNaN(quantityContainer.value) && Number(quantityContainer.value) > 0) {
-//         quantity = Number(quantityContainer.value);
-//     }
-//     fetch("http://localhost:5000/api/customer/cart", {
-//         method: 'POST',
-//         credentials: 'include',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({
-//             productID: idContainer.innerText,
-//             quantity: quantity,
-//         })
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             // console.log(data);
-//             notify({ type: data.status, msg: data.msg });
-//         })
-//         .then(() => {
-//             updateCartCount();
-//         })
-//         .catch(error => console.error('Error adding to cart:', error));
-    
-// }
-
-// function updateCartCount(increment = 1) {
-//     fetch("http://localhost:5000/api/customer/cart", {
-//         method: 'GET',
-//         headers: { 'Content-Type': 'application/json' },
-//         credentials: 'include'
-//     })
-//         .then(response => response.json())
-//         .then(data => {
-//             const cartCount = document.getElementById('cart-count');
-//             var __cart_count = 0;
-//             for (const item of data.cart) {
-//               if (item !== null) {
-//                 __cart_count += item.quantity;
-//                 }
-//             }
-//             cartCount.innerText = __cart_count;
-//         });
-// }
 
 
 function loadProducts() {
@@ -386,11 +246,10 @@ function handleSearchWithParams(query) {
 
 function applyFilters(filterPayload) {
     showSpinner();
-    fetch('http://localhost:5000/api/product/filter', {
+    fetch('http://localhost:5000/api/product/filter?' + new URLSearchParams(filterPayload), {
         credentials: 'include',
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(filterPayload)
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
     })
         .then(response => response.json())
         .then(data => {
@@ -414,40 +273,41 @@ function resetPagination() {
 }
 
 // Modify the DOMContentLoaded event listener
-document.addEventListener('DOMContentLoaded', () => {
-    const queryParams = getQueryParams();
+// document.addEventListener('DOMContentLoaded', () => {
+//     const queryParams = getQueryParams();
 
-    // Update UI based on URL parameters
-    if (queryParams.keysearch) {
-        document.querySelector('#search__bar__product').value = queryParams.keysearch;
-    }
+//     // Update UI based on URL parameters
+//     if (queryParams.keysearch) {
+//         document.querySelector('#search__bar__product').value = queryParams.keysearch;
+//     }
 
-    // Load sidebar first so checkboxes exist
-    loadSideBar().then(() => {
-        // After sidebar is loaded, set the checkboxes
-        queryParams.brands.forEach(brand => {
-            const checkbox = document.getElementById(`checkbox_${brand}`);
-            if (checkbox) checkbox.checked = true;
-        });
+//     // Load sidebar first so checkboxes exist
+//     loadSideBar().then(() => {
+//         // After sidebar is loaded, set the checkboxes
+//         queryParams.brands.forEach(brand => {
+//             const checkbox = document.getElementById(`checkbox_${brand}`);
+//             if (checkbox) checkbox.checked = true;
+//         });
 
-        queryParams.categories.forEach(category => {
-            const checkbox = document.getElementById(`checkbox_${category}`);
-            if (checkbox) checkbox.checked = true;
-        });
+//         queryParams.categories.forEach(category => {
+//             const checkbox = document.getElementById(`checkbox_${category}`);
+//             if (checkbox) checkbox.checked = true;
+//         });
 
-        if (queryParams.sortType) {
-            const radio = document.getElementById(`sort_${queryParams.sortType}`);
-            if (radio) radio.checked = true;
-        }
+//         if (queryParams.sortType) {
+//             const radio = document.getElementById(`sort_${queryParams.sortType}`);
+//             if (radio) radio.checked = true;
+//         }
 
-        // Set current page and limit
-        currentPage = queryParams.page;
-        limit = queryParams.limit;
+//         // Set current page and limit
+//         currentPage = queryParams.page;
+//         limit = queryParams.limit;
 
-        // Load products with filters
-        loadProducts();
-    });
-});
+//         // Load products with filters
+//         loadProducts();
+//     });
+// });
+
 
 // Modify loadSideBar to return a promise
 function loadSideBar() {
@@ -515,6 +375,7 @@ function loadSideBar() {
                         }
                         // categoryFilterArea.appendChild(categoryElement);
                     });
+                    console.log("should be first");
                     resolve();
                 })
                 .catch(error => {
@@ -524,6 +385,58 @@ function loadSideBar() {
         })
     ]);
 }
+function filterProducts() {
+    // Get filter values from the UI
+    // const searchValue = document.getElementById('search__bar__product').value.trim();
+    currentPage = 1;
+    const selectedBrands = Array.from(
+        document.querySelectorAll('#brand-filter input[type="checkbox"]:checked')
+    ).map(input => input.id.replace('checkbox_', ''));
+
+    const selectedCategories = Array.from(
+        document.querySelectorAll('#category-filter input[type="checkbox"]:checked')
+    ).map(input => input.id.replace('checkbox_', ''));
+
+    // const selectedPrice = document.getElementById('price-filter').value;
+
+    const selectedSort = document.querySelector('#sort-filter input[type="radio"]:checked')?.id || '';
+
+    const filterPayload = {
+        // search: searchValue,
+        page: currentPage,
+        limit: limit,
+        brands: selectedBrands, // Array
+        categories: selectedCategories, // Array
+        // price: selectedPrice, // Số hoặc chuỗi nếu backend cần
+        sortType: selectedSort.includes('asc') ? 'asc' : 'desc', // Phân tích từ id
+        sortBy: 'productPrice', // Hoặc một trường cụ thể
+
+    };
+
+    updateURL(filterPayload); // Update the URL with filter parameters
+
+
+    // console.log(filterPayload);
+    showSpinner();
+    // Fetch filtered products
+    fetch('http://localhost:5000/api/product/filter?' + new URLSearchParams(filterPayload), {
+        credentials: 'include',
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+        .then(response => response.json())
+        .then(data => {
+            hideSpinner();
+            const { totalPages: total, item } = data;
+            totalPages = total; // Update total pages
+            cache.clear(); // Clear the cache as filters have changed
+            cache.set(currentPage, item); // Cache the new filtered results
+            renderProducts(item); // Render filtered products
+            prefetchPage(currentPage + 1); // Prefetch next page for filtered results
+        })
+        .catch(error => console.error('Error filtering products:', error));
+}
+
 
 // Update prefetchPage to handle search queries
 function prefetchPage(page) {
@@ -589,7 +502,6 @@ function updateURL({
     history.pushState(null, '', newURL);
 }
 
-
 // Render products on the page
 function renderProducts(products) {
     const itemsContainer = document.getElementById('items-container');
@@ -636,8 +548,6 @@ function createProductElement(product) {
         </div>`;
     return card;
 }
-
-
 
 function handleSearch() {
   const query = document.querySelector("#search__bar__product").value;
@@ -704,8 +614,6 @@ function handleSearch() {
     });
 }
 
-
-
 // Add event listener for search input
 document.querySelector("#search__bar__product").addEventListener("keyup", function(event) {
     if (event.key === "Enter") {
@@ -749,58 +657,6 @@ document.getElementById('next-btn').addEventListener('click', () => {
     }
 });
 
-function filterProducts() {
-    // Get filter values from the UI
-    // const searchValue = document.getElementById('search__bar__product').value.trim();
-    currentPage = 1;
-    const selectedBrands = Array.from(
-        document.querySelectorAll('#brand-filter input[type="checkbox"]:checked')
-    ).map(input => input.id.replace('checkbox_', ''));
-
-    const selectedCategories = Array.from(
-        document.querySelectorAll('#category-filter input[type="checkbox"]:checked')
-    ).map(input => input.id.replace('checkbox_', ''));
-
-    // const selectedPrice = document.getElementById('price-filter').value;
-
-    const selectedSort = document.querySelector('#sort-filter input[type="radio"]:checked')?.id || '';
-
-    const filterPayload = {
-        // search: searchValue,
-        page: currentPage,
-        limit: limit,
-        brands: selectedBrands, // Array
-        categories: selectedCategories, // Array
-        // price: selectedPrice, // Số hoặc chuỗi nếu backend cần
-        sortType: selectedSort.includes('asc') ? 'asc' : 'desc', // Phân tích từ id
-        sortBy: 'productPrice', // Hoặc một trường cụ thể
-
-    };
-
-    updateURL(filterPayload); // Update the URL with filter parameters
-
-
-    // console.log(filterPayload);
-    showSpinner();
-    // Fetch filtered products
-    fetch('http://localhost:5000/api/product/filter', {
-        credentials: 'include',
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(filterPayload)
-    })
-        .then(response => response.json())
-        .then(data => {
-            hideSpinner();
-            const { totalPages: total, item } = data;
-            totalPages = total; // Update total pages
-            cache.clear(); // Clear the cache as filters have changed
-            cache.set(currentPage, item); // Cache the new filtered results
-            renderProducts(item); // Render filtered products
-            prefetchPage(currentPage + 1); // Prefetch next page for filtered results
-        })
-        .catch(error => console.error('Error filtering products:', error));
-}
 
 function showSpinner() {
     document.getElementById('loading-spinner').classList.remove('hidden');
@@ -903,9 +759,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#search__bar__product').value = queryParams.keysearch;
     }
 
+    loadSideBar();
+
+
     queryParams.brands.forEach(brand => {
         const checkbox = document.getElementById(`checkbox_${brand}`);
-        if (checkbox) checkbox.checked = true;
+        console.log(`checkbox_${brand}`);
+        if (checkbox) {
+            console.log("here");
+            checkbox.checked = true;
+        }
     });
 
     queryParams.categories.forEach(category => {
@@ -924,13 +787,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load products with initial filters
     loadProducts();
-    loadSideBar();
 });
 
 
 
-// function loadSideBar() {
-//     showBrand();
-//     showCategory();
-// }
+function loadSideBar() {
+    showBrand();
+    showCategory();
+}
 

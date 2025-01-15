@@ -100,14 +100,14 @@ async function handleSubmitSignup() {
   const email = document.querySelector("#signup__email").value.trim();
   const password = document.querySelector("#signup__password").value;
 
-//   // Kiểm tra dữ liệu đầu vào
-//   if (!email || !password || !username) {
-//     notify({
-//       type: "warning",
-//       msg: "Please fill all fields",
-//     });
-//     return;
-//   }
+  // Kiểm tra dữ liệu đầu vào
+  if (!email || !password || !username) {
+    notify({
+      type: "warning",
+      msg: "Please fill all fields",
+    });
+    return;
+  }
 
   try {
     // Gửi yêu cầu OTP qua email

@@ -539,8 +539,9 @@ input[type="range"]:hover {
 
 
 /* Checkbox được chọn */
-.custom-checkbox:checked+.custom-label {
+/* .custom-checkbox:checked+.custom-label {
     background-color: var(--navy-color-hover);
     color: #ffffff;
     transform: scale(1.05);
-}
+} */
+

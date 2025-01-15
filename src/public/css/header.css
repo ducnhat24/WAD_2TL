@@ -206,7 +206,7 @@
     position: relative;
 }
 
-.fa-user {
+.header__cart .fa-user {
     background: none;
     border: none;
     color: #fff;

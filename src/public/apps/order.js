@@ -413,18 +413,15 @@ async function openOrderDetails(order) {
     if (order) {
         const button = document.getElementById("modal-btn");
         if (order.orderStatus === "Delivered") {
-            const confirmModal = document.createElement("button");
-            confirmModal.innerHTML = "Confirm";
-            confirmModal.id = "confirm-modal";
+            const confirmModal = document.getElementById("confirm-modal");
+
             confirmModal.onclick = () => confirmOrder(order._id, "Completed");
-            button.appendChild(confirmModal);
+            confirmModal.style.display = "flex";
         } else {
             if (order.orderStatus === "Processing") {
-                const cancelButton = document.createElement("button");
-                cancelButton.innerHTML = "Cancel";
-                cancelButton.id = "cancel-modal";
+                const cancelButton = document.getElementById("cancel-modal");
                 cancelButton.onclick = () => confirmOrder(order._id, "Cancelled");
-                button.appendChild(cancelButton);
+                cancelButton.style.display = "flex";
             }
         }
     }
