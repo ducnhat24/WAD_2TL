@@ -5,7 +5,7 @@
                 Featured <span class="text-navy">Watch</span>
             </h2>
             <h3>
-                
+
             </h3>
             <!-- Sidebar -->
 
@@ -14,8 +14,8 @@
                 <div class="sidebar">
                     <h4 class="text-dark">Search</h4>
                     <div class="mb-3 d-flex align-items-center">
-                        <input id="search__bar__product" type="text" class="form-control" placeholder="Search by name"
-                            value="{{searchValue}}">
+                        <input id="search__bar__product" type="text" class="form-control form-product"
+                            placeholder="Search by name" value="{{searchValue}}">
                         <button class="custom_button" onclick="javascript:handleSearch()">
                             <i class="fas fa-search"></i> <!-- Icon search -->
                         </button>
@@ -25,18 +25,23 @@
                     </div>
 
                     <h5 class="mt-4">Price</h5>
-                    <input id="price-filter" type="range" class="form-range" min="1000" max="50000"
-                        value="{{selectedPrice}}">
+                    <div class="price__range">
+                        <input type="number" id="min-price" class="form-control" placeholder="Min">
+
+                        <input type="number" id="max-price" class="form-control" placeholder="Max">
+                    </div>
 
                     <h5 class="mt-4">Category</h5>
                     <div id="category-filter" class="filter-area btn-group-toggle" data-toggle="buttons">
                     </div>
                     <h5 class="mt-4">Sort</h5>
                     <div id="sort-filter" class="filter-area custom-radio-group">
-                        <input type="radio" name="sort" id="sort_price_asc" class="custom-radio" {{#if (eqString selectedSort "price_asc")}}checked{{/if}}>
+                        <input type="radio" name="sort" id="sort_price_asc" class="custom-radio" {{#if (eqString
+                            selectedSort "price_asc" )}}checked{{/if}}>
                         <label class="custom-label" for="sort_price_asc">Price ↑</label>
 
-                        <input type="radio" name="sort" id="sort_price_desc" class="custom-radio" {{#if (eqString selectedSort "price_desc")}}checked{{/if}}>
+                        <input type="radio" name="sort" id="sort_price_desc" class="custom-radio" {{#if (eqString
+                            selectedSort "price_desc" )}}checked{{/if}}>
                         <label class="custom-label" for="sort_price_desc">Price ↓</label>
                     </div>
 
@@ -54,7 +59,7 @@
 
                     <div id="product-page">
                         <div id="pagination">
-                            <button class="custom_button" id="prev-btn" type="button" disabled>   Previous</button>
+                            <button class="custom_button" id="prev-btn" type="button" disabled> Previous</button>
                             <span id="page-info"></span>
                             <button class="custom_button" id="next-btn" type="button">Next</button>
                         </div>

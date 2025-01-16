@@ -287,11 +287,12 @@ input[type="radio"] {
 
 }
 
+/* 
 .sidebar:hover {
     background-color: white;
     color: black;
     transform: scale(1.05);
-}
+} */
 
 .sidebar label {
     border: 2px solid --primary-color;
@@ -435,7 +436,7 @@ input[type="range"]:hover {
     justify-content: flex-start;
     align-items: center;
     flex-direction: column;
-
+    width: 100%;
 }
 
 
@@ -545,3 +546,19 @@ input[type="range"]:hover {
     transform: scale(1.05);
 } */
 
+.price__range {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.price__range input[type="number"] {
+    margin: 0 5px;
+    border: 2px solid var(--navy-color);
+}
+
+.form-product {
+    margin: 0 !important;
+    margin-right: 10px !important;
+}

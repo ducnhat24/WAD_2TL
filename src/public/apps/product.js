@@ -18,12 +18,12 @@ function addCart() {
     const productID = idContainer.innerText;
     let quantity = 1;
     const quantityContainer = document.getElementById("each-production-quanity");
-    
+
     if (quantityContainer.value === "") {
-        notify({type: "warning", msg: "Please fill in a number of product"});
+        notify({ type: "warning", msg: "Please fill in a number of product" });
         return;
     }
-    
+
     if (!isNaN(quantityContainer.value) && Number(quantityContainer.value) > 0) {
         quantity = Number(quantityContainer.value);
     }
@@ -51,19 +51,19 @@ function updateCartCount(increment = 1) {
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include'
         })
-        .then(response => response.json())
-        .then(data => {
-            let totalCount = 0;
-            for (const item of data.cart) {
-                if (item !== null) {
-                    totalCount += item.quantity;
+            .then(response => response.json())
+            .then(data => {
+                let totalCount = 0;
+                for (const item of data.cart) {
+                    if (item !== null) {
+                        totalCount += item.quantity;
+                    }
                 }
-            }
-            cartCountElement.innerText = totalCount;
-        })
-        .catch(error => {
-            console.error('Error updating cart count:', error);
-        });
+                cartCountElement.innerText = totalCount;
+            })
+            .catch(error => {
+                console.error('Error updating cart count:', error);
+            });
     } else {
         // Get local cart count
         const localCart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -142,25 +142,25 @@ function addToServerCart(productID, quantity) {
             quantity: quantity,
         })
     })
-    .then(response => response.json())
-    .then(data => {
-        notify({ type: data.status, msg: data.msg });
-    })
-    .then(() => {
-        updateCartCount();
-    })
-    .catch(error => console.error('Error adding to cart:', error));
+        .then(response => response.json())
+        .then(data => {
+            notify({ type: data.status, msg: data.msg });
+        })
+        .then(() => {
+            updateCartCount();
+        })
+        .catch(error => console.error('Error adding to cart:', error));
 }
 
 
 function loadProducts() {
     const queryParams = getQueryParams();
-    
+
     // Check if there are any filter parameters
-    const hasFilters = queryParams.brands.length > 0 || 
-                      queryParams.categories.length > 0 || 
-                      queryParams.sortType || 
-                      queryParams.keysearch;
+    const hasFilters = queryParams.brands.length > 0 ||
+        queryParams.categories.length > 0 ||
+        queryParams.sortType ||
+        queryParams.keysearch;
 
     if (hasFilters) {
         // If there are filters, use filter API endpoint
@@ -170,7 +170,9 @@ function loadProducts() {
             brands: queryParams.brands,
             categories: queryParams.categories,
             sortType: queryParams.sortType,
-            sortBy: queryParams.sortBy
+            sortBy: queryParams.sortBy,
+            minPrice: queryParams.minPrice,
+            maxPrice: queryParams.maxPrice
         };
 
         if (queryParams.keysearch) {
@@ -212,7 +214,7 @@ function handleSearchWithParams(query) {
         credentials: 'include',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             keysearch: query,
             page: currentPage,
             limit: limit
@@ -315,7 +317,7 @@ function loadSideBar() {
         new Promise((resolve) => {
             const brandFilterArea = document.getElementById('brand-filter');
             brandFilterArea.innerHTML = ''; // Clear existing content
-            
+
             fetch('http://localhost:5000/api/brand', {
                 credentials: 'include',
                 method: 'GET',
@@ -350,7 +352,7 @@ function loadSideBar() {
         new Promise((resolve) => {
             const categoryFilterArea = document.getElementById('category-filter');
             categoryFilterArea.innerHTML = ''; // Clear existing content
-            
+
             fetch('http://localhost:5000/api/category', {
                 credentials: 'include',
                 method: 'GET',
@@ -388,6 +390,24 @@ function loadSideBar() {
 function filterProducts() {
     // Get filter values from the UI
     // const searchValue = document.getElementById('search__bar__product').value.trim();
+    const minPrice = document.getElementById('min-price').value;
+    const maxPrice = document.getElementById('max-price').value;
+
+    if (minPrice === '' && maxPrice !== '') {
+        notify({ type: "warning", msg: "Please fill in the minimum price" });
+        return;
+    }
+
+    if (minPrice !== '' && maxPrice === '') {
+        notify({ type: "warning", msg: "Please fill in the maximum price" });
+        return;
+    }
+
+    if (Number(maxPrice) < Number(minPrice)) {
+        notify({ type: "warning", msg: "Max price must be greater than min price" });
+        return;
+    }
+
     currentPage = 1;
     const selectedBrands = Array.from(
         document.querySelectorAll('#brand-filter input[type="checkbox"]:checked')
@@ -407,6 +427,8 @@ function filterProducts() {
         limit: limit,
         brands: selectedBrands, // Array
         categories: selectedCategories, // Array
+        minPrice: minPrice,
+        maxPrice: maxPrice,
         // price: selectedPrice, // Số hoặc chuỗi nếu backend cần
         sortType: selectedSort.includes('asc') ? 'asc' : 'desc', // Phân tích từ id
         sortBy: 'productPrice', // Hoặc một trường cụ thể
@@ -443,13 +465,13 @@ function prefetchPage(page) {
     // if (cache.has(page) || page > totalPages || page < 1) return;
 
     const searchQuery = document.querySelector("#search__bar__product").value;
-    const url = searchQuery 
-      ? 'http://localhost:5000/api/product/search'
-      : 'http://localhost:5000/api/product/limitation';
-    
-    const payload = searchQuery 
-      ? { keysearch: searchQuery, page, limit }
-      : { page, limit };
+    const url = searchQuery
+        ? 'http://localhost:5000/api/product/search'
+        : 'http://localhost:5000/api/product/limitation';
+
+    const payload = searchQuery
+        ? { keysearch: searchQuery, page, limit }
+        : { page, limit };
 
     fetch(url, {
         credentials: 'include',
@@ -471,7 +493,10 @@ function updateURL({
     brands = [],
     categories = [],
     sortType = '',
-    sortBy = ''
+    sortBy = '',
+    minPrice = '',
+    maxPrice = ''
+
 } = {}) {
     const queryParams = new URLSearchParams();
 
@@ -492,6 +517,9 @@ function updateURL({
     if (categories.length > 0) {
         queryParams.set('categories', categories.join(','));
     }
+
+    if (minPrice) queryParams.set('minPrice', minPrice);
+    if (maxPrice) queryParams.set('maxPrice', maxPrice);
 
     // Add sorting parameters if provided
     if (sortType) queryParams.set('sortType', sortType);
@@ -550,72 +578,72 @@ function createProductElement(product) {
 }
 
 function handleSearch() {
-  const query = document.querySelector("#search__bar__product").value;
+    const query = document.querySelector("#search__bar__product").value;
 
-  if (!query) {
-    notify({
-      type: "warning",
-      msg: "Please enter a search query",
-    });
-    return;
-  }
-
-  showSpinner();
-    fetch(`http://localhost:5000/api/product/search`, {
-    credentials: 'include',
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ 
-      keysearch: query,
-      page: currentPage,
-      limit: limit
-    })
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      hideSpinner();
-      if (data.item.length === 0) {
+    if (!query) {
         notify({
-          type: "warning",
-          msg: "No results found",
+            type: "warning",
+            msg: "Please enter a search query",
         });
-        // Reset pagination when no results found
-        document.getElementById('page-info').textContent = `Page 0 of 0`;
-        document.getElementById('prev-btn').disabled = true;
-        document.getElementById('next-btn').disabled = true;
-        const itemsContainer = document.getElementById('items-container');
-        itemsContainer.innerHTML = ''; // Clear current items
-      } else {
-        // Update total pages from search results
-        totalPages = data.totalPages;
-        // Cache the search results
-        cache.clear(); // Clear existing cache
-        cache.set(currentPage, data.item);
-        // Render the search results
-        renderProducts(data.item);
-        // Prefetch next page of search results
-        prefetchPage(currentPage + 1);
-        // Update the URL
-        const payload = {
+        return;
+    }
+
+    showSpinner();
+    fetch(`http://localhost:5000/api/product/search`, {
+        credentials: 'include',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
             keysearch: query,
             page: currentPage,
             limit: limit
-        };
-        
-        updateURL(payload);
-      }
+        })
     })
-    .catch((error) => {
-      hideSpinner();
-      notify({
-        type: "error",
-        msg: error.message,
-      });
-    });
+        .then((res) => res.json())
+        .then((data) => {
+            hideSpinner();
+            if (data.item.length === 0) {
+                notify({
+                    type: "warning",
+                    msg: "No results found",
+                });
+                // Reset pagination when no results found
+                document.getElementById('page-info').textContent = `Page 0 of 0`;
+                document.getElementById('prev-btn').disabled = true;
+                document.getElementById('next-btn').disabled = true;
+                const itemsContainer = document.getElementById('items-container');
+                itemsContainer.innerHTML = ''; // Clear current items
+            } else {
+                // Update total pages from search results
+                totalPages = data.totalPages;
+                // Cache the search results
+                cache.clear(); // Clear existing cache
+                cache.set(currentPage, data.item);
+                // Render the search results
+                renderProducts(data.item);
+                // Prefetch next page of search results
+                prefetchPage(currentPage + 1);
+                // Update the URL
+                const payload = {
+                    keysearch: query,
+                    page: currentPage,
+                    limit: limit
+                };
+
+                updateURL(payload);
+            }
+        })
+        .catch((error) => {
+            hideSpinner();
+            notify({
+                type: "error",
+                msg: error.message,
+            });
+        });
 }
 
 // Add event listener for search input
-document.querySelector("#search__bar__product").addEventListener("keyup", function(event) {
+document.querySelector("#search__bar__product").addEventListener("keyup", function (event) {
     if (event.key === "Enter") {
         currentPage = 1; // Reset to first page when searching
         cache.clear(); // Clear the cache for new search
@@ -637,13 +665,13 @@ function loadSearchProducts(productList) {
     document.getElementById('page-info').textContent = `Page 1 of 1`;
     document.getElementById('prev-btn').disabled = true;
     document.getElementById('next-btn').disabled = true;
-    
-    
+
+
 }
 // Event listeners for pagination buttons
 document.getElementById('prev-btn').addEventListener('click', () => {
     if (currentPage > 1) {
-        currentPage-=1;
+        currentPage -= 1;
         loadProducts();
         prefetchPage(currentPage - 1); // Prefetch previous page
     }
@@ -668,12 +696,11 @@ function hideSpinner() {
 
 function showBrand() {
     const brandFilterArea = document.getElementById('brand-filter');
-    console.log("hehe");
     var brands = [];
     const selectedBrands = Array.from(
         document.querySelectorAll('#brand-filter input[type="checkbox"]:checked')
     ).map(input => input.id.replace('checkbox_', ''));
-    
+
     fetch('http://localhost:5000/api/brand', {
         credentials: 'include',
         method: 'GET',
@@ -681,6 +708,8 @@ function showBrand() {
     })
         .then(response => response.json())
         .then(data => {
+            console.log("hehe")
+
             brands = data.data;
             for (const brand of brands) {
                 const brandElement = document.createElement('div');
@@ -698,8 +727,11 @@ function showBrand() {
 
                 brandFilterArea.appendChild(brandElement);
             }
+
         })
         .catch(error => console.error('Error loading brands:', error));
+
+
 }
 
 function showCategory() {
@@ -708,7 +740,7 @@ function showCategory() {
     const selectedCategories = Array.from(
         document.querySelectorAll('#category-filter input[type="checkbox"]:checked')
     ).map(input => input.id.replace('checkbox_', ''));
-    
+
     fetch('http://localhost:5000/api/category', {
         credentials: 'include',
         method: 'GET',
@@ -719,7 +751,7 @@ function showCategory() {
             categories = data.data;
             for (const category of categories) {
                 const categoryElement = document.createElement('div');
-                 categoryElement.innerHTML = `
+                categoryElement.innerHTML = `
                     <div class="custom-checkbox-group">
                         <input 
                             type="checkbox" 
@@ -746,25 +778,28 @@ function getQueryParams() {
         brands: params.get('brands') ? params.get('brands').split(',') : [],
         categories: params.get('categories') ? params.get('categories').split(',') : [],
         sortType: params.get('sortType') || '',
-        sortBy: params.get('sortBy') || ''
+        sortBy: params.get('sortBy') || '',
+        minPrice: params.get('minPrice') || '',
+        maxPrice: params.get('maxPrice') || ''
     };
 }
 
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const queryParams = getQueryParams();
 
+    console.log(queryParams);
     // Cập nhật các giá trị từ URL vào các filter UI
     if (queryParams.keysearch) {
         document.querySelector('#search__bar__product').value = queryParams.keysearch;
     }
 
-    loadSideBar();
-
+    await loadSideBar();
 
     queryParams.brands.forEach(brand => {
         const checkbox = document.getElementById(`checkbox_${brand}`);
         console.log(`checkbox_${brand}`);
+        console.log(checkbox);
         if (checkbox) {
             console.log("here");
             checkbox.checked = true;
@@ -775,6 +810,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const checkbox = document.getElementById(`checkbox_${category}`);
         if (checkbox) checkbox.checked = true;
     });
+
+    if (queryParams.minPrice) {
+        document.getElementById('min-price').value = queryParams.minPrice;
+    }
+
+    if (queryParams.maxPrice) {
+        document.getElementById('max-price').value = queryParams.maxPrice;
+    }
 
     if (queryParams.sortType) {
         const radio = document.getElementById(queryParams.sortType === 'asc' ? 'sort_price_asc' : 'sort_price_desc');
@@ -791,8 +834,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-function loadSideBar() {
-    showBrand();
-    showCategory();
-}
+// function loadSideBar() {
+//     showBrand();
+//     showCategory();
+// }
 

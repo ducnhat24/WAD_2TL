@@ -153,6 +153,10 @@ class ProductService {
       const categoryArray = query.categories || [];
       const sortBy = query.sortBy;
       const sortType = query.sortType;
+      const minPrice = query.minPrice || '';
+      const maxPrice = query.maxPrice || '';
+
+      console.log(query);
 
       // console.log(query);
 
@@ -190,11 +194,26 @@ class ProductService {
           );
         }
 
-        let sortedProducts = searchResult;
+        let filteredByPrice = searchResult;
+
+        // Filter by price
+        if (minPrice !== '' && maxPrice !== '') {
+          filteredByPrice = searchResult.filter((product) => {
+            // console.log("product price: ", product.productPrice);
+            // console.log("minPrice: ", Number(minPrice));
+            // console.log("maxPrice: ", Number(maxPrice));
+            // console.log("result: ", Number(product.productPrice) >= Number(minPrice) && Number(product.productPrice) <= Number(maxPrice));
+            // console.log("====================================");
+
+            return Number(product.productPrice) >= Number(minPrice) && Number(product.productPrice) <= Number(maxPrice);
+          });
+        }
+
+        let sortedProducts = filteredByPrice;
 
         // Sort by field
         if (sortBy && sortType) {
-          sortedProducts = [...filteredByCategory].sort((a, b) => {
+          sortedProducts = [...filteredByPrice].sort((a, b) => {
             if (sortType === "asc") {
               return a[sortBy] > b[sortBy] ? 1 : -1;
             } else {
