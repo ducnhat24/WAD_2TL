@@ -1,4 +1,4 @@
-var url = process.env.FETCH_URL;
+var url = "https://watch-shop-nine-beryl.vercel.app";
 let user = null;
 
 function showNav() {

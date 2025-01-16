@@ -1,4 +1,4 @@
-var fetchURL = process.env.FETCH_URL;
+var fetchURL = "https://watch-shop-nine-beryl.vercel.app";
 async function getCustomerID() {
     try {
         const response = await fetch(fetchURL + '/api/customer/id');

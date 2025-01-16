@@ -1,4 +1,4 @@
-var fetchURL = process.env.FETCH_URL; 
+var fetchURL = "https://watch-shop-nine-beryl.vercel.app";
 
 document.getElementById("forgotPasswordLink").addEventListener("click", function () {
     document.getElementById("popupOverlay").classList.add("active");

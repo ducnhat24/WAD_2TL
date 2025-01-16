@@ -1,4 +1,4 @@
-var fetchURL = process.env.FETCH_URL;
+var fetchURL = "https://watch-shop-nine-beryl.vercel.app";
 
 document.getElementById("saveEmail").addEventListener("click", async function () {
   const email = document.getElementById("email").value.trim();

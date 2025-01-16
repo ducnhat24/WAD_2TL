@@ -1,5 +1,5 @@
 // FETCHING AND RENDERING ORDERS
-var fetchURL = process.env.FETCH_URL;
+var fetchURL = "https://watch-shop-nine-beryl.vercel.app";
 
 let ordersData = []; // Biến toàn cục lưu trữ danh sách đơn hàng
 

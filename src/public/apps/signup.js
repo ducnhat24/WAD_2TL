@@ -1,4 +1,4 @@
-var fetchURL = process.env.FETCH_URL;
+var fetchURL = "https://watch-shop-nine-beryl.vercel.app";
 
 // Show OTP overlay
 function showOtpOverlay() {
