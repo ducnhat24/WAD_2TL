@@ -33,7 +33,7 @@ function increaseQuantity(currentQuantity) {
 }
 
 function decreaseQuantity(currentQuantity) {
-    const newQuantity = Math.max(0, parseInt(currentQuantity, 10) - 1);
+    const newQuantity = Math.max(1, parseInt(currentQuantity, 10) - 1);
     return newQuantity;
 }
 
@@ -376,7 +376,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
         const shippingAddress = document.querySelector('textarea').value;
 
         if (!shippingMethod || !shippingAddress) {
-            alert("Please select a shipping method and provide an address.");
+            notify({ type: "error", msg: "Please select a shipping method and provide an address." });
             return;
         }
 
@@ -416,7 +416,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
         const result = await response.json();
 
         if (response.ok) {
-            alert("Order created successfully!");
+            notify({ type: "success", msg: "Order created successfully!" });
             console.log(result);
             //for each product in the cart, delete it
             productOrdered.forEach((product) => {
@@ -427,7 +427,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
         }
     } catch (error) {
         console.error(error);
-        alert("An error occurred while processing your order.");
+        notify({ type: "error", msg: "An error occurred while processing your order." });
     }
 });
 
@@ -449,61 +449,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
-// document.getElementById('pay-button').addEventListener('click', async () => {
-//     // Lấy danh sách sản phẩm đã chọn
-//     const selectedProducts = productOrdered.map(product => ({
-//         productId: product._id,
-//         quantity: product.quantity,
-//         productPrice: product.productPrice,
-//     }));
-    
-//     // Lưu sản phẩm đã chọn vào localStorage
-//     localStorage.setItem('selectedProducts', JSON.stringify(selectedProducts));
-
-//     // Lấy giá trị tổng tiền từ DOM
-//     const totalElement = document.getElementById('total');
-//     const totalString = totalElement.textContent.trim().replace(/\D/g, '');
-//     const total = parseInt(totalString, 10);
-
-//     if (!total || isNaN(total)) {
-//         alert("Invalid total amount");
-//         return;
-//     }
-
-//     // Cấu hình body để gửi đến API
-//     const body = {
-//         paymentDescription: "Thanh toán giỏ hàng",
-//         amount: total.toString(),
-//         paymentMethod: "VNBANK",
-//         language: "vn"
-//     };
-
-//     try {
-//         // Gửi yêu cầu đến API để lấy URL thanh toán
-//         const response = await fetch('http://localhost:5000/api/customer/create-payment-url', {
-//             method: 'POST',
-//             headers: { 'Content-Type': 'application/json' },
-//             body: JSON.stringify(body)
-//         });
-
-//         if (!response.ok) {
-//             throw new Error(`Error: ${response.status}`);
-//         }
-
-//         const data = await response.json();
-
-//         // Chuyển hướng đến URL thanh toán VNPay
-//         if (data.paymentUrl) {
-//             window.location.href = data.paymentUrl;
-//         } else {
-//             alert("Failed to get payment URL");
-//         }
-//     } catch (error) {
-//         console.error("Error:", error);
-//         alert("There was an error processing your payment. Please try again.");
-//     }
-// });
 
 
 document.getElementById('pay-button').addEventListener('click', async () => {
@@ -531,13 +476,13 @@ document.getElementById('pay-button').addEventListener('click', async () => {
 
     // Kiểm tra tổng tiền hợp lệ
     if (!total || isNaN(total)) {
-        alert("Invalid total amount");
+        notify({ type: "error", msg: "Invalid total amount" });
         return;
     }
 
     // Kiểm tra nếu các thông tin bắt buộc chưa được điền
     if (!shippingMethod || !shippingAddress || shippingFee === NaN) {
-        alert("Please fill in all shipping details.");
+        notify({ type: "error", msg: "Please fill in all shipping details." });
         return;
     }
 
@@ -580,10 +525,12 @@ document.getElementById('pay-button').addEventListener('click', async () => {
         if (data.paymentUrl) {
             window.location.href = data.paymentUrl;
         } else {
-            alert("Failed to get payment URL");
+            notify({ type: "error", msg: "Failed to get payment URL" });
         }
     } catch (error) {
         console.error("Error:", error);
-        alert("There was an error processing your payment. Please try again.");
+        notify({ type: "error", msg: "There was an error processing your payment. Please try again." });
     }
 });
+
+

@@ -11,8 +11,16 @@ let email = document.getElementById("emailInput").value;
   
   document.getElementById("sendOtpButton").addEventListener("click", async function () {
     email = document.getElementById("emailInput").value;
+
+    //regex of an email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      notify({ type: "error", msg: "Please enter a valid email address." });
+      return;
+    }
+
     if (!email) {
-      alert("Please enter your email address.");
+      notify({ type: "error", msg: "Please enter your email address." });
       return;
     }
 
@@ -25,11 +33,11 @@ let email = document.getElementById("emailInput").value;
 
       const result = await response.json();
       if (response.ok) {
-        alert("OTP sent successfully!");
+        notify({ type: "success", msg: "OTP sent successfully!" });
         document.getElementById("stepEmail").style.display = "none";
         document.getElementById("stepOtp").style.display = "block";
       } else {
-        alert(result.message || "Failed to send OTP.");
+        notify({ type: "error", msg: "Failed to send OTP." });
       }
     } catch (error) {
       console.error("Error sending OTP:", error);
@@ -39,7 +47,7 @@ let email = document.getElementById("emailInput").value;
   document.getElementById("verifyOtpButton").addEventListener("click", async function () {
     const otp = document.getElementById("otpInput").value;
     if (!otp) {
-      alert("Please enter the OTP.");
+      notify({ type: "error", msg: "Please enter the OTP." });
       return;
     }
 
@@ -52,11 +60,11 @@ let email = document.getElementById("emailInput").value;
 
       const result = await response.json();
       if (response.ok) {
-        alert("OTP verified successfully!");
+        notify({ type: "success", msg: "OTP verified successfully!" });
         document.getElementById("stepOtp").style.display = "none";
         document.getElementById("stepResetPassword").style.display = "block";
       } else {
-        alert(result.message || "Invalid OTP.");
+        notify({ type: "error", msg: "Invalid OTP." });
       }
     } catch (error) {
       console.error("Error verifying OTP:", error);
@@ -67,10 +75,19 @@ let email = document.getElementById("emailInput").value;
     const newPassword = document.getElementById("newPassword").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
 
-    if (newPassword !== confirmPassword) {
-      alert("Passwords do not match.");
+    //verify password
+    if (!newPassword || newPassword.length < 6) {
+      notify({ type: "error", msg: "New password must be at least 6 characters long." });
       return;
     }
+
+
+    if (newPassword !== confirmPassword) {
+      notify({ type: "error", msg: "New Password and Confirm Password do not match!" });
+      return;
+    }
+
+
 
     try {
       const response = await fetch("http://localhost:5000/api/customer/reset-password", {
@@ -81,10 +98,10 @@ let email = document.getElementById("emailInput").value;
 
       const result = await response.json();
       if (response.ok) {
-        alert("Password reset successfully!");
+        notify({ type: "success", msg: "Password reset successfully!" });
         document.getElementById("closePopupButton").click();
       } else {
-        alert(result.message || "Failed to reset password.");
+        notify({ type: "error", msg: "Failed to reset password." });
       }
     } catch (error) {
       console.error("Error resetting password:", error);

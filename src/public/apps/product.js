@@ -18,7 +18,7 @@ function addCart() {
     const productID = idContainer.innerText;
     let quantity = 1;
     const quantityContainer = document.getElementById("each-production-quanity");
-
+    
     if (quantityContainer.value === "") {
         notify({ type: "warning", msg: "Please fill in a number of product" });
         return;
@@ -26,6 +26,10 @@ function addCart() {
 
     if (!isNaN(quantityContainer.value) && Number(quantityContainer.value) > 0) {
         quantity = Number(quantityContainer.value);
+    }
+    else {
+        notify({ type: "warning", msg: "Please fill in a valid number of product" });
+        return;
     }
 
     // Check if user is logged in by checking for accessToken cookie
@@ -548,9 +552,46 @@ function renderProducts(products) {
 }
 
 // Create product card
+// function createProductElement(product) {
+//     const card = document.createElement('div');
+//     card.classList.add('card');
+//     card.innerHTML = `
+//         <div class="card_img">
+//             <a href="/product/${product._id}">
+//                 <img src="${product.productMainImage}" alt="${product.productName}" class="card-img-top">
+//             </a>
+//         </div>
+//         <div class="card_content">
+//             <div class="card_price">
+//                 <div class="card_price_fake">
+//                     <div class="card_price_value">${product.productPrice.toLocal }</div>
+//                 </div>
+//             </div>
+//             <div class="card_detail">
+//                 <div class="card_title">
+//                     <a href="/product/${product._id}">
+//                         <h5 class="card-title">${product.productName}</h5>
+//                     </a>
+//                 </div>
+//                 <div class="card_description">
+//                     <p>${product.productDescription}</p>
+//                 </div>
+//             </div>
+//         </div>`;
+//     return card;
+// }
+
+
 function createProductElement(product) {
     const card = document.createElement('div');
     card.classList.add('card');
+
+    // Format price as currency
+    const formattedPrice = product.productPrice.toLocaleString('vi-VN', {
+        style: 'currency',
+        currency: 'VND', // Thay 'USD' bằng mã tiền tệ bạn muốn, ví dụ: 'VND', 'EUR', ...
+    });
+
     card.innerHTML = `
         <div class="card_img">
             <a href="/product/${product._id}">
@@ -560,7 +601,7 @@ function createProductElement(product) {
         <div class="card_content">
             <div class="card_price">
                 <div class="card_price_fake">
-                    <div class="card_price_value">${product.productPrice}</div>
+                    <div class="card_price_value">${formattedPrice}</div>
                 </div>
             </div>
             <div class="card_detail">

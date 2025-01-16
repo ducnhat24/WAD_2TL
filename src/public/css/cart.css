@@ -284,6 +284,17 @@
     color: #ffa500;
 }
 
+#cart-payment-method {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.cart__checkout__button{
+    margin: 0px 20px;
+}
+
 @media (max-width: 768px) {
     .cart {
         flex-direction: column;
@@ -306,3 +317,5 @@
         margin-top: 20px;
     }
 }
+
+

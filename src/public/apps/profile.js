@@ -1,5 +1,10 @@
 document.getElementById("saveEmail").addEventListener("click", async function () {
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
+
+  if (!email) {
+    notify({ type: "error", msg: "Please enter an email address."});
+    return;
+  }
 
   // Gửi email để lấy mã OTP
   const response = await fetch("http://localhost:5000/api/customer/update-profile/email/start", {
@@ -11,7 +16,7 @@ document.getElementById("saveEmail").addEventListener("click", async function ()
   if (response.ok) {
     document.getElementById("otpSection").style.display = "block";
   } else {
-    alert("Failed to send verification email.");
+    notify({ type: "error", msg: "Failed to send verification email."});
   }
 });
 
@@ -22,7 +27,7 @@ async function getCustomerID() {
             throw new Error(`Error fetching customer ID: ${response.status}`);
         }
         if (response.status == "error") {
-            alert("Please login first to write a review!");
+            notify({ type: "error", msg: "Please login first to write a review!"});
             return null;
         }
       const data = await response.json();
@@ -46,10 +51,16 @@ document.getElementById("verifyOtp").addEventListener("click", async function ()
   });
 
   if (response.ok) {
-    alert("Email updated successfully!");
+    localStorage.setItem(
+          "notify",
+          JSON.stringify({
+            type: "success",
+            msg: "Email updated successfully!",
+          })
+        );
     location.reload();
   } else {
-    alert("Invalid OTP.");
+    notify({ type: "error", msg: "Invalid OTP."});
   }
 });
 
@@ -57,34 +68,7 @@ document.getElementById("verifyOtp").addEventListener("click", async function ()
 // const nameInput = document.querySelector('#nameInput');
 
 
-// saveNameButton.addEventListener('click', async () => {
-//   const newName = nameInput.value.trim();
-//   const customerID = await getCustomerID();
 
-//   console.log(newName, customerID);
-//   if (newName) {
-//     try {
-//       const response = await fetch('http://localhost:5000/api/customer/update-profile/name', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ customerName: newName, customerID: customerID }),
-//       });
-
-//       const result = await response.json();
-//       if (response.ok) {
-//         alert('Name updated successfully');
-//       } else {
-//         alert(result.error);
-//       }
-//     } catch (error) {
-//       alert('An error occurred while updating the name');
-//     }
-//   } else {
-//     alert('Please enter a valid name');
-//   }
-// });
 
 // Lấy các phần tử cần thiết
 const saveNameButton = document.getElementById('saveNameButton');
@@ -97,6 +81,9 @@ saveNameButton.addEventListener('click', async (event) => {
 
   // Lấy giá trị từ input và customerID
   const newName = nameInput.value.trim();
+
+  
+
   const customerID = await getCustomerID(); // Giả định hàm này trả về customerID hợp lệ
 
   console.log('New name:', newName);
@@ -118,18 +105,24 @@ saveNameButton.addEventListener('click', async (event) => {
 
       // Kiểm tra phản hồi
       if (response.ok) {
-        alert('Name updated successfully');
+        localStorage.setItem(
+          "notify",
+          JSON.stringify({
+            type: "success",
+            msg: "Name updated successfully!",
+          })
+        );
         location.reload();
       } else {
         console.error('Error from server:', result.error);
-        alert(result.error || 'Failed to update name');
+        notify({ type: "error", msg: result.error || "Failed to update name."});
       }
     } catch (error) {
       console.error('Fetch error:', error);
-      alert('An error occurred while updating the name');
+      notify({ type: "error", msg: "An error occurred while updating the name."});
     }
   } else {
-    alert('Please enter a valid name');
+    notify({ type: "error", msg: "Please enter a valid name."});
   }
 });
 
@@ -151,7 +144,7 @@ document.getElementById("saveAvatar").addEventListener("click", async function (
   const file = fileInput.files[0];
 
   if (!file) {
-    alert("Please select an avatar to upload.");
+    notify({ type: "error", msg: "Please select an avatar to upload."});
     return;
   }
 
@@ -169,49 +162,27 @@ document.getElementById("saveAvatar").addEventListener("click", async function (
     const result = await response.json();
 
     if (response.ok) {
-      alert("Avatar updated successfully!");
       document.getElementById("avatarPreview").src = result.updatedCustomer.customerAvatar; // Cập nhật ảnh mới
+      localStorage.setItem(
+          "notify",
+          JSON.stringify({
+            type: "success",
+            msg: "Avatar updated successfully!",
+          })
+      );
+      
       location.reload(); // Tải lại trang
 
     } else {
-      alert(result.message || "Failed to update avatar.");
+      notify({ type: "error", msg: result.message || "Failed to update avatar."});
     }
   } catch (error) {
     console.error("Error uploading avatar:", error);
-    alert("An error occurred while updating the avatar.");
+    notify({ type: "error", msg: "An error occurred while updating the avatar."});
   }
 });
 
-// document.getElementById("savePasswordButton").addEventListener("click", async function () {
-//   const currentPassword = document.getElementById("currentPassword").value;
-//   const newPassword = document.getElementById("newPassword").value;
-//   const confirmPassword = document.getElementById("confirmPassword").value;
-
-//   if (newPassword !== confirmPassword) {
-//     alert("New passwords do not match!");
-//     return;
-//   }
-
-//   try {
-//     const response = await fetch("http://localhost:5000/api/customer/change-password", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ currentPassword, newPassword }),
-//     });
-
-//     const result = await response.json();
-//     if (response.ok) {
-//       alert("Password updated successfully!");
-//     } else {
-//       alert(result.message || "Failed to update password.");
-//     }
-//   } catch (error) {
-//     console.error("Error updating password:", error);
-//     alert("An error occurred while updating the password.");
-//   }
-// });
-
-document.addEventListener("DOMContentLoaded", async function () {
+ddEventListener("DOMContentLoaded", async function () {
   try {
     const response = await fetch("http://localhost:5000/api/customer/profile", {
       method: "GET",
@@ -240,7 +211,17 @@ document.getElementById("savePasswordButton").addEventListener("click", async fu
   const confirmPassword = document.getElementById("confirmPassword").value;
 
   if (newPassword !== confirmPassword) {
-    alert("New Password and Confirm Password do not match!");
+    notify({ type: "error", msg: "New Password and Confirm Password do not match!"});
+    return;
+  }
+
+  // verify user input 
+  if (!newPassword || newPassword.length < 6) {
+    notify({ type: "error", msg: "New password must be at least 6 characters long."});
+    return;
+  }
+  else if (newPassword === currentPasswordField.value) {
+    notify({ type: "error", msg: "New password must be different from the current password."});
     return;
   }
 
@@ -265,14 +246,20 @@ document.getElementById("savePasswordButton").addEventListener("click", async fu
     const result = await response.json();
 
     if (response.ok) {
-      alert(result.message || "Password updated successfully!");
+      localStorage.setItem(
+          "notify",
+          JSON.stringify({
+            type: "success",
+            msg: "Password updated successfully!",
+          })
+        );
       location.reload();
     } else {
-      alert(result.error || "Failed to update password.");
+      notify({ type: "error", msg: result.error || "Failed to update password."});
     }
   } catch (error) {
     console.error("Error changing password:", error);
-    alert("An error occurred. Please try again later.");
+    notify({ type: "error", msg: "An error occurred. Please try again later."});
   }
 });
 

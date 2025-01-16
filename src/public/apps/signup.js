@@ -15,7 +15,7 @@ document.getElementById("closeOtpPopupButton").addEventListener("click", closeOt
 document.getElementById("verifyOtpButton").addEventListener("click", function () {
   const otp = document.getElementById("otpInput").value.trim();
   if (otp === "") {
-    alert("Please enter the OTP!");
+    notify({ type: "error", msg: "Please enter the OTP!" });
     return;
   }
   // Handle OTP verification logic here
@@ -119,7 +119,7 @@ async function handleSubmitSignup() {
 
     const result = await response.json();
     if (response.ok) {
-      alert("OTP sent successfully! Please check your email.");
+      notify({ type: "success", msg: "OTP sent successfully! Please check your email." });
       showOtpOverlay(); // Hiển thị overlay nhập OTP
     } else {
       notify({
@@ -136,45 +136,6 @@ async function handleSubmitSignup() {
   }
 }
 
-// Xử lý xác thực OTP cho đăng ký
-// document.getElementById("verifyOtpButton").addEventListener("click", async function () {
-//   const otp = document.getElementById("otpInput").value.trim();
-//   const username = document.querySelector("#signup__username").value.trim();
-//   const email = document.querySelector("#signup__email").value.trim();
-//   const password = document.querySelector("#signup__password").value;
-
-//   if (!otp) {
-//     alert("Please enter the OTP.");
-//     return;
-//   }
-
-//   try {
-//     // Gửi yêu cầu xác thực OTP
-//     const response = await fetch("http://localhost:5000/api/customer/verify-otp-signup", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ otp, username, email, password }),
-//     });
-
-//     const result = await response.json();
-//     if (response.ok) {
-//       alert("Account created successfully!");
-//       document.getElementById("closeOtpPopupButton").click();
-//       location.href = "/customer/login"; // Điều hướng tới trang login
-//     } else {
-//       notify({
-//         type: "error",
-//         msg: result.message || "Invalid OTP.",
-//       });
-//     }
-//   } catch (error) {
-//     console.error("Error verifying OTP:", error);
-//     notify({
-//       type: "error",
-//       msg: "An error occurred while verifying OTP.",
-//     });
-//   }
-// });
 
 
 document.getElementById("verifyOtpButton").addEventListener("click", async function () {
@@ -184,7 +145,7 @@ document.getElementById("verifyOtpButton").addEventListener("click", async funct
   const customerPassword = document.querySelector("#signup__password").value;
 
   if (!otp) {
-    alert("Please enter the OTP.");
+    notify({ type: "error", msg: "Please enter the OTP." });
     return;
   }
 
@@ -198,7 +159,13 @@ document.getElementById("verifyOtpButton").addEventListener("click", async funct
 
     const result = await response.json();
     if (response.ok) {
-      alert("Account created successfully!");
+      localStorage.setItem(
+          "notify",
+          JSON.stringify({
+            type: "success",
+            msg: "Account created successfully!",
+          })
+        );
       document.getElementById("closeOtpPopupButton").click();
       location.href = "/customer/login"; // Điều hướng tới trang login
     } else {
