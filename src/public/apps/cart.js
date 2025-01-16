@@ -131,7 +131,6 @@ function createCartItem(item) {
         </div>
         
         <button class="delete-product">X</button>
-        <button class="edit-quantity">?</button>
     `;
 
     // Add event listeners
@@ -139,9 +138,6 @@ function createCartItem(item) {
         handleDeleteCard(isUserLoggedIn() ? item._id : item.productId)
     );
     
-    cartItemDiv.querySelector('.edit-quantity').addEventListener("click", () => 
-        handleUpdateQuantity(isUserLoggedIn() ? item._id : item.productId, item.quantity)
-    );
 
 
     cartItemDiv.querySelector('.increase-quantity').addEventListener("click", () => {

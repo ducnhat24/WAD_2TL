@@ -138,7 +138,7 @@
     padding: 20px;
     border-radius: 10px;
     width: 90%;
-    max-width: 600px;
+    /* max-width: 10; */
     overflow-y: auto;
 }
 
@@ -220,6 +220,10 @@ table th {
     #status-options {
         width: 100%;
     }
+    .order__table__footer{
+        
+    }
+
 }
 
 #confirm-modal {
@@ -228,4 +232,57 @@ table th {
 
 #cancel-modal {
     display:none;
+}
+
+/* Styling for the order-details__columns container */
+.order-details__columns {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap; /* Allows wrapping when the screen is small */
+}
+
+/* Default: Two columns for larger screens */
+.customer-info, .order-info {
+    flex: 1; /* Equal width for both columns */
+    min-width: calc(50% - 10px); /* Ensures the columns are 50% width minus gap */
+}
+
+/* On smaller screens, stack the columns vertically */
+@media (max-width: 768px) {
+    .customer-info, .order-info {
+        min-width: 100%; /* Full width for each column */
+    }
+}
+
+
+/* Container for table with horizontal scroll */
+.table-responsive {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on touch devices */
+    margin-top: 20px; /* Optional: spacing around the table */
+}
+
+#product-table {
+    width: 100%; /* Ensures table stretches to its content */
+    border-collapse: collapse; /* Optional: for cleaner table styling */
+}
+
+#product-table th, 
+#product-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+#product-table th {
+    background-color: var(--navy-color);
+    color: white;
+}
+
+/* Optional: For better responsiveness */
+@media (max-width: 768px) {
+    #product-table th, #product-table td {
+        font-size: 14px; /* Reduce font size for smaller screens */
+        padding: 8px; /* Adjust padding */
+    }
 }

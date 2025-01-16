@@ -72,7 +72,7 @@ function renderOrders(orders) {
 
         const row = `
             <div class="order__table__items">
-                <div class="order__table__item">${order._id}</div>
+                <div class="order__table__item">${order._id.slice(-4)}</div>
                 <div class="order__table__item">${totalProducts}</div>
                 <div class="order__table__item">${order.orderTotalPrice.toLocaleString('vi-VN')} đ</div>
                 <div class="order__table__item">${new Date(order.orderCreatedDateTime).toLocaleString()}</div>
@@ -408,6 +408,36 @@ async function changeStatusOrder(orderId, status) {
     }
 }
 
+async function confirmOrder(orderId, status) {
+    try {
+        const res = await fetch(`http://localhost:5000/api/customer/order/${orderId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                orderStatus: status,
+            }),
+        });
+
+        const data = await res.json();
+        notify({ type: data.status, msg: data.message });
+
+        if (data.status !== 'success') {
+            return;
+        }
+
+        window.location.reload();
+
+    } catch (error) {
+        console.log(error);
+        notify({ type: 'error', msg: error.message });
+
+    }
+}
+
+
 
 async function openOrderDetails(order) {
     if (order) {
@@ -430,11 +460,11 @@ async function openOrderDetails(order) {
     document.getElementById("customer-name").textContent = order.customerID.customerName;
     document.getElementById("customer-email").textContent = order.customerID.customerEmail; // Trường hợp không có số điện thoại
     document.getElementById("customer-address").textContent = "Schema chưa có address"; // Trường hợp không có địa chỉ
-    document.getElementById("order-id").textContent = order._id;
+    document.getElementById("order-id").textContent = order._id.slice(-4);
     document.getElementById("order-time").textContent = new Date(order.orderCreatedDateTime).toLocaleString();
     document.getElementById("shipping-address").textContent = order.orderShippingAddress;
     document.getElementById("order-shipping").textContent = order.orderShippingMethod.shippingName; // Nếu đã populate shipping method
-    document.getElementById("shipping-fee").textContent = `${order.orderShippingMethod.shippingFee.toLocaleString('vi-VN')} đ`; // Nếu đã populate shipping method
+    // document.getElementById("shipping-fee").textContent = `${order.orderShippingMethod.shippingFee.toLocaleString('vi-VN')} đ`; // Nếu đã populate shipping method
     document.getElementById("order-total-price").textContent = `${order.orderTotalPrice.toLocaleString('vi-VN')} ₫`;
     document.getElementById("order-shipper").textContent = "N/A";
 
