@@ -5,10 +5,12 @@ const jwt = require('jsonwebtoken');
 const { generateAccessToken, generateRefreshToken } = require('./JWTAction');
 const UserService = require('../components/customer/model/CustomerService'); // Import UserService
 
+const fetchURL = process.env.FETCH_URL;
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: `http://localhost:5000/api/customer/auth/google/callback`,
+    callbackURL: fetchURL + `/api/customer/auth/google/callback`,
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         // console.log('Google Profile:', profile);
@@ -68,7 +70,7 @@ function handleGoogleCallback(req, res, next) {
         // Gửi token về client
         res.cookie('accessToken', result.accessToken, { sameSite: 'none', secure: true });
         res.cookie('refreshToken', result.refreshToken, { sameSite: 'none', secure: true });
-        res.redirect('http://localhost:5000/?loginSuccess=true'); // Redirect về trang chính hoặc client-side xử lý token
+        res.redirect(fetchURL + '/?loginSuccess=true'); // Redirect về trang chính hoặc client-side xử lý token
     })(req, res, next);
 }
 

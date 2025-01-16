@@ -1,3 +1,5 @@
+const fetchURL = process.env.FETCH_URL;
+
 document.getElementById("saveEmail").addEventListener("click", async function () {
   const email = document.getElementById("email").value.trim();
 
@@ -7,7 +9,7 @@ document.getElementById("saveEmail").addEventListener("click", async function ()
   }
 
   // Gửi email để lấy mã OTP
-  const response = await fetch("http://localhost:5000/api/customer/update-profile/email/start", {
+  const response = await fetch(fetchURL + "/api/customer/update-profile/email/start", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email }),
@@ -22,7 +24,7 @@ document.getElementById("saveEmail").addEventListener("click", async function ()
 
 async function getCustomerID() {
     try {
-        const response = await fetch('http://localhost:5000/api/customer/id');
+        const response = await fetch(fetchURL + '/api/customer/id');
         if (!response.ok) {
             throw new Error(`Error fetching customer ID: ${response.status}`);
         }
@@ -44,7 +46,7 @@ document.getElementById("verifyOtp").addEventListener("click", async function ()
   const customerID = await getCustomerID();
 
   // Gửi OTP để xác thực
-  const response = await fetch("http://localhost:5000/api/customer/update-profile/email/verify", {
+  const response = await fetch(fetchURL + "/api/customer/update-profile/email/verify", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ otp: otp, customerID: customerID }),
@@ -92,7 +94,7 @@ saveNameButton.addEventListener('click', async (event) => {
   if (newName) {
     try {
       // Gửi yêu cầu POST đến API
-      const response = await fetch('http://localhost:5000/api/customer/update-profile/name', {
+      const response = await fetch(fetchURL + '/api/customer/update-profile/name', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -154,7 +156,7 @@ document.getElementById("saveAvatar").addEventListener("click", async function (
   formData.append("customerID", customerID); // Thay bằng ID thực tế của người dùng
 
   try {
-    const response = await fetch("http://localhost:5000/api/customer/update-profile/avatar", {
+    const response = await fetch(fetchURL + "/api/customer/update-profile/avatar", {
       method: "POST",
       body: formData, // Gửi FormData
     });
@@ -184,7 +186,7 @@ document.getElementById("saveAvatar").addEventListener("click", async function (
 
 ddEventListener("DOMContentLoaded", async function () {
   try {
-    const response = await fetch("http://localhost:5000/api/customer/profile", {
+    const response = await fetch(fetchURL + "/api/customer/profile", {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -237,7 +239,7 @@ document.getElementById("savePasswordButton").addEventListener("click", async fu
   }
 
   try {
-    const response = await fetch("http://localhost:5000/api/customer/change-password", {
+    const response = await fetch(fetchURL + "/api/customer/change-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

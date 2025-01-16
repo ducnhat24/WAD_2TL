@@ -1,3 +1,5 @@
+const fetchURL = process.env.FETCH_URL;
+
 function isUserLoggedIn() {
     const cookies = document.cookie.split(';');
     return cookies.some(cookie => cookie.trim().startsWith('accessToken='));
@@ -7,7 +9,7 @@ function isUserLoggedIn() {
 function handleDeleteCard(id) {
     if (isUserLoggedIn()) {
         // Delete from server
-        fetch("http://localhost:5000/api/customer/cart", {
+        fetch(fetchURL + "/api/customer/cart", {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -56,7 +58,7 @@ function updateLocalCartQuantity(productId, newQuantity) {
 function handleUpdateQuantity(id, quantity) {
     if (isUserLoggedIn()) {
         // Update server cart
-        fetch("http://localhost:5000/api/customer/cart", {
+        fetch(fetchURL + "/api/customer/cart", {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -247,7 +249,7 @@ function renderProductsInCart(productList) {
 function showCart() {
     if (isUserLoggedIn()) {
         // Fetch cart from server
-        fetch("http://localhost:5000/api/customer/cart", {
+        fetch(fetchURL + "/api/customer/cart", {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include'
@@ -306,7 +308,7 @@ function updateCartSummary() {
 
 
 function fetchShippingMethodsInCart() {
-    fetch("http://localhost:5000/api/shipping", {
+    fetch(fetchURL + "/api/shipping", {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'
@@ -404,7 +406,7 @@ document.getElementById('checkout-button').addEventListener('click', async () =>
         };
 
         // Gửi dữ liệu đến backend
-        const response = await fetch("http://localhost:5000/api/customer/order/", {
+        const response = await fetch(fetchURL + "/api/customer/order/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -1,6 +1,8 @@
+const fetchURL = process.env.FETCH_URL;
+
 async function getCustomerID() {
     try {
-        const response = await fetch('http://localhost:5000/api/customer/id');
+        const response = await fetch(fetchURL + '/api/customer/id');
         if (!response.ok) {
             throw new Error(`Error fetching customer ID: ${response.status}`);
         }
@@ -19,7 +21,7 @@ async function getCustomerID() {
 
 async function fetchAllReviews(productId) {
     try {
-        const response = await fetch(`http://localhost:5000/api/product/${productId}/reviews`);
+        const response = await fetch(fetchURL +`/api/product/${productId}/reviews`);
         if (!response.ok) {
             throw new Error(`Error fetching reviews: ${response.status}`);
         }
@@ -107,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         try {
             // Gửi dữ liệu đến server
-            const response = await fetch(`http://localhost:5000/api/product/${productId}/reviews`, {
+            const response = await fetch(fetchURL +`/api/product/${productId}/reviews`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

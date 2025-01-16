@@ -12,7 +12,7 @@ app.use(express.json());
 const session = require('express-session');
 
 
-const allowedOrigins = ['http://localhost:5000', 'http://localhost:5173'];
+const allowedOrigins = ['http://localhost:5000', 'http://localhost:5173', 'https://watch-shop-admin.vercel.app', 'https://watch-shop-nine-beryl.vercel.app'];
 app.use(cors({
   // origin: 'https://wad-ga-06-a8w4.vercel.app',
   origin: function (origin, callback) {

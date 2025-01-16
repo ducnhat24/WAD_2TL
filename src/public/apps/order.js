@@ -1,10 +1,11 @@
 // FETCHING AND RENDERING ORDERS
+const fetchURL = process.env.FETCH_URL;
 
 let ordersData = []; // Biến toàn cục lưu trữ danh sách đơn hàng
 
 async function fetchOrders() {
     try {
-        const response = await fetch(`http://localhost:5000/api/customer/order`, {
+        const response = await fetch(fetchURL + `/api/customer/order`, {
             credentials: 'include', // Gửi cookie cùng yêu cầu
         });
         if (!response.ok) {
@@ -382,7 +383,7 @@ const confirmModalButton = document.getElementById("confirm-modal");
 // }
 async function changeStatusOrder(orderId, status) {
     try {
-        const res = await fetch(`http://localhost:5000/api/customer/order/${orderId}`, {
+        const res = await fetch(fetchURL + `/api/customer/order/${orderId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -410,7 +411,7 @@ async function changeStatusOrder(orderId, status) {
 
 async function confirmOrder(orderId, status) {
     try {
-        const res = await fetch(`http://localhost:5000/api/customer/order/${orderId}`, {
+        const res = await fetch(fetchURL + `/api/customer/order/${orderId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,4 +1,4 @@
-const url = "http://localhost:5000";
+const url = process.env.FETCH_URL;
 let user = null;
 
 function showNav() {
@@ -410,7 +410,7 @@ async function mergeCartsAfterLogin() {
     
     if (localCart.length > 0) {
         try {
-            const response = await fetch("http://localhost:5000/api/customer/cart/merge", {
+            const response = await fetch(url + "/api/customer/cart/merge", {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
@@ -443,7 +443,7 @@ function updateCartCount(increment = 1) {
     const cartCountElement = document.getElementById('cart-count');
     if (isUserLoggedIn()) {
         // Get server cart count
-        fetch("http://localhost:5000/api/customer/cart", {
+        fetch(url + "/api/customer/cart", {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include'
@@ -475,7 +475,7 @@ function handleGoogleLogin() {
   // Xử lý logic đăng nhập qua Google
   console.log("Google login clicked");
   // Redirect hoặc mở popup tương ứng
-  window.location.href = "http://localhost:5000/api/customer/auth/google"; // Điều hướng đến endpoint xử lý Google OAuth
+  window.location.href = url + "/api/customer/auth/google"; // Điều hướng đến endpoint xử lý Google OAuth
 }
 
 

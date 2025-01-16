@@ -1,4 +1,6 @@
- document.getElementById("forgotPasswordLink").addEventListener("click", function () {
+const fetchURL = process.env.FETCH_URL; 
+
+document.getElementById("forgotPasswordLink").addEventListener("click", function () {
     document.getElementById("popupOverlay").classList.add("active");
     document.getElementById("forgotPasswordPopup").classList.add("active");
   });
@@ -25,7 +27,7 @@ let email = document.getElementById("emailInput").value;
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/customer/send-otp", {
+      const response = await fetch(fetchURL + "/api/customer/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email })
@@ -52,7 +54,7 @@ let email = document.getElementById("emailInput").value;
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/customer/verify-otp", {
+      const response = await fetch(fetchURL + "/api/customer/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ otp })
@@ -90,7 +92,7 @@ let email = document.getElementById("emailInput").value;
 
 
     try {
-      const response = await fetch("http://localhost:5000/api/customer/reset-password", {
+      const response = await fetch(fetchURL + "/api/customer/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: newPassword, email: email })

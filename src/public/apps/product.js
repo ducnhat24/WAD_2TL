@@ -7,6 +7,8 @@ let selectedBrands = []; // Selected brands
 let selectedCategories = []; // Selected categories
 let selectedSort = ''; // Selected sort type
 
+const fetchURL = process.env.FETCH_URL;
+
 function isUserLoggedIn() {
     const cookies = document.cookie.split(';');
     return cookies.some(cookie => cookie.trim().startsWith('accessToken='));
@@ -50,7 +52,7 @@ function updateCartCount(increment = 1) {
     const cartCountElement = document.getElementById('cart-count');
     if (isUserLoggedIn()) {
         // Get server cart count
-        fetch("http://localhost:5000/api/customer/cart", {
+        fetch(fetchURL + `/api/customer/cart`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include'
@@ -81,7 +83,7 @@ function updateCartCount(increment = 1) {
 async function addToLocalCart(productID, quantity) {
     try {
         // Fetch complete product info from database
-        const response = await fetch(`http://localhost:5000/api/product/${productID}`, {
+        const response = await fetch(fetchURL + `/api/product/${productID}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -137,7 +139,7 @@ async function addToLocalCart(productID, quantity) {
 }
 
 function addToServerCart(productID, quantity) {
-    fetch("http://localhost:5000/api/customer/cart", {
+    fetch(fetchURL + `/api/customer/cart`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -192,7 +194,7 @@ function loadProducts() {
     } else {
         // No filters, load regular products
         showSpinner();
-        fetch(`http://localhost:5000/api/product/limitation`, {
+        fetch(fetchURL + `/api/product/limitation`, {
             credentials: 'include',
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -214,7 +216,7 @@ function loadProducts() {
 
 function handleSearchWithParams(query) {
     showSpinner();
-    fetch(`http://localhost:5000/api/product/search`, {
+    fetch(fetchURL + `/api/product/search`, {
         credentials: 'include',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -252,7 +254,7 @@ function handleSearchWithParams(query) {
 
 function applyFilters(filterPayload) {
     showSpinner();
-    fetch('http://localhost:5000/api/product/filter?' + new URLSearchParams(filterPayload), {
+    fetch(fetchURL + `/api/product/filter?` + new URLSearchParams(filterPayload), {
         credentials: 'include',
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
@@ -322,7 +324,7 @@ function loadSideBar() {
             const brandFilterArea = document.getElementById('brand-filter');
             brandFilterArea.innerHTML = ''; // Clear existing content
 
-            fetch('http://localhost:5000/api/brand', {
+            fetch(fetchURL + `/api/brand`, {
                 credentials: 'include',
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
@@ -357,7 +359,7 @@ function loadSideBar() {
             const categoryFilterArea = document.getElementById('category-filter');
             categoryFilterArea.innerHTML = ''; // Clear existing content
 
-            fetch('http://localhost:5000/api/category', {
+            fetch(fetchURL + `/api/category`, {
                 credentials: 'include',
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
@@ -445,7 +447,7 @@ function filterProducts() {
     // console.log(filterPayload);
     showSpinner();
     // Fetch filtered products
-    fetch('http://localhost:5000/api/product/filter?' + new URLSearchParams(filterPayload), {
+    fetch(fetchURL + `/api/product/filter?` + new URLSearchParams(filterPayload), {
         credentials: 'include',
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
@@ -470,8 +472,8 @@ function prefetchPage(page) {
 
     const searchQuery = document.querySelector("#search__bar__product").value;
     const url = searchQuery
-        ? 'http://localhost:5000/api/product/search'
-        : 'http://localhost:5000/api/product/limitation';
+        ? fetchURL + `/api/product/search`
+        : fetchURL + `/api/product/limitation`;
 
     const payload = searchQuery
         ? { keysearch: searchQuery, page, limit }
@@ -630,7 +632,7 @@ function handleSearch() {
     }
 
     showSpinner();
-    fetch(`http://localhost:5000/api/product/search`, {
+    fetch(fetchURL + `/api/product/search`, {
         credentials: 'include',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -742,7 +744,7 @@ function showBrand() {
         document.querySelectorAll('#brand-filter input[type="checkbox"]:checked')
     ).map(input => input.id.replace('checkbox_', ''));
 
-    fetch('http://localhost:5000/api/brand', {
+    fetch(fetchURL + `/api/brand`, {
         credentials: 'include',
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
@@ -782,7 +784,7 @@ function showCategory() {
         document.querySelectorAll('#category-filter input[type="checkbox"]:checked')
     ).map(input => input.id.replace('checkbox_', ''));
 
-    fetch('http://localhost:5000/api/category', {
+    fetch(fetchURL + `/api/category`, {
         credentials: 'include',
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }

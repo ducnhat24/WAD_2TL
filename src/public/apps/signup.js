@@ -1,3 +1,5 @@
+const fetchURL = process.env.FETCH_URL;
+
 // Show OTP overlay
 function showOtpOverlay() {
   document.getElementById("otpOverlay").style.display = "block";
@@ -111,7 +113,7 @@ async function handleSubmitSignup() {
 
   try {
     // Gửi yêu cầu OTP qua email
-    const response = await fetch("http://localhost:5000/api/customer/send-otp-signup", {
+    const response = await fetch(fetchURL + "/api/customer/send-otp-signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
@@ -151,7 +153,7 @@ document.getElementById("verifyOtpButton").addEventListener("click", async funct
 
   try {
     // Gửi yêu cầu xác thực OTP với payload mở rộng
-    const response = await fetch("http://localhost:5000/api/customer/verify-otp-signup", {
+    const response = await fetch(fetchURL + "/api/customer/verify-otp-signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ otp, username, customerEmail, customerPassword }),
