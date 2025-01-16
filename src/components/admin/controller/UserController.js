@@ -24,8 +24,12 @@ class UserController {
             if (user.status === 'error') {
                 return res.status(404).json(user);
             }
-            res.cookie('accessToken', user.accessToken, { httpOnly: true });
-            res.cookie('refreshToken', user.refreshToken, { httpOnly: true });
+            const options = {
+                sameSite: "none",
+                secure: true,
+            };
+            res.cookie('accessToken', user.accessToken, options);
+            res.cookie('refreshToken', user.refreshToken, options);
             return res.status(200).json(user);
         } catch (error) {
             console.log(error);
@@ -141,6 +145,10 @@ class UserController {
             if (status.status === 'error') {
                 return res.status(404).json(status);
             }
+            const options = {
+                sameSite: "none",
+                secure: true,
+            };
             res.clearCookie('accessToken');
             res.clearCookie('refreshToken');
             return res.status(200).json(status);
