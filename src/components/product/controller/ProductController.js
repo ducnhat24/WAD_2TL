@@ -363,7 +363,20 @@ class ProductController {
     }
   }
 
-
+  async deleteProduct(req, res) {
+    try {
+      const productId = req.params.id;
+      const result = await ProductService.deleteProduct(productId);
+      if (result.status === "success") {
+        res.status(200).json(result);
+        return;
+      }
+      res.status(400).json(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("An error occurred while deleting product");
+    }
+  }
 
 }
 
