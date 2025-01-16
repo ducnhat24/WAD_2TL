@@ -511,7 +511,7 @@ document.getElementById('pay-button').addEventListener('click', async () => {
 
     try {
         // Gửi yêu cầu đến API để lấy URL thanh toán
-        const response = await fetch(fetchURL + 'api/customer/create-payment-url', {
+        const response = await fetch(fetchURL + '/api/customer/create-payment-url', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)

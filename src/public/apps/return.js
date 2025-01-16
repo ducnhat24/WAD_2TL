@@ -9,7 +9,8 @@ async function getCustomerID() {
             alert("Please login first to write a review!");
             return null;
         }
-      const data = await response.json();
+        const data = await response.json();
+        console.log(data);
         return data.data._id; // Trả về dữ liệu customer ID từ API
     }
     catch (error) {
