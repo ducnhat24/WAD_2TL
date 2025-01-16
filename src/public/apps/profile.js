@@ -184,7 +184,7 @@ document.getElementById("saveAvatar").addEventListener("click", async function (
   }
 });
 
-ddEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", async function () {
   try {
     const response = await fetch(fetchURL + "/api/customer/profile", {
       method: "GET",
