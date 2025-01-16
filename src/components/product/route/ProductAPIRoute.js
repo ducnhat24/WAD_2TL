@@ -8,6 +8,7 @@ productAPIRouter.post('/search', ProductController.searchProduct);
 // productAPIRouter.get('/someproduct', ProductController.getSomeProduct);
 productAPIRouter.get('/filter', ProductController.filterProduct);
 productAPIRouter.post('/limitation', ProductController.getSomeProduct);
+productAPIRouter.delete('/:id', ProductController.deleteProduct);
 productAPIRouter.put('/:id', ProductController.updateProduct);
 productAPIRouter.get('/:id', ProductController.getProductDetails);
 productAPIRouter.post('/', ProductController.addProduct);

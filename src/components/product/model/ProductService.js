@@ -467,6 +467,22 @@ class ProductService {
     }
   }
 
+  async deleteProduct(productId) {
+    try {
+      const product = await Product.deleteOne({ _id: productId });
+
+      return {
+        status: "success",
+        message: "Product deleted successfully",
+      };
+
+    } catch (error) {
+      return {
+        status: "error",
+        message: error.message,
+      };
+    }
+  }
 }
 
 module.exports = new ProductService();
