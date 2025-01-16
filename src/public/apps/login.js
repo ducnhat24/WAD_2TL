@@ -1,4 +1,6 @@
- document.getElementById("forgotPasswordLink").addEventListener("click", function () {
+ 
+
+document.getElementById("forgotPasswordLink").addEventListener("click", function () {
     document.getElementById("popupOverlay").classList.add("active");
     document.getElementById("forgotPasswordPopup").classList.add("active");
   });
