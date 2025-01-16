@@ -1,4 +1,4 @@
-const fetchURL = process.env.FETCH_URL;
+var fetchURL = process.env.FETCH_URL;
 
 document.getElementById("saveEmail").addEventListener("click", async function () {
   const email = document.getElementById("email").value.trim();

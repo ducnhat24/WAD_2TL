@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const { generateAccessToken, generateRefreshToken } = require('./JWTAction');
 const UserService = require('../components/customer/model/CustomerService'); // Import UserService
 
-const fetchURL = process.env.FETCH_URL;
+var fetchURL = process.env.FETCH_URL;
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,

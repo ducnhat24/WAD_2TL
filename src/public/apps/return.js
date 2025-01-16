@@ -1,4 +1,4 @@
-const fetchURL = process.env.FETCH_URL;
+var fetchURL = process.env.FETCH_URL;
 async function getCustomerID() {
     try {
         const response = await fetch(fetchURL + '/api/customer/id');

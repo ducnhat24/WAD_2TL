@@ -7,7 +7,7 @@ let selectedBrands = []; // Selected brands
 let selectedCategories = []; // Selected categories
 let selectedSort = ''; // Selected sort type
 
-const fetchURL = process.env.FETCH_URL;
+var fetchURL = process.env.FETCH_URL;
 
 function isUserLoggedIn() {
     const cookies = document.cookie.split(';');

@@ -1,4 +1,4 @@
-const url = process.env.FETCH_URL;
+var url = process.env.FETCH_URL;
 let user = null;
 
 function showNav() {

@@ -1,5 +1,5 @@
 // FETCHING AND RENDERING ORDERS
-const fetchURL = process.env.FETCH_URL;
+var fetchURL = process.env.FETCH_URL;
 
 let ordersData = []; // Biến toàn cục lưu trữ danh sách đơn hàng
 

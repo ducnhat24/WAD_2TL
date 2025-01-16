@@ -1,4 +1,4 @@
-const fetchURL = process.env.FETCH_URL; 
+var fetchURL = process.env.FETCH_URL; 
 
 document.getElementById("forgotPasswordLink").addEventListener("click", function () {
     document.getElementById("popupOverlay").classList.add("active");

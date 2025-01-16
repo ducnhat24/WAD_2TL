@@ -1,4 +1,4 @@
-const fetchURL = process.env.FETCH_URL;
+var fetchURL = process.env.FETCH_URL;
 
 // Show OTP overlay
 function showOtpOverlay() {
